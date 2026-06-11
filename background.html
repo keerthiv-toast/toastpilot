@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToastPilot — Background &amp; Context</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0f1b2d;
+    --muted: #5a6e88;
+    --cyan: #00a3d9;
+    --magenta: #e0197d;
+    --purple: #7c5cff;
+    --font: 'Inter', -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: #e6edf5;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 20px;
+  }
+
+  /* 16:9 stage — screenshot this */
+  .stage {
+    position: relative;
+    width: 1280px; height: 720px;
+    background:
+      radial-gradient(720px 420px at 88% 8%, rgba(0,163,217,0.08), transparent),
+      radial-gradient(720px 460px at 6% 96%, rgba(224,25,125,0.07), transparent),
+      linear-gradient(180deg, #ffffff, #eef4fb);
+    border: 1px solid #dde7f1;
+    border-radius: 22px;
+    box-shadow: 0 40px 90px rgba(15,40,80,0.16);
+    overflow: hidden;
+    padding: 60px 70px;
+    display: flex; flex-direction: column;
+  }
+
+  /* heading */
+  .head h1 { font-size: 3rem; font-weight: 900; letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
+  .head .bar { width: 150px; height: 6px; border-radius: 4px; margin-top: 16px; background: linear-gradient(90deg, var(--cyan), var(--magenta)); }
+
+  /* question card */
+  .qcard {
+    flex: 1;
+    margin-top: 38px;
+    background: linear-gradient(150deg, #ffffff, #f3f8fd);
+    border: 1px solid #e3ebf4;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(25,55,100,0.12);
+    padding: 54px 60px;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  /* accent rail + soft glow */
+  .qcard::before {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 8px;
+    background: linear-gradient(180deg, var(--cyan), var(--purple), var(--magenta));
+  }
+  .qcard::after {
+    content: '”'; position: absolute; top: -40px; right: 30px;
+    font-size: 16rem; line-height: 1; font-family: Georgia, serif;
+    color: rgba(0,163,217,0.07); font-weight: 900;
+  }
+
+  .eyebrow {
+    font-size: 0.85rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--magenta); margin-bottom: 18px;
+  }
+  .q {
+    font-size: 2.5rem; font-weight: 800; line-height: 1.32; letter-spacing: -0.015em;
+    color: var(--ink); max-width: 24ch; position: relative; z-index: 1;
+  }
+  .q .grad {
+    background: linear-gradient(100deg, var(--cyan), #4aa3ff 45%, var(--magenta));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .tags { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .tag {
+    font-size: 1.02rem; font-weight: 800;
+    padding: 9px 18px; border-radius: 999px;
+    border: 1.5px solid transparent;
+  }
+  .tag--cyan { color: var(--cyan); background: rgba(0,163,217,0.10); border-color: rgba(0,163,217,0.30); }
+  .tag--purple { color: var(--purple); background: rgba(124,92,255,0.10); border-color: rgba(124,92,255,0.30); }
+  .tag--magenta { color: var(--magenta); background: rgba(224,25,125,0.10); border-color: rgba(224,25,125,0.30); }
+
+  .footer { position: absolute; bottom: 22px; right: 32px; font-size: 0.74rem; color: #9fb0c4; font-weight: 500; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="head">
+      <h1>Background &amp; Context</h1>
+      <div class="bar"></div>
+    </div>
+
+    <div class="qcard">
+      <div class="eyebrow">The question we set out to answer</div>
+      <div class="q">
+        As Unified Inventory ships faster, how can Toast make
+        <span class="grad">release quality keep up</span> — without slowing engineers down with manual QA?
+      </div>
+      <div class="tags">
+        <span class="tag tag--cyan">#Autonomous QA</span>
+        <span class="tag tag--purple">#Zero Maintenance</span>
+        <span class="tag tag--magenta">#Ship with Confidence</span>
+      </div>
+    </div>
+
+    <div class="footer">© 2026 Toast, Inc. · Retail Unified Inventory Mobile</div>
+  </div>
+</body>
+</html>
