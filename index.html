@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToastPilot — Autonomous AI QA Agent</title>
+  <meta name="description" content="ToastPilot is a fully autonomous AI QA agent that does the work of a Senior QA Engineer — reading changelogs, designing test plans, executing against the real Toast Operator app, filing bugs, and reporting to Slack — all without a single human action." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0f1a;
+      --bg2: #0d1525;
+      --panel: #111827;
+      --panel2: #162033;
+      --border: rgba(0,163,217,0.18);
+      --border2: rgba(255,255,255,0.06);
+      --cyan: #00a3d9;
+      --cyan2: #00c4ff;
+      --magenta: #e0197d;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #f0f6ff;
+      --muted: #7a8fa8;
+      --muted2: #4a5e78;
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --glow-cyan: 0 0 60px rgba(0,163,217,0.15);
+      --glow-magenta: 0 0 60px rgba(224,25,125,0.12);
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 2rem;
+      background: rgba(10,15,26,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .nav-logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--cyan2), var(--magenta));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--cyan2); }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,163,217,0.4);
+      background: rgba(0,163,217,0.1);
+      color: var(--cyan2);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover { background: rgba(0,163,217,0.2); border-color: var(--cyan2); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+
+    .hero-glow--cyan {
+      background: rgba(0,163,217,0.12);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .hero-glow--magenta {
+      background: rgba(224,25,125,0.08);
+      bottom: -200px;
+      left: 50%;
+      transform: translateX(-60%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,163,217,0.3);
+      background: rgba(0,163,217,0.08);
+      color: var(--cyan2);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan2);
+      animation: pulse-dot 2s ease infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 .grad {
+      background: linear-gradient(135deg, var(--cyan2) 0%, #60a5fa 40%, var(--magenta) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .hero-sub strong { color: var(--text); font-weight: 600; }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--cyan), var(--magenta));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(0,163,217,0.3);
+      transition: all 0.2s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,163,217,0.4); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: 1px solid var(--border2);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: var(--border); background: rgba(255,255,255,0.04); }
+
+    /* ── STAT STRIP ── */
+    .stat-strip {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--cyan2), #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── DASHBOARD MOCKUP ── */
+    .dashboard-section {
+      position: relative;
+      padding: 5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+
+    /* ── FAKE DASHBOARD UI ── */
+    .dashboard-mockup {
+      width: 100%;
+      max-width: 1100px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      box-shadow: 0 0 80px rgba(0,163,217,0.12), 0 40px 80px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+
+    .db-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .db-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .db-dot--red { background: #ff5f57; }
+    .db-dot--yellow { background: #ffbd2e; }
+    .db-dot--green { background: #28ca41; }
+
+    .db-url {
+      flex: 1;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .db-body {
+      display: grid;
+      grid-template-columns: 280px 1fr 260px;
+      gap: 0;
+      min-height: 480px;
+    }
+
+    .db-panel {
+      border-right: 1px solid var(--border2);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+
+    .db-panel:last-child { border-right: none; }
+
+    .db-panel-title {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .db-command-box {
+      background: rgba(0,163,217,0.06);
+      border: 1px solid rgba(0,163,217,0.2);
+      border-radius: 6px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text);
+      font-family: var(--mono);
+    }
+
+    .db-btn-row {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .db-btn {
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      border: 1px solid var(--border2);
+      color: var(--cyan);
+      background: rgba(0,163,217,0.08);
+    }
+
+    .db-btn--run {
+      background: linear-gradient(135deg, rgba(0,163,217,0.2), rgba(224,25,125,0.15));
+      border-color: rgba(0,163,217,0.35);
+    }
+
+    .db-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .db-step-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55rem;
+      font-weight: 700;
+    }
+
+    .db-step-icon--pass { background: rgba(16,185,129,0.2); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
+    .db-step-icon--run { background: rgba(0,163,217,0.2); color: var(--cyan); border: 1px solid rgba(0,163,217,0.4); animation: pulse-ring 1.5s ease infinite; }
+    .db-step-icon--pending { background: rgba(122,143,168,0.1); color: var(--muted2); border: 1px solid var(--border2); }
+    .db-step-icon--heal { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+
+    @keyframes pulse-ring {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,163,217,0.4); }
+      50% { box-shadow: 0 0 0 3px rgba(0,163,217,0); }
+    }
+
+    .db-screenshot-frame {
+      background: #0a0f1a;
+      border-radius: 8px;
+      border: 1px solid var(--border2);
+      aspect-ratio: 9/16;
+      max-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .db-log-line {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      line-height: 1.5;
+      padding: 0.1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .db-log-line--agent { color: var(--amber); }
+    .db-log-line--pass { color: var(--green); }
+    .db-log-line--info { color: var(--muted); }
+    .db-log-line--heal { color: #a78bfa; }
+
+    .db-chip {
+      display: inline-block;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.62rem;
+      font-weight: 600;
+      background: rgba(0,163,217,0.1);
+      color: var(--cyan);
+      border: 1px solid rgba(0,163,217,0.2);
+      font-family: var(--mono);
+    }
+
+    .db-chip--pass { background: rgba(16,185,129,0.1); color: var(--green); border-color: rgba(16,185,129,0.25); }
+    .db-chip--warn { background: rgba(245,158,11,0.1); color: var(--amber); border-color: rgba(245,158,11,0.25); }
+    .db-chip--run { background: rgba(0,163,217,0.12); color: var(--cyan2); border-color: rgba(0,163,217,0.3); animation: pulse-glow 1.5s ease infinite; }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      padding: 5rem 2rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── PIPELINE ── */
+    .pipeline {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pipeline::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    }
+
+    .pipeline-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0;
+      position: relative;
+    }
+
+    .pipeline-step {
+      padding: 1.25rem 1rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .pipeline-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--cyan);
+      font-size: 1.1rem;
+      font-weight: 700;
+      z-index: 1;
+    }
+
+    .pipeline-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .pipeline-step-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .pipeline-step-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ── FEATURE GRID ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .feature-card {
+      background: var(--panel);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border);
+      transform: translateY(-3px);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-card--cyan::before { background: linear-gradient(90deg, var(--cyan), transparent); }
+    .feature-card--magenta::before { background: linear-gradient(90deg, var(--magenta), transparent); }
+    .feature-card--green::before { background: linear-gradient(90deg, var(--green), transparent); }
+    .feature-card--amber::before { background: linear-gradient(90deg, var(--amber), transparent); }
+    .feature-card--purple::before { background: linear-gradient(90deg, #8b5cf6, transparent); }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.625rem;
+      color: var(--text);
+    }
+
+    .feature-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .feature-desc strong { color: var(--text); }
+
+    /* ── BUG BASH MOCKUP ── */
+    .bugbash-mockup {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,163,217,0.1), 0 30px 60px rgba(0,0,0,0.4);
+      max-width: 480px;
+    }
+
+    .bugbash-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: rgba(0,163,217,0.04);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .bugbash-title-txt {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .bugbash-progress {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--cyan2);
+      background: rgba(0,163,217,0.12);
+      border: 1px solid rgba(0,163,217,0.25);
+      border-radius: 999px;
+      padding: 0.15rem 0.5rem;
+      animation: pulse-glow 1.5s ease infinite;
+    }
+
+    .bugbash-stop {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #ef4444;
+      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(239,68,68,0.08);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+    }
+
+    .bugbash-body {
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .bugbash-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.625rem;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      font-size: 0.75rem;
+    }
+
+    .bugbash-row--active {
+      border-color: rgba(0,163,217,0.4);
+      background: rgba(0,163,217,0.06);
+      animation: pulse-glow 1.5s ease infinite;
+    }
+
+    .bugbash-row--pass {
+      border-color: rgba(16,185,129,0.3);
+      background: rgba(16,185,129,0.04);
+    }
+
+    .bugbash-row--pending {
+      opacity: 0.5;
+    }
+
+    .bugbash-key {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+
+    .bugbash-summary-txt {
+      flex: 1;
+      font-size: 0.68rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bugbash-steps {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+    }
+
+    .bugbash-num {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--muted2);
+      margin-left: auto;
+    }
+
+    /* ── FLOWS TABLE ── */
+    .flows-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .flows-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .flows-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border2);
+      vertical-align: top;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .flows-table tr:last-child td { border-bottom: none; }
+    .flows-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .flows-table td:first-child {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--cyan);
+    }
+
+    .flows-table td:nth-child(2) { color: var(--text); font-weight: 500; }
+
+    .module-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .module-badge--cc { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+    .module-badge--pc { background: rgba(0,163,217,0.12); color: var(--cyan); border: 1px solid rgba(0,163,217,0.25); }
+    .module-badge--inv { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+    .module-badge--auth { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+    .module-badge--all { background: rgba(224,25,125,0.1); color: var(--magenta); border: 1px solid rgba(224,25,125,0.25); }
+
+    /* ── NUMBERS ── */
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .number-card {
+      background: var(--panel2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .number-card:hover { border-color: var(--border); }
+
+    .number-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    .number-card:hover::after { transform: scaleX(1); }
+
+    .number-val {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--cyan2), #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .number-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── TECH STACK ── */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .tech-card {
+      background: var(--panel);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 1.125rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .tech-card:hover { border-color: var(--border); background: var(--panel2); }
+
+    .tech-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    .tech-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tech-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* ── PIPELINE DIAGRAM ── */
+    .pipeline-diagram {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.8;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .pipeline-diagram::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--cyan));
+    }
+
+    .pipeline-diagram .c { color: var(--cyan2); font-weight: 600; }
+    .pipeline-diagram .g { color: var(--green); font-weight: 600; }
+    .pipeline-diagram .m { color: var(--magenta); font-weight: 600; }
+    .pipeline-diagram .a { color: var(--amber); font-weight: 600; }
+    .pipeline-diagram .p { color: #a78bfa; font-weight: 600; }
+
+    /* ── HEALING MOCKUP ── */
+    .heal-event {
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-left: 3px solid var(--amber);
+      border-radius: var(--radius-sm);
+      padding: 0.875rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    .heal-event-title {
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 0.375rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .heal-event-detail {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .heal-event-detail .old { color: #f87171; text-decoration: line-through; }
+    .heal-event-detail .new { color: var(--green); }
+
+    /* ── QUOTE ── */
+    .quote-block {
+      background: linear-gradient(135deg, rgba(0,163,217,0.06), rgba(224,25,125,0.04));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-block::before {
+      content: '"';
+      position: absolute;
+      top: -0.5rem;
+      left: 1.5rem;
+      font-size: 8rem;
+      font-weight: 900;
+      color: rgba(0,163,217,0.08);
+      line-height: 1;
+      font-family: Georgia, serif;
+    }
+
+    .quote-text {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 1rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .quote-attr {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* ── SLACK NOTIFICATION MOCKUP ── */
+    .slack-mockup {
+      background: #1a1d21;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      max-width: 520px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .slack-header {
+      padding: 0.625rem 1rem;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.72rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .slack-workspace {
+      font-weight: 700;
+      color: #e5e7eb;
+    }
+
+    .slack-body { padding: 1rem; }
+
+    .slack-msg {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .slack-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--cyan), var(--magenta));
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .slack-content { flex: 1; }
+
+    .slack-sender {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e5e7eb;
+      margin-bottom: 0.25rem;
+    }
+
+    .slack-time {
+      font-size: 0.7rem;
+      color: #6b7280;
+      margin-left: 0.5rem;
+    }
+
+    .slack-block {
+      border-left: 3px solid var(--green);
+      padding: 0.75rem 0.875rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 0 6px 6px 0;
+      margin-top: 0.375rem;
+    }
+
+    .slack-block--fail { border-left-color: #ef4444; }
+
+    .slack-block-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e5e7eb;
+      margin-bottom: 0.375rem;
+    }
+
+    .slack-block-field {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-bottom: 0.2rem;
+    }
+
+    .slack-block-field strong { color: #d1d5db; }
+
+    /* ── SPLIT SECTIONS ── */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .split--reverse { direction: rtl; }
+    .split--reverse > * { direction: ltr; }
+
+    @media (max-width: 900px) {
+      .split, .split--reverse { grid-template-columns: 1fr; direction: ltr; gap: 2rem; }
+      .db-body { grid-template-columns: 1fr; }
+      .db-panel:nth-child(2), .db-panel:nth-child(3) { display: none; }
+      nav .nav-links { display: none; }
+      .pipeline-step:not(:last-child)::after { display: none; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border2);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer .footer-logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--cyan2), var(--magenta));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    footer a { color: var(--cyan); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 2rem;
+    }
+
+    /* ── BADGE PILL ── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .pill--green { background: rgba(16,185,129,0.1); color: var(--green); border-color: rgba(16,185,129,0.25); }
+    .pill--cyan { background: rgba(0,163,217,0.1); color: var(--cyan2); border-color: rgba(0,163,217,0.25); }
+    .pill--magenta { background: rgba(224,25,125,0.1); color: var(--magenta); border-color: rgba(224,25,125,0.25); }
+    .pill--amber { background: rgba(245,158,11,0.1); color: var(--amber); border-color: rgba(245,158,11,0.25); }
+
+    .pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── iOS PHONE MOCKUP ── */
+    .phone-mockup {
+      position: relative;
+      width: 240px;
+      margin: 0 auto;
+    }
+
+    .phone-frame {
+      background: #1c1c1e;
+      border-radius: 36px;
+      border: 2px solid rgba(255,255,255,0.12);
+      padding: 14px 10px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 30px 70px rgba(0,0,0,0.7), 0 0 40px rgba(0,163,217,0.1);
+    }
+
+    .phone-notch {
+      width: 90px;
+      height: 22px;
+      background: #1c1c1e;
+      border-radius: 0 0 14px 14px;
+      margin: 0 auto 8px;
+      border: 2px solid rgba(255,255,255,0.08);
+      border-top: none;
+    }
+
+    .phone-screen {
+      background: #0a0f1a;
+      border-radius: 24px;
+      overflow: hidden;
+      min-height: 400px;
+    }
+
+    .phone-app-header {
+      background: linear-gradient(135deg, #0d1525, #162033);
+      padding: 0.75rem;
+      border-bottom: 1px solid rgba(0,163,217,0.15);
+    }
+
+    .phone-app-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--cyan2);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .phone-list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.65rem;
+    }
+
+    .phone-list-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .phone-list-text { flex: 1; }
+    .phone-list-title { font-weight: 600; color: var(--text); font-size: 0.65rem; }
+    .phone-list-sub { color: var(--muted); font-size: 0.58rem; }
+    .phone-list-badge {
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 999px;
+    }
+
+    /* Smooth fade-in animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⚡ ToastPilot</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#flows">Flows</a></li>
+    <li><a href="#bugbash">Bug Bash</a></li>
+    <li><a href="#stack">Stack</a></li>
+  </ul>
+  <a class="nav-cta" href="https://github.toasttab.com/toasttab/operator-app-ios/pull/4838" target="_blank">
+    View PR →
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow hero-glow--cyan"></div>
+  <div class="hero-glow hero-glow--magenta"></div>
+
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    Toast Hackathon 2025 · SMB QA Automation
+  </div>
+
+  <h1>
+    <span class="grad">Fully Autonomous</span><br />
+    AI QA Agent
+  </h1>
+
+  <p class="hero-sub">
+    ToastPilot does the work of a <strong>Senior QA Engineer</strong> — reading changelogs,
+    designing test plans, running them against the <strong>real Toast Operator app</strong>,
+    filing bugs, and reporting to Slack — all without a single human action.
+  </p>
+
+  <div class="hero-actions">
+    <a class="btn-primary" href="#features">Explore Features ↓</a>
+    <a class="btn-secondary" href="https://github.toasttab.com/toasttab/operator-app-ios/pull/4838" target="_blank">📋 View PR</a>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat">
+      <div class="stat-num">13,690</div>
+      <div class="stat-label">Lines of TypeScript</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">48</div>
+      <div class="stat-label">Source Files</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">22</div>
+      <div class="stat-label">Test Flows</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">113</div>
+      <div class="stat-label">Self-Heal Points</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">102</div>
+      <div class="stat-label">Action Methods</div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD MOCKUP -->
+<div class="dashboard-section">
+  <div class="section-label">Live Dashboard</div>
+  <h2 class="section-title">Everything in one view</h2>
+  <p class="section-sub">Real-time WebSocket feed. Screenshots as they're captured. Steps update live as the agent navigates real Toast Operator screens.</p>
+
+  <div class="dashboard-mockup fade-up">
+    <div class="db-titlebar">
+      <div class="db-dot db-dot--red"></div>
+      <div class="db-dot db-dot--yellow"></div>
+      <div class="db-dot db-dot--green"></div>
+      <div class="db-url">localhost:5177 — ToastPilot: Autonomous QA Agent</div>
+    </div>
+    <div class="db-body">
+      <!-- Column 1: Command Center -->
+      <div class="db-panel">
+        <div class="db-panel-title">Command Center</div>
+        <div class="db-command-box">SMB-1082: Test PC filter counts refresh</div>
+        <div class="db-btn-row">
+          <div class="db-btn db-btn--run">▶ Run Agent</div>
+          <div class="db-btn">🎤 Voice</div>
+          <div class="db-btn">Cancel</div>
+        </div>
+        <div style="margin-top:0.25rem">
+          <div class="db-chip db-chip--run" style="margin-bottom:0.5rem">● running</div>
+          <div class="db-chip" style="margin-left:0.3rem">SMB-1082</div>
+        </div>
+        <div style="font-size:0.65rem;color:var(--muted);font-weight:600;margin-top:0.25rem;text-transform:uppercase;letter-spacing:0.06em">Plan · pc-filter-refresh · 10 steps</div>
+
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>1. Launch app and navigate to inventory</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>2. Open Product Catalog</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>3. Open filter sheet</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>4. Apply Low stock filter</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>5. Verify filter chip shows count</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>6. Open first filtered product</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>7. Tap filter chip to filter catalog list</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pass">✓</div><span>8. Record baseline filter count</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--run">◎</div><span>9. Edit product and save changes</span></div>
+        <div class="db-step"><div class="db-step-icon db-step-icon--pending">○</div><span>10. Verify filter count updated automatically</span></div>
+      </div>
+
+      <!-- Column 2: Live Feed -->
+      <div class="db-panel" style="border-right:1px solid var(--border2)">
+        <div class="db-panel-title">Live Simulator Feed</div>
+        <div class="db-screenshot-frame">
+          <!-- SVG iOS Simulator mockup -->
+          <svg viewBox="0 0 200 360" width="160" xmlns="http://www.w3.org/2000/svg" style="border-radius:8px">
+            <rect width="200" height="360" fill="#0a0f1a"/>
+            <!-- Status bar -->
+            <rect width="200" height="28" fill="#111827"/>
+            <text x="12" y="18" fill="#9ca3af" font-size="8" font-family="monospace">9:41</text>
+            <text x="160" y="18" fill="#9ca3af" font-size="8" font-family="monospace">●●●</text>
+            <!-- Nav bar -->
+            <rect y="28" width="200" height="40" fill="#162033"/>
+            <text x="12" y="52" fill="#60a5fa" font-size="9" font-family="sans-serif">← Product Catalog</text>
+            <text x="60" y="52" fill="#f0f6ff" font-size="10" font-weight="bold" font-family="sans-serif">Edit Product</text>
+            <!-- Product form -->
+            <rect x="12" y="80" width="176" height="14" rx="4" fill="#1f2937"/>
+            <text x="18" y="91" fill="#9ca3af" font-size="7" font-family="sans-serif">Product Name</text>
+            <rect x="12" y="100" width="176" height="22" rx="4" fill="#111827" stroke="#374151" stroke-width="0.5"/>
+            <text x="18" y="115" fill="#f0f6ff" font-size="8" font-family="sans-serif">Whole Milk (1 Gallon)</text>
+
+            <rect x="12" y="130" width="176" height="14" rx="4" fill="#1f2937"/>
+            <text x="18" y="141" fill="#9ca3af" font-size="7" font-family="sans-serif">Current Count</text>
+            <rect x="12" y="150" width="80" height="22" rx="4" fill="#111827" stroke="#00a3d9" stroke-width="1"/>
+            <text x="18" y="165" fill="#00c4ff" font-size="9" font-family="monospace" font-weight="bold">18</text>
+
+            <rect x="12" y="180" width="176" height="14" rx="4" fill="#1f2937"/>
+            <text x="18" y="191" fill="#9ca3af" font-size="7" font-family="sans-serif">Par Max</text>
+            <rect x="12" y="200" width="80" height="22" rx="4" fill="#111827" stroke="#374151" stroke-width="0.5"/>
+            <text x="18" y="215" fill="#f0f6ff" font-size="9" font-family="monospace">12</text>
+
+            <!-- Save button -->
+            <rect x="12" y="240" width="176" height="32" rx="8" fill="url(#btnGrad)"/>
+            <text x="100" y="261" fill="white" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">Save Changes</text>
+
+            <!-- Tab bar -->
+            <rect y="320" width="200" height="40" fill="#111827"/>
+            <text x="30" y="345" fill="#9ca3af" font-size="10" text-anchor="middle" font-family="sans-serif">📊</text>
+            <text x="100" y="345" fill="#00c4ff" font-size="10" text-anchor="middle" font-family="sans-serif">📦</text>
+            <text x="170" y="345" fill="#9ca3af" font-size="10" text-anchor="middle" font-family="sans-serif">📄</text>
+
+            <defs>
+              <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#0088b3"/>
+                <stop offset="100%" style="stop-color:#c2187a"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);padding:4px 8px;font-size:0.58rem;font-family:var(--mono);color:rgba(255,255,255,0.75);text-align:center">
+            step-9 · edit_product_save
+          </div>
+        </div>
+        <div style="display:flex;gap:0.25rem;flex-wrap:wrap;margin-top:0.25rem">
+          <div class="db-chip db-chip--pass" style="font-size:0.58rem">✓ 8 passed</div>
+          <div class="db-chip db-chip--run" style="font-size:0.58rem">◎ 1 running</div>
+          <div class="db-chip" style="font-size:0.58rem">○ 1 pending</div>
+        </div>
+        <div style="height:1px;background:var(--border2);margin:0.25rem 0"></div>
+        <div class="heal-event" style="padding:0.5rem 0.625rem">
+          <div class="heal-event-title" style="font-size:0.68rem">⚡ Self-Heal — step 4</div>
+          <div class="heal-event-detail">
+            <span class="old">~ProductCatalogFilterBtn</span><br/>
+            → <span class="new">~FilterSheetButton</span> (page-source scan)
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 3: Log Stream -->
+      <div class="db-panel">
+        <div class="db-panel-title">Agent Log Stream</div>
+        <div class="db-log-line db-log-line--agent">21:36:38 ▶ SMB-1082: PC filter counts refresh</div>
+        <div class="db-log-line db-log-line--info">21:36:38 Jira ticket: SMB-1082 — PC Filters</div>
+        <div class="db-log-line db-log-line--info">21:36:38 Flow mapping: pc-filter-refresh</div>
+        <div class="db-log-line db-log-line--pass">21:36:39 ✓ launchApp</div>
+        <div class="db-log-line db-log-line--pass">21:36:41 ✓ navigateToInventoryTab</div>
+        <div class="db-log-line db-log-line--pass">21:36:43 ✓ openProductCatalog</div>
+        <div class="db-log-line db-log-line--pass">21:36:45 ✓ openFilterSheet</div>
+        <div class="db-log-line db-log-line--heal">21:36:46 ⚡ heal: FilterSheetButton</div>
+        <div class="db-log-line db-log-line--pass">21:36:47 ✓ applyLowStockFilter</div>
+        <div class="db-log-line db-log-line--pass">21:36:49 ✓ verifyFilterChipCount</div>
+        <div class="db-log-line db-log-line--pass">21:36:51 ✓ openFirstFilteredProduct</div>
+        <div class="db-log-line db-log-line--pass">21:36:54 ✓ recordBaselineCount</div>
+        <div class="db-log-line db-log-line--info">21:36:56 ◎ editFirstFilteredProduct…</div>
+        <div style="height:1px;background:var(--border2);margin:0.375rem 0"></div>
+        <div style="font-size:0.6rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.375rem">Copilot Insight</div>
+        <div style="font-size:0.65rem;color:#a78bfa;line-height:1.5">Matched flow "pc-filter-refresh" from Jira keywords. Risk: High · 9 scenarios generated.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- PIPELINE SECTION -->
+<section id="pipeline">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div class="section-label">Autonomous Pipeline</div>
+      <h2 class="section-title">PR merges. Tests run. Evidence filed.<br/>Zero humans involved.</h2>
+      <p class="section-sub">The entire quality assurance lifecycle happens automatically — from the moment a developer clicks merge to the Slack notification landing in the team channel.</p>
+    </div>
+
+    <div class="pipeline fade-up">
+      <div class="pipeline-steps">
+        <div class="pipeline-step">
+          <span class="pipeline-icon">🔀</span>
+          <div class="pipeline-step-title">PR Merges</div>
+          <div class="pipeline-step-sub">GitHub Actions detects the merge, extracts SMB-* ticket</div>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">🔐</span>
+          <div class="pipeline-step-title">HMAC Webhook</div>
+          <div class="pipeline-step-sub">SHA-256 signed payload sent to ToastPilot server</div>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">🎫</span>
+          <div class="pipeline-step-title">Jira Synthesis</div>
+          <div class="pipeline-step-sub">AC, description, components mapped to test flow</div>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">🤖</span>
+          <div class="pipeline-step-title">Agent Runs</div>
+          <div class="pipeline-step-sub">Real app, real screens, self-healing selectors</div>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">📎</span>
+          <div class="pipeline-step-title">Jira Evidence</div>
+          <div class="pipeline-step-sub">Screenshots + MP4 video attached to ticket</div>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-icon">💬</span>
+          <div class="pipeline-step-title">Slack Report</div>
+          <div class="pipeline-step-sub">Rich Block Kit notification with evidence links</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem">
+      <div class="pipeline-diagram fade-up">
+<span class="a">Developer merges PR</span>
+        │
+        ▼
+<span class="c">GitHub Actions</span> → extracts <span class="g">SMB-NNNN</span> ticket → HMAC-SHA256 webhook
+        │
+        ▼
+<span class="c">ToastPilot Server</span> → verifies signature → fetches Jira ticket
+        │                    → synthesizes test plan from acceptance criteria
+        │
+        ▼
+<span class="m">AgentOrchestrator</span> → runs 102 actions → self-heals selectors → records MP4
+        │
+        ▼
+<span class="g">Evidence</span>: screenshots + video attached to Jira ticket as a comment
+<span class="p">Slack</span>:    ✅ SMB-1082 PASSED · 10/10 steps · 📸 12 screenshots · 🎥 Video
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-label">Capabilities</div>
+      <h2 class="section-title">Everything a Senior QA Engineer does.<br/>Running 24/7.</h2>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card feature-card--cyan fade-up">
+        <span class="feature-icon">🤖</span>
+        <div class="feature-title">Real App. Real Screens.</div>
+        <div class="feature-desc">
+          Drives the <strong>Toast Operator Production app</strong> via Appium XCUITest. No mocks, no stubs, no simulators of simulators. Every test hits real accessibility identifiers that ship in the product.
+        </div>
+      </div>
+
+      <div class="feature-card feature-card--magenta fade-up">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-title">Deep Self-Healing — 113 Points</div>
+        <div class="feature-desc">
+          <strong>Multi-candidate waits</strong>, retry loops, native nav-bar fallback, scroll-to-reveal, atomic field replacement. The agent adapts when developers rename identifiers or refactor views.
+        </div>
+      </div>
+
+      <div class="feature-card feature-card--green fade-up">
+        <span class="feature-icon">🧠</span>
+        <div class="feature-title">Dynamic Flow Generator</div>
+        <div class="feature-desc">
+          No pre-built flow? <strong>AI generates one from the PR diff</strong> — fetches the unified diff from GitHub, sends it to GPT-4o with the Jira AC, gets back a custom test sequence. Hallucinated actions are safety-filtered.
+        </div>
+      </div>
+
+      <div class="feature-card feature-card--amber fade-up">
+        <span class="feature-icon">✍️</span>
+        <div class="feature-title">AI Writes Its Own Test Code</div>
+        <div class="feature-desc">
+          <strong>LocatorCodegen</strong> scans Swift source for new accessibility IDs. <strong>FeatureCodegen</strong> uses OpenAI to generate action methods, flow JSON, keyword mappings, and orchestrator handlers — all inserted live.
+        </div>
+      </div>
+
+      <div class="feature-card feature-card--purple fade-up">
+        <span class="feature-icon">🎤</span>
+        <div class="feature-title">Voice Commands</div>
+        <div class="feature-desc">
+          Click the mic and speak: <em>"Run full regression"</em>, <em>"Test invoice scanning"</em>, <em>"SMB-1168"</em>. Web Speech API, in-browser, no plugins. The agent picks the right flow automatically.
+        </div>
+      </div>
+
+      <div class="feature-card feature-card--cyan fade-up">
+        <span class="feature-icon">🐛</span>
+        <div class="feature-title">One-Tap Bug Filing</div>
+        <div class="feature-desc">
+          Any failed run shows a <strong>🐛 File Bug</strong> button. One click creates a linked Jira bug ticket with failure detail, steps to reproduce, run ID, and feature context — pre-filled.
+        </div>
+      </div>
+
+      <div class="feature-card feature-card--magenta fade-up">
+        <span class="feature-icon">🎬</span>
+        <div class="feature-title">Full Video Recording</div>
+        <div class="feature-desc">
+          Every run recorded as an MP4 using <code>simctl recordVideo</code>. Solves the EBUSY lock problem on session reuse. Video appears in the dashboard and is attached to Jira automatically.
+        </div>
+      </div>
+
+      <div class="feature-card feature-card--green fade-up">
+        <span class="feature-icon">🔭</span>
+        <div class="feature-title">Leadership Copilot</div>
+        <div class="feature-desc">
+          Preflight analysis before every run: <strong>change detection, risk assessment, scenario generation, flow recommendation</strong>. The Strategic Insight Trace shows WHY the agent chose the test it ran.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- BUG BASH -->
+<section id="bugbash" style="background: linear-gradient(180deg, var(--bg) 0%, rgba(0,163,217,0.03) 50%, var(--bg) 100%)">
+  <div class="container">
+    <div class="split">
+      <div class="fade-up">
+        <div class="section-label">Sprint Bug Bash</div>
+        <h2 class="section-title" style="text-align:left">Test your entire sprint.<br/>One tap.</h2>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:1.5rem">
+          Every two weeks the team sits together, reads out sprint tickets one by one, and tests each one manually. It's slow. It's exhausting. It misses things.
+        </p>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:2rem">
+          <strong style="color:var(--text)">ToastPilot replaces the entire bug bash session</strong> with a single paste-and-click. Paste all sprint ticket IDs, hit Run — ToastPilot tests every ticket sequentially, attaches evidence to each Jira ticket, and sends an aggregate Slack summary when done.
+        </p>
+        <div class="pills-row">
+          <span class="pill pill--cyan">Sequential execution</span>
+          <span class="pill pill--green">Jira evidence per ticket</span>
+          <span class="pill pill--amber">Live queue dashboard</span>
+          <span class="pill pill--magenta">Aggregate Slack summary</span>
+        </div>
+      </div>
+
+      <div class="fade-up">
+        <div class="bugbash-mockup">
+          <div class="bugbash-header">
+            <div class="bugbash-title-txt">Sprint Bug Bash</div>
+            <div class="bugbash-progress">3 / 5</div>
+            <div class="bugbash-stop">Stop</div>
+          </div>
+          <div class="bugbash-body">
+            <div class="bugbash-row bugbash-row--pass">
+              <span>✅</span>
+              <span class="bugbash-key">SMB-1082</span>
+              <span class="bugbash-summary-txt">PC filter counts refresh</span>
+              <span class="bugbash-steps">✅10 ❌0</span>
+              <span class="bugbash-num">1</span>
+            </div>
+            <div class="bugbash-row bugbash-row--pass">
+              <span>✅</span>
+              <span class="bugbash-key">SMB-1168</span>
+              <span class="bugbash-summary-txt">Invoice landscape popup</span>
+              <span class="bugbash-steps">✅8 ❌0</span>
+              <span class="bugbash-num">2</span>
+            </div>
+            <div class="bugbash-row bugbash-row--active">
+              <span>◎</span>
+              <span class="bugbash-key">SMB-1096</span>
+              <span class="bugbash-summary-txt">Add item location</span>
+              <span class="bugbash-steps" style="color:var(--cyan)">Running…</span>
+              <span class="bugbash-num">3</span>
+            </div>
+            <div class="bugbash-row bugbash-row--pending">
+              <span>○</span>
+              <span class="bugbash-key">SMB-1201</span>
+              <span class="bugbash-summary-txt">Edit product base price</span>
+              <span class="bugbash-steps"></span>
+              <span class="bugbash-num">4</span>
+            </div>
+            <div class="bugbash-row bugbash-row--pending">
+              <span>○</span>
+              <span class="bugbash-key">SMB-1215</span>
+              <span class="bugbash-summary-txt">Cycle count from template</span>
+              <span class="bugbash-steps"></span>
+              <span class="bugbash-num">5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slack aggregate mockup -->
+        <div class="slack-mockup" style="margin-top:1rem">
+          <div class="slack-header">
+            <span>🔔</span>
+            <span class="slack-workspace">Toast SMB QA</span>
+            <span>#qa-notifications</span>
+          </div>
+          <div class="slack-body">
+            <div class="slack-msg">
+              <div class="slack-avatar">⚡</div>
+              <div class="slack-content">
+                <div class="slack-sender">ToastPilot <span class="slack-time">Today at 9:41</span></div>
+                <div class="slack-block">
+                  <div class="slack-block-title">✅ Bug Bash — ALL PASSED</div>
+                  <div class="slack-block-field"><strong>Tickets Tested:</strong> 5</div>
+                  <div class="slack-block-field"><strong>Passed:</strong> 5 · <strong>Failed:</strong> 0</div>
+                  <div class="slack-block-field" style="margin-top:0.375rem">✅ SMB-1082 · ✅ SMB-1168 · ✅ SMB-1096 · ✅ SMB-1201 · ✅ SMB-1215</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SELF HEALING -->
+<section>
+  <div class="container">
+    <div class="split split--reverse">
+      <div class="fade-up">
+        <div class="section-label">Self-Healing</div>
+        <h2 class="section-title" style="text-align:left">Tests that fix<br/>themselves.</h2>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:1.5rem">
+          Selectors break when developers rename identifiers or refactor views. Traditional test automation fails immediately. ToastPilot doesn't.
+        </p>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:2rem">
+          <strong style="color:var(--text)">113 healing touchpoints</strong> across multi-candidate waits, retry loops, scroll-to-reveal, atomic text replacement, and a fuzzy page-source scanner that finds the element even when the ID changed.
+        </p>
+        <div class="pills-row">
+          <span class="pill pill--amber">113 touchpoints</span>
+          <span class="pill pill--cyan">8-attempt retry loops</span>
+          <span class="pill pill--green">Selector registry healing</span>
+        </div>
+      </div>
+
+      <div class="fade-up">
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div class="heal-event">
+            <div class="heal-event-title">⚡ Self-Heal · step 4 · Filter Sheet</div>
+            <div class="heal-event-detail">
+              Original: <span class="old">~ProductCatalogFilterBtn</span><br/>
+              Healed: <span class="new">~FilterSheetButton</span><br/>
+              Strategy: page-source fuzzy scan → promoted to registry
+            </div>
+          </div>
+          <div class="heal-event">
+            <div class="heal-event-title">⚡ Self-Heal · step 7 · Back Navigation</div>
+            <div class="heal-event-detail">
+              Original: <span class="old">~BackToInventoryButton</span><br/>
+              Healed: <span class="new">//XCUIElementTypeNavigationBar//XCUIElementTypeButton[1]</span><br/>
+              Strategy: native iOS nav-bar fallback (attempt 3 of 8)
+            </div>
+          </div>
+          <div class="heal-event">
+            <div class="heal-event-title">⚡ Self-Heal · step 2 · Product Catalog Header</div>
+            <div class="heal-event-detail">
+              Original: <span class="old">~ProductCatalogTitle</span><br/>
+              Healed: <span class="new">~ProductCatalogHeader</span><br/>
+              Strategy: waitForAnyDisplayed([A, B, C]) → fallback C matched
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FLOWS TABLE -->
+<section id="flows">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-label">Test Library</div>
+      <h2 class="section-title">22 flows. Every user journey covered.</h2>
+      <p class="section-sub">From a single login to a 50-step full regression covering all three modules. All available from the dashboard, CLI, voice, Jira ticket ID, or triggered automatically by PR merge.</p>
+    </div>
+
+    <div style="background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden" class="fade-up">
+      <table class="flows-table">
+        <thead>
+          <tr>
+            <th>Flow ID</th>
+            <th>Description</th>
+            <th>Module</th>
+            <th>Steps</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>full-regression</td><td>All 3 modules — 50+ steps end-to-end</td><td><span class="module-badge module-badge--all">Full App</span></td><td>50+</td></tr>
+          <tr><td>full-smoke</td><td>All modules happy path, login → logout</td><td><span class="module-badge module-badge--all">Full App</span></td><td>30+</td></tr>
+          <tr><td>cycle-count-smoke</td><td>Cycle Count full regression</td><td><span class="module-badge module-badge--cc">Cycle Count</span></td><td>20</td></tr>
+          <tr><td>cycle-count</td><td>Select sheet → count items → submit</td><td><span class="module-badge module-badge--cc">Cycle Count</span></td><td>12</td></tr>
+          <tr><td>cycle-count-from-template</td><td>Create count sheet from template</td><td><span class="module-badge module-badge--cc">Cycle Count</span></td><td>10</td></tr>
+          <tr><td>edit-item</td><td>Edit item base price and save</td><td><span class="module-badge module-badge--cc">Cycle Count</span></td><td>8</td></tr>
+          <tr><td>add-new-item</td><td>Add new item to count sheet</td><td><span class="module-badge module-badge--cc">Cycle Count</span></td><td>9</td></tr>
+          <tr><td>add-item-location</td><td>Add location to existing item</td><td><span class="module-badge module-badge--cc">Cycle Count</span></td><td>7</td></tr>
+          <tr><td>post-submission-ui</td><td>Post-submission success UI validation</td><td><span class="module-badge module-badge--cc">Cycle Count</span></td><td>6</td></tr>
+          <tr><td>product-catalog-regression</td><td>Product Catalog full regression</td><td><span class="module-badge module-badge--pc">Product Catalog</span></td><td>22</td></tr>
+          <tr><td>product-catalog-add-edit-delete</td><td>Add, edit, and delete a product</td><td><span class="module-badge module-badge--pc">Product Catalog</span></td><td>15</td></tr>
+          <tr><td>product-catalog-details</td><td>Detail sections — info, inventory, orders, pricing</td><td><span class="module-badge module-badge--pc">Product Catalog</span></td><td>12</td></tr>
+          <tr><td>product-catalog-filters</td><td>Filter sheet — sort, category, vendor, warnings</td><td><span class="module-badge module-badge--pc">Product Catalog</span></td><td>14</td></tr>
+          <tr><td>pc-filter-refresh</td><td>Filter count auto-refresh after product edit</td><td><span class="module-badge module-badge--pc">Product Catalog</span></td><td>10</td></tr>
+          <tr><td>product-catalog</td><td>Browse and search catalog</td><td><span class="module-badge module-badge--pc">Product Catalog</span></td><td>8</td></tr>
+          <tr><td>invoice-scanning-regression</td><td>Invoice Scanning full regression</td><td><span class="module-badge module-badge--inv">Invoice</span></td><td>18</td></tr>
+          <tr><td>upload-invoice</td><td>Capture + review + submit full invoice</td><td><span class="module-badge module-badge--inv">Invoice</span></td><td>12</td></tr>
+          <tr><td>invoice-scanning</td><td>Manage invoices — browse and open</td><td><span class="module-badge module-badge--inv">Invoice</span></td><td>8</td></tr>
+          <tr><td>invoice-landscape-popup</td><td>Landscape low-quality popup verification</td><td><span class="module-badge module-badge--inv">Invoice</span></td><td>7</td></tr>
+          <tr><td>login-only</td><td>Login flow</td><td><span class="module-badge module-badge--auth">Auth</span></td><td>4</td></tr>
+          <tr><td>logout-only</td><td>Logout flow</td><td><span class="module-badge module-badge--auth">Auth</span></td><td>3</td></tr>
+          <tr><td>minimal-smoke</td><td>Login + inventory home + add location</td><td><span class="module-badge module-badge--auth">Auth</span></td><td>6</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- NUMBERS -->
+<section>
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-label">By The Numbers</div>
+      <h2 class="section-title">Built in a hackathon window.</h2>
+    </div>
+    <div class="numbers-grid">
+      <div class="number-card fade-up"><div class="number-val">13,690</div><div class="number-label">Lines of TypeScript</div></div>
+      <div class="number-card fade-up"><div class="number-val">48</div><div class="number-label">Source Files</div></div>
+      <div class="number-card fade-up"><div class="number-val">102</div><div class="number-label">Action Methods</div></div>
+      <div class="number-card fade-up"><div class="number-val">113</div><div class="number-label">Self-Heal Points</div></div>
+      <div class="number-card fade-up"><div class="number-val">22</div><div class="number-label">Test Flows</div></div>
+      <div class="number-card fade-up"><div class="number-val">372</div><div class="number-label">Total Test Steps</div></div>
+      <div class="number-card fade-up"><div class="number-val">5</div><div class="number-label">Integrations</div></div>
+      <div class="number-card fade-up"><div class="number-val">3</div><div class="number-label">iOS Modules Covered</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SLACK NOTIFICATION -->
+<section>
+  <div class="container">
+    <div class="split">
+      <div class="fade-up">
+        <div class="section-label">Slack Integration</div>
+        <h2 class="section-title" style="text-align:left">The team knows<br/>before they ask.</h2>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:1.5rem">
+          Every autonomous run — PR-merge trigger or Bug Bash — produces a rich Slack Block Kit notification with pass/fail status, step counts, screenshot links, video recording links, and the Jira ticket link.
+        </p>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:2rem">
+          If a bug was filed automatically, the Jira bug key appears in the notification. The team sees everything in the channel where they already work.
+        </p>
+      </div>
+      <div class="fade-up">
+        <div class="slack-mockup">
+          <div class="slack-header">
+            <span>🔔</span>
+            <span class="slack-workspace">Toast SMB QA</span>
+            <span>#qa-notifications</span>
+          </div>
+          <div class="slack-body">
+            <div class="slack-msg">
+              <div class="slack-avatar">⚡</div>
+              <div class="slack-content">
+                <div class="slack-sender">ToastPilot <span class="slack-time">Today at 9:41</span></div>
+                <div class="slack-block">
+                  <div class="slack-block-title">✅ ToastPilot — PR Auto-QA PASSED</div>
+                  <div class="slack-block-field"><strong>Jira Ticket:</strong> SMB-1082 — PC Filter Counts</div>
+                  <div class="slack-block-field"><strong>Status:</strong> ✅ PASSED</div>
+                  <div class="slack-block-field"><strong>Steps:</strong> ✅ 10 passed · ❌ 0 failed</div>
+                  <div class="slack-block-field"><strong>Flow:</strong> pc-filter-refresh</div>
+                  <div class="slack-block-field" style="margin-top:0.375rem">📸 12 screenshots · 🎥 Video recording</div>
+                </div>
+                <div class="slack-block slack-block--fail" style="margin-top:0.5rem">
+                  <div class="slack-block-title">❌ ToastPilot — PR Auto-QA FAILED</div>
+                  <div class="slack-block-field"><strong>Jira Ticket:</strong> SMB-1215 — Add Item Location</div>
+                  <div class="slack-block-field"><strong>Steps:</strong> ✅ 6 passed · ❌ 1 failed</div>
+                  <div class="slack-block-field"><strong>Bug Filed:</strong> 🐛 SMB-1219</div>
+                  <div class="slack-block-field" style="margin-top:0.375rem">📸 8 screenshots · 🎥 Video recording</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-label">Technical Stack</div>
+      <h2 class="section-title">Production-grade. Zero shortcuts.</h2>
+    </div>
+    <div class="tech-grid fade-up">
+      <div class="tech-card"><div class="tech-icon">📱</div><div><div class="tech-name">Appium 3 + XCUITest</div><div class="tech-sub">Real iOS automation</div></div></div>
+      <div class="tech-card"><div class="tech-icon">⚛️</div><div><div class="tech-name">React 18 + Vite</div><div class="tech-sub">Live dashboard UI</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🔌</div><div><div class="tech-name">Express + WebSocket</div><div class="tech-sub">Agent server :9477</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🧠</div><div><div class="tech-name">OpenAI GPT-4o</div><div class="tech-sub">Plans, flows, codegen</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🎫</div><div><div class="tech-name">Jira REST API v3</div><div class="tech-sub">Evidence + bug filing</div></div></div>
+      <div class="tech-card"><div class="tech-icon">💬</div><div><div class="tech-name">Slack Block Kit</div><div class="tech-sub">Rich notifications</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🔐</div><div><div class="tech-name">HMAC-SHA256</div><div class="tech-sub">Webhook verification</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🎬</div><div><div class="tech-name">simctl recordVideo</div><div class="tech-sub">Full run MP4</div></div></div>
+      <div class="tech-card"><div class="tech-icon">⚙️</div><div><div class="tech-name">GitHub Actions</div><div class="tech-sub">PR-merge CI trigger</div></div></div>
+      <div class="tech-card"><div class="tech-icon">📝</div><div><div class="tech-name">TypeScript</div><div class="tech-sub">Server · agent · dashboard</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- QUOTE -->
+<section>
+  <div class="container">
+    <div class="quote-block fade-up">
+      <div class="quote-text">
+        "A Senior QA Engineer brings years of domain knowledge, judgment, and craftsmanship to a team. ToastPilot does not replace that — it does the equivalent. The same breadth of coverage, the same methodical evidence gathering, the same bug-filing discipline. Except it does it 24 hours a day, on every single PR, with no ramp-up time and no on-call rotation."
+      </div>
+      <div class="quote-attr">— ToastPilot · Toast Hackathon 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚡ ToastPilot</div>
+  <p style="margin-bottom:0.5rem">Autonomous AI QA Agent for <strong>ToastUnifiedInventory</strong> · Toast Hackathon 2025</p>
+  <p style="margin-bottom:1rem">Built by <strong>Keerthi V</strong> · SMB iOS Engineering</p>
+  <p>
+    <a href="https://github.toasttab.com/toasttab/operator-app-ios/pull/4838" target="_blank">View PR on GitHub Enterprise →</a>
+  </p>
+</footer>
+
+<script>
+  // Fade-up on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Animated counter
+  function animateCounter(el) {
+    const target = parseFloat(el.textContent.replace(/,/g, ''));
+    const isDecimal = el.textContent.includes('.');
+    let start = 0;
+    const duration = 1500;
+    const step = timestamp => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const val = Math.floor(eased * target);
+      el.textContent = isDecimal ? val.toFixed(1) : val.toLocaleString();
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCounter(e.target);
+        counterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.number-val, .stat-num').forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>
