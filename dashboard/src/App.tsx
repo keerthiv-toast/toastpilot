@@ -612,7 +612,7 @@ export default function App() {
 
     const allSteps = (state.plan?.steps ?? []).map((s) => s.description);
 
-    const issuesText = executiveSummary.issues.map((i) => `${i.title}: ${i.detail}`).join("\n");
+    const issuesText = (executiveSummary.issues ?? []).map((i) => `${i.title}: ${i.detail}`).join("\n");
     const failureDetail =
       state.failureExplanation ??
       (issuesText || "Test failed — see agent logs for details.");
@@ -897,7 +897,7 @@ export default function App() {
               >
                 <span className="flow-menu-toggle-icon">{flowMenuOpen ? "▲" : "▼"}</span>
                 Browse Flows
-                <span className="flow-menu-toggle-count">22</span>
+                <span className="flow-menu-toggle-count">{FLOW_MENU.reduce((n, m) => n + m.flows.length, 0)}</span>
               </button>
             </div>
             {flowMenuOpen && (

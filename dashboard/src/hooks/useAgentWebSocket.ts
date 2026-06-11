@@ -61,6 +61,25 @@ function mergeRunIntoState(prev: AgentRunState, run: ServerRun): AgentRunState {
   };
 }
 
+function normalizeExecutiveSummary(raw: Record<string, unknown>): ExecutiveSummaryView {
+  const issues = (raw.issues as Array<Record<string, unknown>> | undefined) ?? [];
+  return {
+    runId: String(raw.runId ?? ""),
+    command: String(raw.command ?? ""),
+    featureName: String(raw.featureName ?? "ToastUnifiedInventory"),
+    module: String(raw.module ?? "ToastUnifiedInventory"),
+    risk: String(raw.risk ?? "Medium"),
+    passed: Number(raw.passed ?? 0),
+    failed: Number(raw.failed ?? 0),
+    generatedTests: Number(raw.generatedTests ?? 0),
+    confidenceScore: Number(raw.confidenceScore ?? 0),
+    recommendation: String(raw.recommendation ?? ""),
+    issues: issues.map((i) => ({ title: String(i.title ?? ""), detail: String(i.detail ?? "") })),
+    status: raw.status != null ? String(raw.status) : undefined,
+    exportedAt: raw.exportedAt != null ? String(raw.exportedAt) : undefined,
+  };
+}
+
 function normalizeFeatureAnalysis(raw: Record<string, unknown>): FeatureAnalysisView {
   const areas = (raw.impactedAreas as Array<Record<string, unknown>> | undefined) ?? [];
   return {
@@ -132,6 +151,7 @@ export function useAgentWebSocket() {
   const hydrateFromServer = useCallback(async (expectedCommand?: string) => {
     try {
       const res = await fetch("/api/runs/current");
+      if (!res.ok) return;
       const run = (await res.json()) as ServerRun | null;
       if (!run?.id) return;
 
@@ -199,7 +219,10 @@ export function useAgentWebSocket() {
         return;
       }
       if (event.type === "copilot:executive-summary") {
-        setState((prev) => ({ ...prev, executiveSummary: event.report }));
+        setState((prev) => ({
+          ...prev,
+          executiveSummary: normalizeExecutiveSummary(event.report as unknown as Record<string, unknown>),
+        }));
         return;
       }
 
@@ -298,7 +321,23 @@ export function useAgentWebSocket() {
         return;
       }
       if (event.type === "bugbash:ticket:finished") {
-        setBugBash((prev) => ({ ...prev, currentIndex: event.index + 1, currentTicket: undefined }));
+        setBugBash((prev) => ({
+          ...prev,
+          currentIndex: event.index + 1,
+          currentTicket: undefined,
+          results: [
+            ...prev.results,
+            {
+              ticketKey: event.ticketKey,
+              passed: event.passed,
+              runId: event.runId,
+              stepsPassed: 0,
+              stepsFailed: 0,
+              screenshotCount: 0,
+              hasVideo: false,
+            },
+          ],
+        }));
         return;
       }
       if (event.type === "bugbash:finished") {
@@ -312,8 +351,9 @@ export function useAgentWebSocket() {
 
       // Video poller: if run finished without a videoPath, simctl may still be flushing.
       // Schedule outside setState to avoid React StrictMode double-invocation.
+      // Guard against StrictMode double-fire: only start if no poller is already active.
       if (event.type === "run:finished" && !event.run.videoPath) {
-        if (videoPollerRef.current) clearInterval(videoPollerRef.current);
+        if (videoPollerRef.current) return;
         let attempts = 0;
         videoPollerRef.current = setInterval(() => {
           attempts++;

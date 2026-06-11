@@ -57,56 +57,58 @@ export class BugBashQueue {
 
     const results: BugBashTicketResult[] = [];
 
-    for (let i = 0; i < tickets.length; i++) {
-      if (this.aborted) break;
+    try {
+      for (let i = 0; i < tickets.length; i++) {
+        if (this.aborted) break;
 
-      const ticketKey = tickets[i].trim().toUpperCase();
-      emit({ type: "bugbash:ticket:started", sessionId, ticketKey, index: i, total: tickets.length });
-      console.log(`[bug-bash] [${i + 1}/${tickets.length}] Starting ${ticketKey}`);
+        const ticketKey = tickets[i].trim().toUpperCase();
+        emit({ type: "bugbash:ticket:started", sessionId, ticketKey, index: i, total: tickets.length });
+        console.log(`[bug-bash] [${i + 1}/${tickets.length}] Starting ${ticketKey}`);
 
-      let result: BugBashTicketResult;
-      try {
-        result = await this.runTicket(ticketKey, sessionId);
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.error(`[bug-bash] ${ticketKey} threw unexpectedly:`, msg);
-        result = {
+        let result: BugBashTicketResult;
+        try {
+          result = await this.runTicket(ticketKey, sessionId);
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.error(`[bug-bash] ${ticketKey} threw unexpectedly:`, msg);
+          result = {
+            ticketKey,
+            passed: false,
+            runId: "",
+            stepsPassed: 0,
+            stepsFailed: 0,
+            screenshotCount: 0,
+            hasVideo: false,
+            failureExplanation: msg,
+          };
+        }
+
+        results.push(result);
+        emit({
+          type: "bugbash:ticket:finished",
+          sessionId,
           ticketKey,
-          passed: false,
-          runId: "",
-          stepsPassed: 0,
-          stepsFailed: 0,
-          screenshotCount: 0,
-          hasVideo: false,
-          failureExplanation: msg,
-        };
+          index: i,
+          total: tickets.length,
+          passed: result.passed,
+          runId: result.runId,
+        });
+
+        console.log(`[bug-bash] [${i + 1}/${tickets.length}] ${ticketKey} → ${result.passed ? "PASSED" : "FAILED"}`);
       }
 
-      results.push(result);
-      emit({
-        type: "bugbash:ticket:finished",
-        sessionId,
-        ticketKey,
-        index: i,
-        total: tickets.length,
-        passed: result.passed,
-        runId: result.runId,
-      });
-
-      console.log(`[bug-bash] [${i + 1}/${tickets.length}] ${ticketKey} → ${result.passed ? "PASSED" : "FAILED"}`);
+      if (this.aborted) {
+        emit({ type: "bugbash:cancelled", sessionId });
+        console.log("[bug-bash] Session cancelled.");
+      } else {
+        emit({ type: "bugbash:finished", sessionId, results });
+        console.log(`[bug-bash] Session complete — ${results.filter((r) => r.passed).length}/${results.length} passed`);
+        await this.postAggregateSlack(results);
+      }
+    } finally {
+      this.running = false;
+      this.currentSessionId = null;
     }
-
-    if (this.aborted) {
-      emit({ type: "bugbash:cancelled", sessionId });
-      console.log("[bug-bash] Session cancelled.");
-    } else {
-      emit({ type: "bugbash:finished", sessionId, results });
-      console.log(`[bug-bash] Session complete — ${results.filter((r) => r.passed).length}/${results.length} passed`);
-      await this.postAggregateSlack(results);
-    }
-
-    this.running = false;
-    this.currentSessionId = null;
   }
 
   private async runTicket(ticketKey: string, _sessionId: string): Promise<BugBashTicketResult> {

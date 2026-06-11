@@ -21,6 +21,7 @@ import { DynamicFlowGenerator } from "../agent/core/DynamicFlowGenerator.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PORT = parseInt(process.env.AGENT_SERVER_PORT ?? "9477", 10);
+const SERVER_BASE = (process.env.AGENT_PUBLIC_URL ?? `http://localhost:${PORT}`).replace(/\/$/, "");
 const REPORTS_DIR = join(process.cwd(), "reports");
 const ARTIFACTS_DIR = join(process.cwd(), "artifacts");
 const app = express();
@@ -255,8 +256,13 @@ app.post("/api/jira/attach", async (req, res) => {
   }
 
   const issueKey = (req.body?.issueKey as string | undefined)?.trim();
+  const ISSUE_KEY_RE = /^[A-Z][A-Z0-9_]+-\d+$/i;
   if (!issueKey) {
     res.status(400).json({ error: "issueKey is required." });
+    return;
+  }
+  if (!ISSUE_KEY_RE.test(issueKey)) {
+    res.status(400).json({ error: "issueKey must match pattern ABC-123." });
     return;
   }
 
@@ -375,15 +381,14 @@ app.post("/api/slack/report", async (req, res) => {
       ? Math.round(confidence * 100)
       : Math.round(Math.min(100, confidence));
 
-  const serverBase = `http://localhost:${PORT}`;
   const evidenceParts: string[] = [];
   if (screenshotCount && screenshotCount > 0 && runId) {
-    evidenceParts.push(`<${serverBase}/api/artifacts/${runId}/screenshot-list|📸 ${screenshotCount} screenshot${screenshotCount !== 1 ? "s" : ""}>`);
+    evidenceParts.push(`<${SERVER_BASE}/api/artifacts/${runId}/screenshot-list|📸 ${screenshotCount} screenshot${screenshotCount !== 1 ? "s" : ""}>`);
   } else if (screenshotCount && screenshotCount > 0) {
     evidenceParts.push(`📸 ${screenshotCount} screenshot${screenshotCount !== 1 ? "s" : ""}`);
   }
   if (hasVideo && runId) {
-    evidenceParts.push(`<${serverBase}/api/artifacts/${runId}/recording.mp4|🎥 Video recording>`);
+    evidenceParts.push(`<${SERVER_BASE}/api/artifacts/${runId}/recording.mp4|🎥 Video recording>`);
   } else if (hasVideo) {
     evidenceParts.push("🎥 Video recording");
   }
@@ -527,7 +532,7 @@ const IOS_REPO = process.env.IOS_REPO_PATH ??
 app.get("/api/git/status", (_req, res) => {
   try {
     const git = (cmd: string) =>
-      execSync(cmd, { cwd: IOS_REPO, encoding: "utf-8" }).trim();
+      execSync(cmd, { cwd: IOS_REPO, encoding: "utf-8", timeout: 5000 }).trim();
 
     spawn("git", ["-C", IOS_REPO, "fetch", "origin", "main", "--quiet"], {
       stdio: "ignore",
@@ -971,10 +976,9 @@ async function runPostMergeQA(ticketKey: string, prTitle: string, prUrl: string,
   if (webhookUrl) {
     const statusEmoji = passed ? "✅" : "❌";
     const statusLabel = passed ? "PASSED" : "FAILED";
-    const serverBase = `http://localhost:${PORT}`;
     const evidenceParts: string[] = [];
-    if (screenshotCount > 0) evidenceParts.push(`<${serverBase}/api/artifacts/${runId}/screenshot-list|📸 ${screenshotCount} screenshot${screenshotCount !== 1 ? "s" : ""}>`);
-    if (hasVideo) evidenceParts.push(`<${serverBase}/api/artifacts/${runId}/recording.mp4|🎥 Video recording>`);
+    if (screenshotCount > 0) evidenceParts.push(`<${SERVER_BASE}/api/artifacts/${runId}/screenshot-list|📸 ${screenshotCount} screenshot${screenshotCount !== 1 ? "s" : ""}>`);
+    if (hasVideo) evidenceParts.push(`<${SERVER_BASE}/api/artifacts/${runId}/recording.mp4|🎥 Video recording>`);
 
     const payload = {
       blocks: [
@@ -1082,6 +1086,19 @@ app.post("/api/webhook/pr-merged", async (req, res) => {
       `_Reported by ToastPilot_`,
     );
     res.json({ accepted: true, ticketKey, note: "Jira not configured — manual testing Slack sent" });
+    return;
+  }
+
+  // Don't race with a running bug bash — defer this webhook until it finishes
+  if (bugBashQueue.isRunning) {
+    console.log(`[pr-webhook] Bug bash in progress — deferring autonomous QA for ${ticketKey}`);
+    await postSlackMessage(
+      `⏳ *ToastPilot — QA Deferred*\n` +
+      `PR merged: <${prUrl}|${prTitle}>\n` +
+      `Jira ticket: *${ticketKey}* — a Bug Bash session is currently running.\n` +
+      `*Action needed:* Re-trigger or test manually once the Bug Bash finishes.`,
+    );
+    res.json({ accepted: true, ticketKey, note: "deferred — bug bash running" });
     return;
   }
 
