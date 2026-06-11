@@ -20,9 +20,22 @@
                 radial-gradient(720px 460px at 6% 96%, rgba(224,25,125,0.07), transparent),
                 linear-gradient(180deg,#ffffff,#eef4fb);
     border:1px solid #dde7f1; border-radius:22px; box-shadow:0 40px 90px rgba(15,40,80,0.16);
-    overflow:hidden; padding:54px 70px;
+    overflow:hidden; padding:46px 70px 64px;
     display:flex; flex-direction:column; }
   .footer { position:absolute; bottom:22px; right:32px; font-size:0.74rem; color:#9fb0c4; font-weight:500; }
+
+  /* acknowledgements bar */
+  .thanks-bar {
+    margin-top:18px; text-align:center;
+    background:linear-gradient(90deg, rgba(0,163,217,0.07), rgba(124,92,255,0.06), rgba(224,25,125,0.07));
+    border:1px solid #e4ecf5; border-radius:14px;
+    padding:13px 24px;
+  }
+  .thanks-bar .lead { font-size:0.8rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--magenta); margin-bottom:6px; }
+  .thanks-bar .people { font-size:0.92rem; color:#3a4e66; font-weight:600; line-height:1.5; }
+  .thanks-bar .people b { color:var(--ink); font-weight:800; }
+  .thanks-bar .role-tag { color:var(--muted); font-weight:600; }
+  .thanks-bar .dot { color:#c2ccd8; margin:0 8px; }
 
   .head { text-align:center; }
   .head h1 { font-size:2.9rem; font-weight:900; letter-spacing:-0.03em; color:var(--ink); line-height:1; }
@@ -38,7 +51,7 @@
     background:linear-gradient(180deg,#ffffff,#f7fafe);
     border:1px solid #e6edf5; border-radius:24px;
     box-shadow:0 22px 50px rgba(25,55,100,0.13);
-    padding:50px 26px 28px; position:relative; overflow:hidden;
+    padding:42px 26px 24px; position:relative; overflow:hidden;
   }
   .member::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; }
   .m1::before { background:linear-gradient(90deg,#00a3d9,#38d0ff); }
@@ -126,6 +139,17 @@
         </div>
         <div class="name">Shruti Joshi</div>
         <div class="role r3">iOS Mobile</div>
+      </div>
+    </div>
+
+    <div class="thanks-bar">
+      <div class="lead">🙏 With thanks to</div>
+      <div class="people">
+        <b>Sathish Sundar Vajjiram</b> <span class="role-tag">· Engineering Manager</span>
+        <span class="dot">•</span>
+        <b>Melissa Nielsen</b> <span class="role-tag">· Project Manager</span>
+        <span class="dot">•</span>
+        <b>Augustina Liu</b> <span class="role-tag">· Product Designer</span>
       </div>
     </div>
 
