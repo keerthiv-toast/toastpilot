@@ -1,0 +1,178 @@
+{
+  "module": "ToastUnifiedInventory",
+  "app": "ToastOperator",
+  "tab": { "name": "Inventory", "accessibilityIdentifier": "Inventory" },
+  "flows": {
+    "productCatalog": {
+      "description": "Product Catalog flow — browse catalog, filter/sort, view details, add/edit/delete items",
+      "screens": {
+        "preview": {
+          "identifiers": [
+            "product_catalog_preview",
+            "view_all_button",
+            "previewProductItemRows"
+          ]
+        },
+        "catalogList": {
+          "identifiers": [
+            "productCatalogSearchBar",
+            "barcodeScannerButton",
+            "product_catalog_addButton"
+          ],
+          "labels": ["Low stock", "Out of stock", "Not selling"],
+          "dynamicPatterns": [
+            "product_catalog_item_{id}",
+            "product_catalog_title_{id}"
+          ]
+        },
+        "filterSheet": {
+          "identifiers": [
+            "product_catalog_filter_sort_sheet_sort_by_section",
+            "product_catalog_filter_sort_sheet_category_section",
+            "product_catalog_filter_sort_sheet_vendor_section",
+            "product_catalog_filter_sort_sheet_warnings_and_info_section",
+            "product_catalog_filter_sort_sheet_view_button",
+            "Filter"
+          ]
+        },
+        "productDetails": {
+          "identifiers": [
+            "product_detail_section_product_info",
+            "product_detail_section_inventory",
+            "product_detail_section_orders",
+            "product_detail_section_pricing_and_costs",
+            "product_detail_section_description",
+            "product_detail_edit_button"
+          ]
+        },
+        "addEditProduct": {
+          "xpathPatterns": [
+            "//XCUIElementTypeTextField[@name=\"item_name_input\"]",
+            "//XCUIElementTypeButton[@name=\"primary_category_dropdown\"]",
+            "//*[starts-with(@name, \"category_option_\")]",
+            "//XCUIElementTypeTextField[@name=\"base_price_input\"]",
+            "//XCUIElementTypeButton[starts-with(@name, \"save-button\")]",
+            "//XCUIElementTypeStaticText[@name=\"Add product\"]"
+          ]
+        },
+        "itemRow": {
+          "xpathPatterns": [
+            "//XCUIElementTypeOther[starts-with(@name, \"product_catalog_item_\")]",
+            "//XCUIElementTypeButton[@name=\"item_edit\"]",
+            "//XCUIElementTypeButton[@name=\"item_viewDetails\"]",
+            "//XCUIElementTypeStaticText[starts-with(@name, \"product_catalog_title_\")]"
+          ]
+        },
+        "deleteConfirm": {
+          "xpathPatterns": [
+            "//XCUIElementTypeButton[@name=\"secondary_button\"]",
+            "//XCUIElementTypeButton[@name=\"Remove\"]"
+          ]
+        },
+        "search": {
+          "xpathPatterns": [
+            "//XCUIElementTypeTextField[@name=\"searchTextField\"]"
+          ]
+        }
+      }
+    },
+    "cycleCount": {
+      "description": "Cycle Count inventory flow — select count sheet, start counting, add locations, enter quantities, submit",
+      "screens": {
+        "home": {
+          "identifiers": [
+            "InventoryCountsEmptyState",
+            "CountSheetNameView",
+            "CountListName",
+            "CountListTemplateBadge",
+            "StartCountingButton",
+            "StartCountingButtonLoading"
+          ],
+          "labels": ["Get started with your count:"]
+        },
+        "countSheetPicker": {
+          "identifiers": [
+            "selectCountSheetView",
+            "countSheetPickerEmptyState",
+            "toolbarCancelButton",
+            "toolbarTitle",
+            "countSheetTemplatesListView"
+          ],
+          "dynamicPatterns": [
+            "countSheetName_{id}",
+            "newBadge_{id}",
+            "selectedCheckmark_{id}",
+            "countSheetTemplateRow_{id}"
+          ]
+        },
+        "locationList": {
+          "identifiers": ["special-request-icon", "empty_item_location_message"],
+          "dynamicPatterns": [
+            "location_card_{id}",
+            "location_name_{id}",
+            "location_count_{id}",
+            "location_chevron_{id}"
+          ]
+        },
+        "addLocation": {
+          "identifiers": [
+            "close_button",
+            "location_type_label",
+            "location_type_shelf",
+            "location_type_storage",
+            "location_name_label",
+            "location_name_input",
+            "internal_notes_label",
+            "internal_notes_input",
+            "save_button"
+          ]
+        },
+        "itemsCount": {
+          "identifiers": [
+            "back_button",
+            "title_text",
+            "subtitle_text",
+            "settings_button",
+            "search_button",
+            "submit_button",
+            "secondary_button",
+            "show_all_counts_view"
+          ],
+          "dynamicPatterns": [
+            "count_item_card_{id}",
+            "item_name_{id}",
+            "item_count_{id}",
+            "countingFieldView_{id}",
+            "countTextField_{id}",
+            "expandable_header_{id}"
+          ]
+        },
+        "countingStyle": {
+          "identifiers": [
+            "counting_style_card_organized",
+            "counting_style_card_flexible",
+            "cancel_button",
+            "modal_title"
+          ]
+        },
+        "postSubmission": {
+          "identifiers": [
+            "successCheckmark",
+            "thankYouTitle",
+            "countListName",
+            "submittedByText",
+            "startCountButton",
+            "countListDropdown"
+          ]
+        }
+      }
+    }
+  },
+  "healingStrategies": [
+    { "id": "accessibility-id", "priority": 1, "description": "Match by accessibility identifier (name attribute)" },
+    { "id": "accessibility-label", "priority": 2, "description": "Match by visible label text" },
+    { "id": "partial-id-prefix", "priority": 3, "description": "starts-with match for dynamic IDs" },
+    { "id": "xpath-fallback", "priority": 4, "description": "XPath from knowledge base locators" },
+    { "id": "ai-suggest", "priority": 5, "description": "LLM suggests selector from page source snapshot" }
+  ]
+}

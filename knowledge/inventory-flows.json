@@ -1,0 +1,2288 @@
+{
+  "flows": [
+    {
+      "id": "minimal-smoke",
+      "name": "Minimal Smoke (Unified Inventory)",
+      "aliases": [
+        "minimal smoke",
+        "smoke",
+        "smoke minimal",
+        "test minimal smoke",
+        "test smoke",
+        "test smoke minimal",
+        "test unified inventory minimal smoke",
+        "test unified inventory smoke minimal"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Unified Inventory home loads with expected entry points"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheet",
+          "description": "Choose an active count sheet from the picker so counting can begin"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Enter the counting flow and load the list of item locations"
+        },
+        {
+          "id": "add-location",
+          "action": "addItemLocation",
+          "description": "Create a new storage location on the count sheet and confirm it appears"
+        }
+      ]
+    },
+    {
+      "id": "login-only",
+      "name": "Login Flow Only",
+      "aliases": [
+        "test login flow",
+        "test login",
+        "login flow",
+        "login"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Unified Inventory home loads after login (smoke check for tab routing)"
+        }
+      ]
+    },
+    {
+      "id": "logout-only",
+      "name": "Logout Flow",
+      "aliases": [
+        "test logout",
+        "test logout flow",
+        "logout flow",
+        "logout",
+        "log out",
+        "sign out"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account so logout can be exercised from a real session"
+        },
+        {
+          "id": "tap-account",
+          "action": "tapAccountTab",
+          "description": "Open Account from the main tab bar"
+        },
+        {
+          "id": "scroll-to-logout",
+          "action": "scrollAccountMenuToLogout",
+          "description": "Scroll the Account screen until Log out is visible (three upward swipes)"
+        },
+        {
+          "id": "tap-logout",
+          "action": "tapLogout",
+          "description": "Tap Log out on the Account screen to open the confirmation sheet"
+        },
+        {
+          "id": "confirm-logout",
+          "action": "tapConfirmLogout",
+          "description": "Confirm sign-out on the sheet (Confirm Log out)"
+        },
+        {
+          "id": "finish-logout",
+          "action": "finishLogoutFlow",
+          "description": "Verify logout succeeded on the welcome screen and capture evidence screenshot"
+        }
+      ]
+    },
+    {
+      "id": "cycle-count-from-template",
+      "name": "Cycle Count (No Count Sheet — Create from Template)",
+      "aliases": [
+        "cycle count from template",
+        "count from template",
+        "test cycle count from template",
+        "no count sheet",
+        "create count sheet from template",
+        "start count from template",
+        "cycle count no count sheet",
+        "test cycle count no count sheet"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Cycle count home is visible and the restaurant context is loaded"
+        },
+        {
+          "id": "select-or-create-count-sheet",
+          "action": "selectCountSheetOrCreateFromTemplate",
+          "description": "Open the count sheet picker — if no count sheets exist, switch to Templates tab, select the first template, tap Start counting, and confirm the popup to create a new count sheet from the template"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Tap Start counting to enter the count flow and load the list of item locations"
+        },
+        {
+          "id": "open-location",
+          "action": "openFirstLocation",
+          "description": "Drill into the first storage location to count items in that area"
+        },
+        {
+          "id": "enter-quantity",
+          "action": "enterCountQuantity",
+          "description": "Enter an on-hand quantity for an item in the location count field"
+        },
+        {
+          "id": "submit-location",
+          "action": "submitLocationCount",
+          "description": "Submit the location count and advance the count workflow"
+        },
+        {
+          "id": "handle-uncounted",
+          "action": "tapKeepThemBlankButton",
+          "description": "If uncounted items dialog appears, tap Keep them blank to dismiss it"
+        },
+        {
+          "id": "submit-count-sheet",
+          "action": "submitCountSheet",
+          "description": "Tap the Submit count sheet button to finalize the count"
+        },
+        {
+          "id": "validate-submission",
+          "action": "validatePostSubmission",
+          "description": "Verify success feedback appears after submission"
+        },
+        {
+          "id": "dismiss-success",
+          "action": "dismissCycleCountSubmissionSuccess",
+          "description": "Capture the success state and dismiss the sheet by returning to Inventory home"
+        }
+      ]
+    },
+    {
+      "id": "add-item-location",
+      "name": "Add Item Location",
+      "aliases": [
+        "test add item location",
+        "add item location",
+        "test item location",
+        "best item location",
+        "item location",
+        "test cycle count add item location flow",
+        "cycle count add item location",
+        "test existing smoke test",
+        "existing smoke test"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Cycle count and related home cards are visible before starting a count"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheet",
+          "description": "Choose an active count sheet from the picker so counting can begin"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Enter the counting flow and load the list of item locations"
+        },
+        {
+          "id": "add-location",
+          "action": "addItemLocation",
+          "description": "Create a new storage location on the count sheet and confirm it appears"
+        }
+      ]
+    },
+    {
+      "id": "cycle-count",
+      "name": "Cycle Count",
+      "aliases": [
+        "cycle count",
+        "inventory count",
+        "count sheet",
+        "test cycle count",
+        "test cycle count inventory flow"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Cycle count home is visible and the restaurant context is loaded"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheetRequired",
+          "description": "Open the count sheet picker and select a count list (required for this flow)"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Start counting and open the location list for the selected sheet"
+        },
+        {
+          "id": "open-location",
+          "action": "openFirstLocation",
+          "description": "Drill into the first storage location to count items in that area"
+        },
+        {
+          "id": "enter-quantity",
+          "action": "enterCountQuantity",
+          "description": "Enter an on-hand quantity for an item in the location count field"
+        },
+        {
+          "id": "submit-location",
+          "action": "submitLocationCount",
+          "description": "Submit the location count and advance the count workflow"
+        },
+        {
+          "id": "handle-uncounted",
+          "action": "tapKeepThemBlankButton",
+          "description": "If uncounted items dialog appears, tap 'Keep them blank' or 'Mark as out of stock' to dismiss it"
+        },
+        {
+          "id": "submit-count-sheet",
+          "action": "submitCountSheet",
+          "description": "Tap the Submit count sheet button to finalize the count"
+        },
+        {
+          "id": "validate-submission",
+          "action": "validatePostSubmission",
+          "description": "Verify success feedback appears after the location count is submitted"
+        },
+        {
+          "id": "dismiss-success",
+          "action": "dismissCycleCountSubmissionSuccess",
+          "description": "Capture the success state, then dismiss the sheet by tapping Cycle count on home"
+        }
+      ],
+      "validations": [
+        "Inventory tab loads ToastUnifiedInventory (not mock UI)",
+        "CountListName or empty state reflects API state",
+        "Quantity field accepts numeric input",
+        "submit_button enables after count entry",
+        "Post-submission sheet shows successCheckmark"
+      ]
+    },
+    {
+      "id": "cycle-count-smoke",
+      "name": "Cycle Count Full Regression",
+      "aliases": [
+        "regression",
+        "cycle regression",
+        "test regression",
+        "test full regression",
+        "full regression",
+        "cycle count regression",
+        "test cycle count regression",
+        "full smoke",
+        "smoke test inventory",
+        "cycle count full smoke",
+        "cycle count full regression",
+        "test cycle count full regression",
+        "entire regression",
+        "test entire regression",
+        "cycle count entire regression",
+        "test cycle count entire regression",
+        "entire cycle count regression",
+        "test entire cycle count regression"
+      ],
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Cycle count home is visible and the restaurant context is loaded"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheetRequired",
+          "description": "Open the count sheet picker and select a count list (required for this flow)"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Start counting and open the location list for the selected sheet"
+        },
+        {
+          "id": "open-location",
+          "action": "openFirstLocation",
+          "description": "Drill into the first storage location to count items in that area"
+        },
+        {
+          "id": "add-new-item",
+          "action": "addNewItem",
+          "description": "Search for an item, add it to the location, and confirm it appears in the count list"
+        },
+        {
+          "id": "edit-item",
+          "action": "editItem",
+          "description": "Open the first listed item, update base price, save, and confirm the change sticks"
+        },
+        {
+          "id": "enter-quantity",
+          "action": "enterCountQuantity",
+          "description": "Enter an on-hand quantity for an item in the location count field"
+        },
+        {
+          "id": "submit-location",
+          "action": "submitLocationCount",
+          "description": "Submit the location count and advance the count workflow"
+        },
+        {
+          "id": "handle-uncounted",
+          "action": "tapKeepThemBlankButton",
+          "description": "If uncounted items dialog appears, tap 'Keep them blank' or 'Mark as out of stock' to dismiss it"
+        },
+        {
+          "id": "submit-count-sheet",
+          "action": "submitCountSheet",
+          "description": "Tap the Submit count sheet button to finalize the count"
+        },
+        {
+          "id": "validate-submission",
+          "action": "validatePostSubmission",
+          "description": "Verify success feedback appears after the location count is submitted"
+        },
+        {
+          "id": "dismiss-success",
+          "action": "dismissCycleCountSubmissionSuccess",
+          "description": "Capture the success state, then dismiss the sheet by tapping Cycle count on home"
+        }
+      ]
+    },
+    {
+      "id": "add-new-item",
+      "name": "Add New Item (Cycle Count)",
+      "aliases": [
+        "test add new item",
+        "add new item",
+        "add item",
+        "test add item",
+        "add new item stand alone",
+        "add new item standalone",
+        "test add new item stand alone",
+        "test add new item standalone"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Cycle count home is visible and the restaurant context is loaded"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheetRequired",
+          "description": "Open the count sheet picker and select a count list (required for this flow)"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Start counting and open the location list for the selected sheet"
+        },
+        {
+          "id": "open-location",
+          "action": "openFirstLocation",
+          "description": "Drill into the first storage location to count items in that area"
+        },
+        {
+          "id": "add-new-item",
+          "action": "addNewItem",
+          "description": "Search for an item, add it to the location, and confirm it appears in the count list"
+        }
+      ]
+    },
+    {
+      "id": "edit-item",
+      "name": "Edit Item",
+      "aliases": [
+        "test edit item",
+        "edit item",
+        "test edit read only",
+        "edit"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Cycle count home is visible and the restaurant context is loaded"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheetRequired",
+          "description": "Open the count sheet picker and select a count list (required for this flow)"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Start counting and open the location list for the selected sheet"
+        },
+        {
+          "id": "open-location",
+          "action": "openFirstLocation",
+          "description": "Drill into the first storage location to count items in that area"
+        },
+        {
+          "id": "edit-item",
+          "action": "editItem",
+          "description": "Open the first listed item, update base price, save, and confirm the change sticks"
+        }
+      ]
+    },
+    {
+      "id": "post-submission-ui",
+      "name": "Post Submission UI Validation",
+      "aliases": [
+        "test post submission ui",
+        "post submission ui",
+        "validate post submission ui",
+        "post submission",
+        "submission ui"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Cycle count home is visible and the restaurant context is loaded"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheetRequired",
+          "description": "Open the count sheet picker and select an active sheet"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "Start counting and open the location list for the selected sheet"
+        },
+        {
+          "id": "open-location",
+          "action": "openFirstLocation",
+          "description": "Drill into the first storage location to count items"
+        },
+        {
+          "id": "enter-quantity",
+          "action": "enterCountQuantity",
+          "description": "Enter an on-hand quantity for an item in the location count field"
+        },
+        {
+          "id": "submit-location",
+          "action": "submitLocationCount",
+          "description": "Submit the location count to advance the workflow"
+        },
+        {
+          "id": "handle-uncounted",
+          "action": "tapKeepThemBlankButton",
+          "description": "Dismiss uncounted items dialog if it appears"
+        },
+        {
+          "id": "submit-count-sheet",
+          "action": "submitCountSheet",
+          "description": "Tap the Submit count sheet button to finalize the count"
+        },
+        {
+          "id": "validate-submission",
+          "action": "validatePostSubmission",
+          "description": "Verify the post-submission success UI appears with the expected checkmark and confirmation elements"
+        },
+        {
+          "id": "dismiss-success",
+          "action": "dismissCycleCountSubmissionSuccess",
+          "description": "Capture the success state and dismiss the sheet"
+        }
+      ]
+    },
+    {
+      "id": "product-catalog",
+      "name": "Product Catalog",
+      "aliases": [
+        "test product catalog",
+        "product catalog",
+        "open product catalog",
+        "product catalog smoke"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "open-product-catalog",
+          "action": "openProductCatalog",
+          "description": "Open Product Catalog from Inventory home \u2014 tap View all on the preview card"
+        },
+        {
+          "id": "verify-product-catalog",
+          "action": "verifyProductCatalog",
+          "description": "Confirm catalog list loads: search bar and barcode scanner are visible"
+        },
+        {
+          "id": "verify-catalog-filters",
+          "action": "verifyProductCatalogFilters",
+          "description": "Verify quick-filter chips (Low stock, Out of stock, Not selling) and Filters button are present"
+        }
+      ]
+    },
+    {
+      "id": "product-catalog-filters",
+      "name": "Product Catalog Filters",
+      "aliases": [
+        "test product catalog filters",
+        "product catalog filters",
+        "catalog filters",
+        "test catalog filters",
+        "filter product catalog"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "open-product-catalog",
+          "action": "openProductCatalog",
+          "description": "Open Product Catalog from Inventory home"
+        },
+        {
+          "id": "open-catalog-filter-sheet",
+          "action": "openProductCatalogFilterSheet",
+          "description": "Tap the Filters button to open the filter/sort sheet"
+        },
+        {
+          "id": "verify-sort-by",
+          "action": "verifyProductCatalogSortByFilter",
+          "description": "Confirm Sort by section is present in the filter sheet"
+        },
+        {
+          "id": "verify-category-filter",
+          "action": "verifyProductCatalogCategoryFilter",
+          "description": "Confirm Category filter section is present"
+        },
+        {
+          "id": "verify-vendor-filter",
+          "action": "verifyProductCatalogVendorFilter",
+          "description": "Confirm Vendor filter section is present"
+        },
+        {
+          "id": "verify-warnings-filter",
+          "action": "verifyProductCatalogWarningsFilter",
+          "description": "Confirm Warnings and info filter section is present"
+        },
+        {
+          "id": "close-filter-sheet",
+          "action": "closeProductCatalogFilterSheet",
+          "description": "Tap View button to close the filter sheet and return to catalog list"
+        }
+      ]
+    },
+    {
+      "id": "product-catalog-details",
+      "name": "Product Catalog Details",
+      "aliases": [
+        "test product catalog details",
+        "product catalog details",
+        "catalog details",
+        "product details",
+        "test catalog details"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "open-product-catalog",
+          "action": "openProductCatalog",
+          "description": "Open Product Catalog from Inventory home"
+        },
+        {
+          "id": "open-first-product-details",
+          "action": "openFirstProductDetails",
+          "description": "Expand the first non-variant product and tap View Details"
+        },
+        {
+          "id": "verify-product-info",
+          "action": "verifyProductInfoSection",
+          "description": "Confirm Product info section is visible on the details screen"
+        },
+        {
+          "id": "verify-inventory-section",
+          "action": "verifyInventorySection",
+          "description": "Confirm Inventory section is visible"
+        },
+        {
+          "id": "verify-orders-section",
+          "action": "verifyOrdersSection",
+          "description": "Confirm Orders section is visible"
+        },
+        {
+          "id": "verify-pricing-section",
+          "action": "verifyPricingAndCostsSection",
+          "description": "Confirm Pricing and costs section is visible"
+        },
+        {
+          "id": "verify-description-section",
+          "action": "verifyDescriptionSection",
+          "description": "Confirm Description section is visible"
+        }
+      ]
+    },
+    {
+      "id": "product-catalog-add-edit-delete",
+      "name": "Product Catalog Add, Edit and Delete",
+      "aliases": [
+        "test product catalog add edit delete",
+        "product catalog add edit delete",
+        "add edit delete product",
+        "test add edit delete product",
+        "product catalog crud",
+        "catalog crud"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "open-product-catalog",
+          "action": "openProductCatalog",
+          "description": "Open Product Catalog from Inventory home"
+        },
+        {
+          "id": "tap-add-product",
+          "action": "tapAddProductButton",
+          "description": "Tap the Add product (+) button to open the new product form"
+        },
+        {
+          "id": "enter-product-name",
+          "action": "enterProductName",
+          "description": "Enter a unique generated product name in the name field"
+        },
+        {
+          "id": "select-category",
+          "action": "selectProductCategory",
+          "description": "Open primary category dropdown and select the first available category"
+        },
+        {
+          "id": "enter-base-price",
+          "action": "enterProductBasePrice",
+          "description": "Scroll down and enter a generated base price in the price field"
+        },
+        {
+          "id": "save-product",
+          "action": "saveNewProduct",
+          "description": "Tap Add product to save and verify the new item appears in the catalog list"
+        },
+        {
+          "id": "edit-product-price",
+          "action": "editProductBasePrice",
+          "description": "Search for the new product, open edit, change the base price, and save"
+        },
+        {
+          "id": "delete-product",
+          "action": "deleteProduct",
+          "description": "Open edit, tap Delete, confirm Remove in the modal, then search to verify the product is gone"
+        }
+      ]
+    },
+    {
+      "id": "product-catalog-regression",
+      "name": "Product Catalog Full Regression",
+      "aliases": [
+        "product catalog full regression",
+        "test product catalog full regression",
+        "product catalog entire flow",
+        "test product catalog entire flow",
+        "product catalog end to end",
+        "test product catalog end to end",
+        "product catalog e2e",
+        "test product catalog e2e",
+        "entire product catalog",
+        "test entire product catalog",
+        "full product catalog",
+        "test full product catalog"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "extends": "product-catalog",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "open-product-catalog",
+          "action": "openProductCatalog",
+          "description": "Open Product Catalog from Inventory home \u2014 tap View all on the preview card"
+        },
+        {
+          "id": "verify-product-catalog",
+          "action": "verifyProductCatalog",
+          "description": "Confirm catalog list loads: search bar and barcode scanner are visible"
+        },
+        {
+          "id": "verify-catalog-filters",
+          "action": "verifyProductCatalogFilters",
+          "description": "Verify quick-filter chips (Low stock, Out of stock, Not selling) and Filters button are present"
+        },
+        {
+          "id": "open-catalog-filter-sheet",
+          "action": "openProductCatalogFilterSheet",
+          "description": "Tap Filters button to open the filter/sort sheet"
+        },
+        {
+          "id": "verify-sort-by",
+          "action": "verifyProductCatalogSortByFilter",
+          "description": "Confirm Sort by section is present in the filter sheet"
+        },
+        {
+          "id": "verify-category-filter",
+          "action": "verifyProductCatalogCategoryFilter",
+          "description": "Confirm Category filter section is present"
+        },
+        {
+          "id": "verify-vendor-filter",
+          "action": "verifyProductCatalogVendorFilter",
+          "description": "Confirm Vendor filter section is present"
+        },
+        {
+          "id": "verify-warnings-filter",
+          "action": "verifyProductCatalogWarningsFilter",
+          "description": "Confirm Warnings and info filter section is present"
+        },
+        {
+          "id": "close-filter-sheet",
+          "action": "closeProductCatalogFilterSheet",
+          "description": "Tap View to close the filter sheet and return to catalog list"
+        },
+        {
+          "id": "open-first-product-details",
+          "action": "openFirstProductDetails",
+          "description": "Expand the first non-variant product and tap View Details"
+        },
+        {
+          "id": "verify-product-info",
+          "action": "verifyProductInfoSection",
+          "description": "Confirm Product info section is visible on the details screen"
+        },
+        {
+          "id": "verify-inventory-section",
+          "action": "verifyInventorySection",
+          "description": "Confirm Inventory section is visible"
+        },
+        {
+          "id": "verify-orders-section",
+          "action": "verifyOrdersSection",
+          "description": "Confirm Orders section is visible"
+        },
+        {
+          "id": "verify-pricing-section",
+          "action": "verifyPricingAndCostsSection",
+          "description": "Confirm Pricing and costs section is visible"
+        },
+        {
+          "id": "verify-description-section",
+          "action": "verifyDescriptionSection",
+          "description": "Confirm Description section is visible"
+        },
+        {
+          "id": "back-to-catalog",
+          "action": "backToProductCatalog",
+          "description": "Navigate back to the catalog list to set up for CRUD tests"
+        },
+        {
+          "id": "tap-add-product",
+          "action": "tapAddProductButton",
+          "description": "Tap the Add product (+) button to open the new product form"
+        },
+        {
+          "id": "enter-product-name",
+          "action": "enterProductName",
+          "description": "Enter a unique generated product name in the name field"
+        },
+        {
+          "id": "select-category",
+          "action": "selectProductCategory",
+          "description": "Open primary category dropdown and select the first available category"
+        },
+        {
+          "id": "enter-base-price",
+          "action": "enterProductBasePrice",
+          "description": "Scroll down and enter a generated base price in the price field"
+        },
+        {
+          "id": "save-product",
+          "action": "saveNewProduct",
+          "description": "Tap Add product to save and verify the new item appears in the catalog list"
+        },
+        {
+          "id": "edit-product-price",
+          "action": "editProductBasePrice",
+          "description": "Search for the new product, open edit, change the base price, and save"
+        },
+        {
+          "id": "delete-product",
+          "action": "deleteProduct",
+          "description": "Open edit, tap Delete, confirm Remove in the modal, then search to verify the product is gone"
+        },
+        {
+          "id": "search-product-by-name",
+          "action": "searchProductByName",
+          "description": "Search for a product by name and verify results appear"
+        },
+        {
+          "id": "expand-variant-product",
+          "action": "expandVariantProduct",
+          "description": "Scroll to find a variant product card and verify it is visible in the catalog list"
+        },
+        {
+          "id": "verify-variant-expansion",
+          "action": "verifyVariantExpansion",
+          "description": "Verify variant product rows are visible after expansion"
+        },
+        {
+          "id": "open-product-for-inventory-edit",
+          "action": "openFirstProductDetails",
+          "description": "Open first product to edit its inventory fields"
+        },
+        {
+          "id": "edit-inventory-fields",
+          "action": "editProductInventoryFields",
+          "description": "Edit each value, par min, and par max inventory fields and save"
+        },
+        {
+          "id": "apply-out-of-stock-filter",
+          "action": "applyOutOfStockFilter",
+          "description": "Tap Out of stock quick filter chip and verify list filters"
+        },
+        {
+          "id": "verify-out-of-stock-filter",
+          "action": "verifyOutOfStockFilter",
+          "description": "Verify Out of stock filter chip remains active after tapping"
+        },
+        {
+          "id": "clear-active-filters",
+          "action": "clearActiveFilters",
+          "description": "Clear any active quick filter chips to reset catalog list"
+        },
+        {
+          "id": "apply-not-selling-filter",
+          "action": "applyNotSellingFilter",
+          "description": "Tap Not selling quick filter chip and verify list filters"
+        },
+        {
+          "id": "verify-not-selling-filter",
+          "action": "verifyNotSellingFilter",
+          "description": "Verify Not selling filter chip remains active after tapping"
+        },
+        {
+          "id": "clear-filters-before-low-stock",
+          "action": "clearActiveFilters",
+          "description": "Clear all active filters before low stock filter test"
+        },
+        {
+          "id": "smb-1082-apply-low-stock-filter",
+          "action": "applyLowStockFilter",
+          "description": "Tap the Low stock quick-filter chip to filter the catalog list to low-stock items only",
+          "_ticket": "ticket:SMB-1082"
+        },
+        {
+          "id": "smb-1082-capture-filter-count",
+          "action": "captureFilterCount",
+          "description": "Record the current filter count shown on the Low stock chip as the baseline",
+          "_ticket": "ticket:SMB-1082"
+        },
+        {
+          "id": "smb-1082-edit-filtered-product",
+          "action": "editFirstFilteredProduct",
+          "description": "Open the first low-stock product, set count above par max, save \u2014 moves product out of Low stock",
+          "_ticket": "ticket:SMB-1082"
+        },
+        {
+          "id": "smb-1082-verify-filter-updated",
+          "action": "verifyFilterCountUpdated",
+          "description": "Verify the Low stock filter count updates automatically without pull-to-refresh",
+          "_ticket": "ticket:SMB-1082"
+        }
+      ]
+    },
+    {
+      "id": "pc-filter-refresh",
+      "name": "PC Filters \u2013 Refresh Filter Counts After Product Update",
+      "aliases": [
+        "pc filter refresh",
+        "filter refresh",
+        "filter count refresh",
+        "refresh filter counts",
+        "refresh filter count",
+        "product filter refresh",
+        "catalog filter refresh",
+        "test pc filter refresh",
+        "test filter refresh",
+        "test filter count refresh",
+        "smb-1082",
+        "SMB-1082",
+        "pc filters refresh"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "open-product-catalog",
+          "action": "openProductCatalog",
+          "description": "Open Product Catalog from Inventory home \u2014 tap View all on the preview card"
+        },
+        {
+          "id": "verify-catalog",
+          "action": "verifyProductCatalog",
+          "description": "Confirm catalog list loads with search bar visible"
+        },
+        {
+          "id": "apply-low-stock-filter",
+          "action": "applyLowStockFilter",
+          "description": "Tap the 'Low stock' quick-filter chip to filter the catalog list to low-stock items only"
+        },
+        {
+          "id": "capture-filter-count",
+          "action": "captureFilterCount",
+          "description": "Record the current filter count shown on the Low stock chip (e.g. 'Low stock (12)') as the baseline"
+        },
+        {
+          "id": "edit-filtered-product",
+          "action": "editFirstFilteredProduct",
+          "description": "Open the first product in the filtered list, read its par max value, set the current count above par max, and save \u2014 this moves the product out of Low stock"
+        },
+        {
+          "id": "verify-filter-updated",
+          "action": "verifyFilterCountUpdated",
+          "description": "Without performing a pull-to-refresh, verify the filter count on the Low stock chip has updated automatically to reflect the product change (AC: filter counts refresh instantly)"
+        }
+      ],
+      "validations": [
+        "Low stock filter chip is tappable and filters the product list",
+        "Filter count badge is readable from the chip label",
+        "After editing a product, the catalog filter count updates without requiring pull-to-refresh",
+        "The filtered list remains active after saving product edits"
+      ]
+    },
+    {
+      "id": "upload-invoice",
+      "name": "Upload Invoice (Add Invoice)",
+      "aliases": [
+        "upload invoice",
+        "add invoice",
+        "test upload invoice",
+        "test add invoice",
+        "add upload invoice",
+        "invoice upload"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Inventory home is visible with invoice upload entry points"
+        },
+        {
+          "id": "tap-upload-invoice",
+          "action": "tapUploadInvoice",
+          "description": "Start the add-invoice flow from Inventory home (Upload invoice)"
+        },
+        {
+          "id": "accept-camera",
+          "action": "acceptCameraPermissionAlert",
+          "description": "Grant camera access when the iOS privacy alert is shown"
+        },
+        {
+          "id": "manual-mode",
+          "action": "switchInvoiceCaptureToManual",
+          "description": "Switch the document scanner from auto capture to manual shutter mode"
+        },
+        {
+          "id": "capture-photo",
+          "action": "captureInvoicePhoto",
+          "description": "Capture an invoice page and keep the image if a low-quality warning appears"
+        },
+        {
+          "id": "preview-ready",
+          "action": "finishInvoiceUploadPreview",
+          "description": "Confirm the scanned page preview shows retake, edit, and next actions"
+        },
+        {
+          "id": "tap-edit",
+          "action": "tapInvoicePreviewEdit",
+          "description": "Open the page editor to adjust crop and orientation before upload"
+        },
+        {
+          "id": "tap-auto-crop",
+          "action": "tapInvoiceAutoCrop",
+          "description": "Run auto-crop so document edges align in the Scanbot editor"
+        },
+        {
+          "id": "tap-apply",
+          "action": "tapInvoiceApply",
+          "description": "Apply crop edits and return to the multi-page preview"
+        },
+        {
+          "id": "tap-next",
+          "action": "tapInvoiceNext",
+          "description": "Continue from preview to the pre-submit review screen"
+        },
+        {
+          "id": "tap-submit",
+          "action": "tapInvoiceSubmit",
+          "description": "Submit the invoice scan for processing and wait for success feedback"
+        },
+        {
+          "id": "dismiss-success",
+          "action": "dismissInvoiceSubmissionSuccess",
+          "description": "Capture the success state, then dismiss the sheet by returning to Cycle count on home"
+        }
+      ]
+    },
+    {
+      "id": "invoice-scanning",
+      "name": "Invoice Scanning (Manage Invoices)",
+      "aliases": [
+        "test invoice scanning",
+        "invoice scanning",
+        "manage invoice",
+        "manage invoices",
+        "test manage invoice",
+        "test manage invoices"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Inventory home is visible with manage-invoices entry points"
+        },
+        {
+          "id": "tap-manage-invoices",
+          "action": "tapManageInvoices",
+          "description": "Open Manage invoices to review previously uploaded scans"
+        },
+        {
+          "id": "open-first-invoice",
+          "action": "openFirstInvoiceWithChevron",
+          "description": "Expand the first invoice row when available (skip gracefully if the list is empty)"
+        },
+        {
+          "id": "capture-invoice-view",
+          "action": "finishInvoiceScanView",
+          "description": "Confirm invoice detail view loaded and capture an evidence screenshot"
+        }
+      ]
+    },
+    {
+      "id": "invoice-landscape-popup",
+      "name": "Invoice Landscape Low-Quality Popup Verification",
+      "aliases": [
+        "invoice landscape",
+        "landscape invoice",
+        "low image quality popup",
+        "low quality popup",
+        "invoice low quality",
+        "landscape mode invoice",
+        "handle landscape mode",
+        "test invoice landscape popup"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Inventory home is visible with invoice upload entry points"
+        },
+        {
+          "id": "tap-upload-invoice",
+          "action": "tapUploadInvoice",
+          "description": "Tap the Add Invoice button to open the invoice camera capture screen"
+        },
+        {
+          "id": "accept-camera",
+          "action": "acceptCameraPermissionAlert",
+          "description": "Grant camera access when the iOS privacy alert is shown"
+        },
+        {
+          "id": "rotate-landscape",
+          "action": "rotateToLandscape",
+          "description": "Rotate the simulator to Landscape orientation to reproduce the layout bug"
+        },
+        {
+          "id": "capture-first",
+          "action": "captureInvoicePhotoOnce",
+          "description": "Tap the capture button once to attempt photo capture"
+        },
+        {
+          "id": "capture-second",
+          "action": "captureInvoicePhotoOnce",
+          "description": "Tap capture a second time to ensure the low-quality popup is triggered"
+        },
+        {
+          "id": "verify-popup",
+          "action": "verifyLowQualityPopupVisible",
+          "description": "Assert the low-quality image popup is fully visible \u2014 modal text and button must not be clipped in landscape (AC: set max width, show full error message)"
+        },
+        {
+          "id": "rotate-portrait",
+          "action": "rotateToPortrait",
+          "description": "Rotate the simulator back to Portrait orientation"
+        },
+        {
+          "id": "dismiss-popup",
+          "action": "dismissLowQualityInvoicePopupIfNeeded",
+          "description": "Close the low-quality popup and return to Inventory home"
+        }
+      ]
+    },
+    {
+      "id": "invoice-scanning-regression",
+      "name": "Invoice Scanning Full Regression",
+      "aliases": [
+        "invoice scanning full regression",
+        "test invoice scanning full regression",
+        "invoice scanning entire flow",
+        "test invoice scanning entire flow",
+        "invoice scanning end to end",
+        "invoice scanning e2e",
+        "entire invoice scanning",
+        "full invoice scanning",
+        "invoice full regression"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Inventory home is visible with invoice upload entry points"
+        },
+        {
+          "id": "tap-upload-invoice",
+          "action": "tapUploadInvoice",
+          "description": "Start the add-invoice flow from Inventory home (Upload invoice)"
+        },
+        {
+          "id": "accept-camera",
+          "action": "acceptCameraPermissionAlert",
+          "description": "Grant camera access when the iOS privacy alert is shown"
+        },
+        {
+          "id": "manual-mode",
+          "action": "switchInvoiceCaptureToManual",
+          "description": "Switch the document scanner from auto capture to manual shutter mode"
+        },
+        {
+          "id": "capture-photo",
+          "action": "captureInvoicePhoto",
+          "description": "Capture an invoice page and keep the image if a low-quality warning appears"
+        },
+        {
+          "id": "preview-ready",
+          "action": "finishInvoiceUploadPreview",
+          "description": "Confirm the scanned page preview shows retake, edit, and next actions"
+        },
+        {
+          "id": "tap-edit",
+          "action": "tapInvoicePreviewEdit",
+          "description": "Open the page editor to adjust crop and orientation before upload"
+        },
+        {
+          "id": "tap-auto-crop",
+          "action": "tapInvoiceAutoCrop",
+          "description": "Run auto-crop so document edges align in the Scanbot editor"
+        },
+        {
+          "id": "tap-apply",
+          "action": "tapInvoiceApply",
+          "description": "Apply crop edits and return to the multi-page preview"
+        },
+        {
+          "id": "tap-next",
+          "action": "tapInvoiceNext",
+          "description": "Continue from preview to the pre-submit review screen"
+        },
+        {
+          "id": "tap-submit",
+          "action": "tapInvoiceSubmit",
+          "description": "Submit the invoice scan for processing and wait for success feedback"
+        },
+        {
+          "id": "dismiss-success",
+          "action": "dismissInvoiceSubmissionSuccess",
+          "description": "Capture the success state then return to Inventory home"
+        },
+        {
+          "id": "tap-manage-invoices",
+          "action": "tapManageInvoices",
+          "description": "Open Manage invoices to review previously uploaded scans"
+        },
+        {
+          "id": "open-first-invoice",
+          "action": "openFirstInvoiceWithChevron",
+          "description": "Expand the first invoice row when available (skip gracefully if the list is empty)"
+        },
+        {
+          "id": "capture-invoice-view",
+          "action": "finishInvoiceScanView",
+          "description": "Confirm invoice detail view loaded and capture an evidence screenshot"
+        },
+        {
+          "id": "rotate-landscape",
+          "action": "rotateToLandscape",
+          "description": "Rotate the simulator to Landscape orientation to verify landscape layout"
+        },
+        {
+          "id": "capture-first",
+          "action": "captureInvoicePhotoOnce",
+          "description": "Tap the capture button once to attempt photo capture in landscape"
+        },
+        {
+          "id": "capture-second",
+          "action": "captureInvoicePhotoOnce",
+          "description": "Tap capture a second time to trigger the low-quality popup"
+        },
+        {
+          "id": "verify-popup",
+          "action": "verifyLowQualityPopupVisible",
+          "description": "Assert the low-quality image popup is fully visible and not clipped in landscape"
+        },
+        {
+          "id": "rotate-portrait",
+          "action": "rotateToPortrait",
+          "description": "Rotate the simulator back to Portrait orientation"
+        },
+        {
+          "id": "dismiss-popup",
+          "action": "dismissLowQualityInvoicePopupIfNeeded",
+          "description": "Close the low-quality popup and return to Inventory home"
+        }
+      ]
+    },
+    {
+      "id": "full-smoke",
+      "name": "Full App Smoke (All Modules)",
+      "aliases": [
+        "full smoke",
+        "full app smoke",
+        "test full smoke",
+        "test full app smoke",
+        "end to end smoke",
+        "e2e smoke",
+        "app smoke test",
+        "all modules smoke"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Unified Inventory home loads with all module entry points visible"
+        },
+        {
+          "id": "select-count-sheet",
+          "action": "selectCountSheetRequired",
+          "description": "[Cycle Count] Open the count sheet picker and select an active sheet"
+        },
+        {
+          "id": "start-counting",
+          "action": "startCounting",
+          "description": "[Cycle Count] Start counting and confirm the location list loads"
+        },
+        {
+          "id": "open-location",
+          "action": "openFirstLocation",
+          "description": "[Cycle Count] Drill into the first storage location to verify item counting works"
+        },
+        {
+          "id": "back-from-counting",
+          "action": "backFromCountingToHome",
+          "description": "[Cycle Count] Tap back to exit the counting stack and return to Inventory home"
+        },
+        {
+          "id": "back-to-home",
+          "action": "navigateToInventoryTab",
+          "description": "Return to Inventory home to begin Product Catalog verification"
+        },
+        {
+          "id": "open-product-catalog",
+          "action": "openProductCatalog",
+          "description": "[Product Catalog] Open Product Catalog from Inventory home"
+        },
+        {
+          "id": "verify-product-catalog",
+          "action": "verifyProductCatalog",
+          "description": "[Product Catalog] Confirm catalog list loads with search bar and barcode scanner visible"
+        },
+        {
+          "id": "verify-catalog-filters",
+          "action": "verifyProductCatalogFilters",
+          "description": "[Product Catalog] Verify quick-filter chips and Filters button are present"
+        },
+        {
+          "id": "back-from-product-catalog",
+          "action": "backFromProductCatalogToHome",
+          "description": "[Product Catalog] Tap back to exit the catalog and return to Inventory home"
+        },
+        {
+          "id": "back-to-home-2",
+          "action": "navigateToInventoryTab",
+          "description": "Return to Inventory home to begin Invoice Scanning verification"
+        },
+        {
+          "id": "tap-manage-invoices",
+          "action": "tapManageInvoices",
+          "description": "[Invoice Scanning] Open Manage invoices from Inventory home"
+        },
+        {
+          "id": "open-first-invoice",
+          "action": "openFirstInvoiceWithChevron",
+          "description": "[Invoice Scanning] Expand the first invoice row to verify the list is accessible"
+        },
+        {
+          "id": "capture-invoice-view",
+          "action": "finishInvoiceScanView",
+          "description": "[Invoice Scanning] Confirm invoice detail loaded and capture evidence screenshot"
+        },
+        {
+          "id": "back-from-invoice",
+          "action": "backFromInvoiceToHome",
+          "description": "[Invoice Scanning] Tap back to exit the invoice screen and return to Inventory home"
+        },
+        {
+          "id": "back-to-home-3",
+          "action": "navigateToInventoryTab",
+          "description": "Return to Inventory home before navigating to logout"
+        },
+        {
+          "id": "tap-account",
+          "action": "tapAccountTab",
+          "description": "Open Account tab from the main tab bar"
+        },
+        {
+          "id": "scroll-to-logout",
+          "action": "scrollAccountMenuToLogout",
+          "description": "Scroll the Account screen until Log out is visible"
+        },
+        {
+          "id": "tap-logout",
+          "action": "tapLogout",
+          "description": "Tap Log out to open the confirmation sheet"
+        },
+        {
+          "id": "confirm-logout",
+          "action": "tapConfirmLogout",
+          "description": "Confirm sign-out on the sheet"
+        },
+        {
+          "id": "finish-logout",
+          "action": "finishLogoutFlow",
+          "description": "Verify logout succeeded on the welcome screen and capture evidence screenshot"
+        }
+      ]
+    },
+    {
+      "id": "full-regression",
+      "name": "Full App Regression (All Modules)",
+      "aliases": [
+        "full regression",
+        "full app regression",
+        "test full regression",
+        "test full app regression",
+        "end to end regression",
+        "e2e regression",
+        "all modules regression",
+        "entire app regression",
+        "test entire app regression"
+      ],
+      "module": "ToastUnifiedInventory",
+      "entryTab": "Inventory",
+      "sessionPolicy": "fresh",
+      "steps": [
+        {
+          "id": "boot-simulator",
+          "action": "bootSimulator",
+          "description": "Start a clean iOS Simulator session and confirm the device is ready for automation"
+        },
+        {
+          "id": "launch-app",
+          "action": "launchApp",
+          "description": "Install and launch the Toast Operator build on the simulator"
+        },
+        {
+          "id": "login",
+          "action": "ensureLoggedIn",
+          "description": "Sign in with the configured QA account and reach the signed-in home experience"
+        },
+        {
+          "id": "nav-inventory",
+          "action": "navigateToInventoryTab",
+          "description": "Navigate to the Inventory tab from the main operator shell"
+        },
+        {
+          "id": "verify-home",
+          "action": "verifyInventoryHome",
+          "description": "Confirm Unified Inventory home loads with all module entry points visible"
+        },
+        {
+          "id": "cc-select-count-sheet",
+          "action": "selectCountSheetRequired",
+          "description": "[Cycle Count] Open the count sheet picker and select an active sheet"
+        },
+        {
+          "id": "cc-start-counting",
+          "action": "startCounting",
+          "description": "[Cycle Count] Start counting and open the location list"
+        },
+        {
+          "id": "cc-open-location",
+          "action": "openFirstLocation",
+          "description": "[Cycle Count] Drill into the first storage location"
+        },
+        {
+          "id": "cc-add-new-item",
+          "action": "addNewItem",
+          "description": "[Cycle Count] Search for an item, add it to the location, and confirm it appears"
+        },
+        {
+          "id": "cc-edit-item",
+          "action": "editItem",
+          "description": "[Cycle Count] Open the first listed item, update base price, save, and confirm the change"
+        },
+        {
+          "id": "cc-enter-quantity",
+          "action": "enterCountQuantity",
+          "description": "[Cycle Count] Enter an on-hand quantity for an item"
+        },
+        {
+          "id": "cc-submit-location",
+          "action": "submitLocationCount",
+          "description": "[Cycle Count] Submit the location count"
+        },
+        {
+          "id": "cc-handle-uncounted",
+          "action": "tapKeepThemBlankButton",
+          "description": "[Cycle Count] Dismiss uncounted items dialog if it appears"
+        },
+        {
+          "id": "cc-submit-count-sheet",
+          "action": "submitCountSheet",
+          "description": "[Cycle Count] Tap Submit count sheet to finalize"
+        },
+        {
+          "id": "cc-validate-submission",
+          "action": "validatePostSubmission",
+          "description": "[Cycle Count] Verify success feedback appears after submission"
+        },
+        {
+          "id": "cc-dismiss-success",
+          "action": "dismissCycleCountSubmissionSuccess",
+          "description": "[Cycle Count] Dismiss the success sheet and return to Inventory home"
+        },
+        {
+          "id": "back-to-inventory-for-pc",
+          "action": "navigateToInventoryTab",
+          "description": "Return to Inventory home to begin Product Catalog regression"
+        },
+        {
+          "id": "pc-open-catalog",
+          "action": "openProductCatalog",
+          "description": "[Product Catalog] Open Product Catalog from Inventory home"
+        },
+        {
+          "id": "pc-verify-catalog",
+          "action": "verifyProductCatalog",
+          "description": "[Product Catalog] Confirm catalog list loads with search bar and barcode scanner"
+        },
+        {
+          "id": "pc-verify-filters",
+          "action": "verifyProductCatalogFilters",
+          "description": "[Product Catalog] Verify quick-filter chips and Filters button are present"
+        },
+        {
+          "id": "pc-open-filter-sheet",
+          "action": "openProductCatalogFilterSheet",
+          "description": "[Product Catalog] Open the filter/sort sheet"
+        },
+        {
+          "id": "pc-verify-sort-by",
+          "action": "verifyProductCatalogSortByFilter",
+          "description": "[Product Catalog] Confirm Sort by section is present"
+        },
+        {
+          "id": "pc-verify-category-filter",
+          "action": "verifyProductCatalogCategoryFilter",
+          "description": "[Product Catalog] Confirm Category filter section is present"
+        },
+        {
+          "id": "pc-verify-vendor-filter",
+          "action": "verifyProductCatalogVendorFilter",
+          "description": "[Product Catalog] Confirm Vendor filter section is present"
+        },
+        {
+          "id": "pc-verify-warnings-filter",
+          "action": "verifyProductCatalogWarningsFilter",
+          "description": "[Product Catalog] Confirm Warnings and info filter section is present"
+        },
+        {
+          "id": "pc-close-filter-sheet",
+          "action": "closeProductCatalogFilterSheet",
+          "description": "[Product Catalog] Close the filter sheet and return to catalog list"
+        },
+        {
+          "id": "pc-open-first-product-details",
+          "action": "openFirstProductDetails",
+          "description": "[Product Catalog] Expand the first non-variant product and tap View Details"
+        },
+        {
+          "id": "pc-verify-product-info",
+          "action": "verifyProductInfoSection",
+          "description": "[Product Catalog] Confirm Product info section is visible"
+        },
+        {
+          "id": "pc-verify-inventory-section",
+          "action": "verifyInventorySection",
+          "description": "[Product Catalog] Confirm Inventory section is visible"
+        },
+        {
+          "id": "pc-verify-orders-section",
+          "action": "verifyOrdersSection",
+          "description": "[Product Catalog] Confirm Orders section is visible"
+        },
+        {
+          "id": "pc-verify-pricing-section",
+          "action": "verifyPricingAndCostsSection",
+          "description": "[Product Catalog] Confirm Pricing and costs section is visible"
+        },
+        {
+          "id": "pc-verify-description-section",
+          "action": "verifyDescriptionSection",
+          "description": "[Product Catalog] Confirm Description section is visible"
+        },
+        {
+          "id": "pc-back-to-catalog",
+          "action": "backToProductCatalog",
+          "description": "[Product Catalog] Navigate back to the catalog list for CRUD tests"
+        },
+        {
+          "id": "pc-tap-add-product",
+          "action": "tapAddProductButton",
+          "description": "[Product Catalog] Tap Add product to open the new product form"
+        },
+        {
+          "id": "pc-enter-product-name",
+          "action": "enterProductName",
+          "description": "[Product Catalog] Enter a unique generated product name"
+        },
+        {
+          "id": "pc-select-category",
+          "action": "selectProductCategory",
+          "description": "[Product Catalog] Select the first available category"
+        },
+        {
+          "id": "pc-enter-base-price",
+          "action": "enterProductBasePrice",
+          "description": "[Product Catalog] Enter a generated base price"
+        },
+        {
+          "id": "pc-save-product",
+          "action": "saveNewProduct",
+          "description": "[Product Catalog] Save the new product and verify it appears in the catalog"
+        },
+        {
+          "id": "pc-edit-product-price",
+          "action": "editProductBasePrice",
+          "description": "[Product Catalog] Search for the new product, edit base price, and save"
+        },
+        {
+          "id": "pc-delete-product",
+          "action": "deleteProduct",
+          "description": "[Product Catalog] Delete the product and verify it is removed from the catalog"
+        },
+        {
+          "id": "pc-search-product",
+          "action": "searchProductByName",
+          "description": "[Product Catalog] Search for a product by name and verify results"
+        },
+        {
+          "id": "pc-expand-variant",
+          "action": "expandVariantProduct",
+          "description": "[Product Catalog] Scroll to find a variant product card in the catalog list"
+        },
+        {
+          "id": "pc-verify-variant",
+          "action": "verifyVariantExpansion",
+          "description": "[Product Catalog] Verify variant product rows are visible"
+        },
+        {
+          "id": "pc-open-for-inventory-edit",
+          "action": "openFirstProductDetails",
+          "description": "[Product Catalog] Open first product to edit its inventory fields"
+        },
+        {
+          "id": "pc-edit-inventory-fields",
+          "action": "editProductInventoryFields",
+          "description": "[Product Catalog] Edit each value, par min, and par max inventory fields and save"
+        },
+        {
+          "id": "pc-apply-out-of-stock",
+          "action": "applyOutOfStockFilter",
+          "description": "[Product Catalog] Tap Out of stock quick filter chip"
+        },
+        {
+          "id": "pc-verify-out-of-stock",
+          "action": "verifyOutOfStockFilter",
+          "description": "[Product Catalog] Verify Out of stock filter chip is active"
+        },
+        {
+          "id": "pc-clear-filters-1",
+          "action": "clearActiveFilters",
+          "description": "[Product Catalog] Clear active filters"
+        },
+        {
+          "id": "pc-apply-not-selling",
+          "action": "applyNotSellingFilter",
+          "description": "[Product Catalog] Tap Not selling quick filter chip"
+        },
+        {
+          "id": "pc-verify-not-selling",
+          "action": "verifyNotSellingFilter",
+          "description": "[Product Catalog] Verify Not selling filter chip is active"
+        },
+        {
+          "id": "pc-clear-filters-2",
+          "action": "clearActiveFilters",
+          "description": "[Product Catalog] Clear filters before low stock test"
+        },
+        {
+          "id": "pc-apply-low-stock",
+          "action": "applyLowStockFilter",
+          "description": "[Product Catalog] Tap Low stock quick filter chip"
+        },
+        {
+          "id": "pc-capture-filter-count",
+          "action": "captureFilterCount",
+          "description": "[Product Catalog] Record the Low stock filter count as baseline"
+        },
+        {
+          "id": "pc-edit-filtered-product",
+          "action": "editFirstFilteredProduct",
+          "description": "[Product Catalog] Edit first low-stock product to move it out of Low stock"
+        },
+        {
+          "id": "pc-verify-filter-updated",
+          "action": "verifyFilterCountUpdated",
+          "description": "[Product Catalog] Verify Low stock filter count updates automatically"
+        },
+        {
+          "id": "back-to-inventory-for-invoice",
+          "action": "navigateToInventoryTab",
+          "description": "Return to Inventory home to begin Invoice Scanning regression"
+        },
+        {
+          "id": "inv-verify-home",
+          "action": "verifyInventoryHome",
+          "description": "[Invoice Scanning] Confirm Inventory home is visible with invoice entry points"
+        },
+        {
+          "id": "inv-tap-upload",
+          "action": "tapUploadInvoice",
+          "description": "[Invoice Scanning] Start the add-invoice flow"
+        },
+        {
+          "id": "inv-accept-camera",
+          "action": "acceptCameraPermissionAlert",
+          "description": "[Invoice Scanning] Grant camera access"
+        },
+        {
+          "id": "inv-manual-mode",
+          "action": "switchInvoiceCaptureToManual",
+          "description": "[Invoice Scanning] Switch to manual shutter mode"
+        },
+        {
+          "id": "inv-capture-photo",
+          "action": "captureInvoicePhoto",
+          "description": "[Invoice Scanning] Capture an invoice page"
+        },
+        {
+          "id": "inv-preview-ready",
+          "action": "finishInvoiceUploadPreview",
+          "description": "[Invoice Scanning] Confirm scanned page preview shows retake, edit, and next actions"
+        },
+        {
+          "id": "inv-tap-edit",
+          "action": "tapInvoicePreviewEdit",
+          "description": "[Invoice Scanning] Open the page editor"
+        },
+        {
+          "id": "inv-tap-auto-crop",
+          "action": "tapInvoiceAutoCrop",
+          "description": "[Invoice Scanning] Run auto-crop"
+        },
+        {
+          "id": "inv-tap-apply",
+          "action": "tapInvoiceApply",
+          "description": "[Invoice Scanning] Apply crop edits"
+        },
+        {
+          "id": "inv-tap-next",
+          "action": "tapInvoiceNext",
+          "description": "[Invoice Scanning] Continue to pre-submit review screen"
+        },
+        {
+          "id": "inv-tap-submit",
+          "action": "tapInvoiceSubmit",
+          "description": "[Invoice Scanning] Submit the invoice scan and wait for success feedback"
+        },
+        {
+          "id": "inv-dismiss-success",
+          "action": "dismissInvoiceSubmissionSuccess",
+          "description": "[Invoice Scanning] Capture the success state then return to Inventory home"
+        },
+        {
+          "id": "inv-tap-manage",
+          "action": "tapManageInvoices",
+          "description": "[Invoice Scanning] Open Manage invoices"
+        },
+        {
+          "id": "inv-open-first",
+          "action": "openFirstInvoiceWithChevron",
+          "description": "[Invoice Scanning] Expand the first invoice row"
+        },
+        {
+          "id": "inv-capture-view",
+          "action": "finishInvoiceScanView",
+          "description": "[Invoice Scanning] Confirm invoice detail loaded and capture evidence screenshot"
+        },
+        {
+          "id": "back-to-inventory-for-landscape",
+          "action": "navigateToInventoryTab",
+          "description": "Return to Inventory home for landscape popup test"
+        },
+        {
+          "id": "inv-verify-home-2",
+          "action": "verifyInventoryHome",
+          "description": "[Invoice Scanning] Confirm Inventory home is visible before landscape test"
+        },
+        {
+          "id": "inv-tap-upload-landscape",
+          "action": "tapUploadInvoice",
+          "description": "[Invoice Scanning] Open invoice camera for landscape popup test"
+        },
+        {
+          "id": "inv-accept-camera-landscape",
+          "action": "acceptCameraPermissionAlert",
+          "description": "[Invoice Scanning] Grant camera access for landscape test"
+        },
+        {
+          "id": "inv-rotate-landscape",
+          "action": "rotateToLandscape",
+          "description": "[Invoice Scanning] Rotate simulator to Landscape orientation"
+        },
+        {
+          "id": "inv-capture-first",
+          "action": "captureInvoicePhotoOnce",
+          "description": "[Invoice Scanning] Tap capture once to attempt photo in landscape"
+        },
+        {
+          "id": "inv-capture-second",
+          "action": "captureInvoicePhotoOnce",
+          "description": "[Invoice Scanning] Tap capture again to trigger the low-quality popup"
+        },
+        {
+          "id": "inv-verify-popup",
+          "action": "verifyLowQualityPopupVisible",
+          "description": "[Invoice Scanning] Assert the low-quality popup is fully visible and not clipped in landscape"
+        },
+        {
+          "id": "inv-rotate-portrait",
+          "action": "rotateToPortrait",
+          "description": "[Invoice Scanning] Rotate back to Portrait"
+        },
+        {
+          "id": "inv-dismiss-popup",
+          "action": "dismissLowQualityInvoicePopupIfNeeded",
+          "description": "[Invoice Scanning] Close the popup and return to Inventory home"
+        },
+        {
+          "id": "final-back-to-home",
+          "action": "navigateToInventoryTab",
+          "description": "Return to Inventory home before logout"
+        },
+        {
+          "id": "tap-account",
+          "action": "tapAccountTab",
+          "description": "Open Account tab from the main tab bar"
+        },
+        {
+          "id": "scroll-to-logout",
+          "action": "scrollAccountMenuToLogout",
+          "description": "Scroll the Account screen until Log out is visible"
+        },
+        {
+          "id": "tap-logout",
+          "action": "tapLogout",
+          "description": "Tap Log out to open the confirmation sheet"
+        },
+        {
+          "id": "confirm-logout",
+          "action": "tapConfirmLogout",
+          "description": "Confirm sign-out on the sheet"
+        },
+        {
+          "id": "finish-logout",
+          "action": "finishLogoutFlow",
+          "description": "Verify logout succeeded on the welcome screen and capture evidence screenshot"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+node_modules/
+dist/
+dashboard/dist/
+.env
+artifacts/
+reports/
+.agent/
+*.log
+.DS_Store
+
+# Build tracking (server-generated)
+.build-state.json
+.build-output.log
+
+# Compiled iOS app bundle (can be hundreds of MB)
+automation/app/
+*.app
+
+# Build SHA sidecar (machine-local, regenerated on each build)
+automation/app/.build-sha
