@@ -71,6 +71,13 @@
       border-bottom: 1px solid var(--border2);
     }
 
+    .nav-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      line-height: 1.2;
+    }
+
     .nav-logo {
       font-size: 1.1rem;
       font-weight: 800;
@@ -79,6 +86,17 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       letter-spacing: -0.02em;
+    }
+
+    .nav-tagline {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+    }
+
+    @media (max-width: 720px) {
+      .nav-tagline { display: none; }
     }
 
     .nav-links {
@@ -1222,7 +1240,10 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">⚡ ToastPilot</div>
+  <div class="nav-brand">
+    <div class="nav-logo">⚡ ToastPilot</div>
+    <div class="nav-tagline">Autonomous AI QA Agent for ToastUnifiedInventory · Toast Hackathon 2026</div>
+  </div>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#pipeline">Pipeline</a></li>
@@ -1945,7 +1966,6 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">⚡ ToastPilot</div>
-  <p style="margin-bottom:0.5rem">Autonomous AI QA Agent for <strong>ToastUnifiedInventory</strong> · Toast Hackathon 2026</p>
   <p style="margin-bottom:1rem">Built by <strong>Keerthi V</strong> · Retail Unified Inventory Mobile</p>
   <p class="footer-note">
     Full design in <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/DESIGN.md" target="_blank">DESIGN.md</a>
