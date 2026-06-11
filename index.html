@@ -1228,6 +1228,7 @@
     <li><a href="#pipeline">Pipeline</a></li>
     <li><a href="#flows">Flows</a></li>
     <li><a href="#bugbash">Bug Bash</a></li>
+    <li><a href="#build">Build</a></li>
     <li><a href="#stack">Stack</a></li>
   </ul>
   <a class="nav-cta" href="https://github.toasttab.com/toasttab/operator-app-ios/pull/4838" target="_blank">
@@ -1559,6 +1560,14 @@
           Preflight analysis before every run: <strong>change detection, risk assessment, scenario generation, flow recommendation</strong>. The Strategic Insight Trace shows WHY the agent chose the test it ran.
         </div>
       </div>
+
+      <div class="feature-card feature-card--amber fade-up">
+        <span class="feature-icon">🛠️</span>
+        <div class="feature-title">Always Tests the Latest Build</div>
+        <div class="feature-desc">
+          The dashboard tracks how many commits the installed simulator app is behind <code>origin/main</code> and shows a live freshness badge. <strong>One tap rebuilds</strong> the Toast Operator app with <code>xcodebuild</code>, streams the build log, verifies the scheme/bundle, and stamps the new SHA — so you never test stale code.
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1715,6 +1724,63 @@
 
 <div class="section-divider"></div>
 
+<!-- BUILD FRESHNESS -->
+<section id="build">
+  <div class="container">
+    <div class="split">
+      <div class="fade-up">
+        <div class="section-label">Build Freshness</div>
+        <h2 class="section-title" style="text-align:left">Never tests<br/>stale code.</h2>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:1.5rem">
+          A QA agent is only as good as the build it runs against. ToastPilot watches <code>origin/main</code> and knows exactly how many commits the installed simulator app is behind.
+        </p>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:2rem">
+          When the app is out of date, <strong style="color:var(--text)">one tap rebuilds it</strong> with <code>xcodebuild</code>. The build runs detached, streams its log live to the dashboard, verifies the scheme and bundle ID, copies the <code>.app</code> into place, and stamps the new commit SHA — so every test runs against the freshest code automatically.
+        </p>
+        <div class="pills-row">
+          <span class="pill pill--cyan">Commits-behind-main badge</span>
+          <span class="pill pill--amber">One-tap xcodebuild</span>
+          <span class="pill pill--green">Scheme + bundle verified</span>
+        </div>
+      </div>
+
+      <div class="fade-up">
+        <div class="dashboard-mockup" style="max-width:440px">
+          <div class="db-titlebar">
+            <div class="db-dot db-dot--red"></div>
+            <div class="db-dot db-dot--yellow"></div>
+            <div class="db-dot db-dot--green"></div>
+            <div class="db-url">Build Status</div>
+          </div>
+          <div style="padding:1rem 1.25rem;display:flex;flex-direction:column;gap:0.75rem">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span class="db-chip db-chip--warn">⚠ 3 commits behind main</span>
+              <span style="font-size:0.65rem;color:var(--muted);font-family:var(--mono)">origin/main · a4f9c21</span>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);line-height:1.5;border-left:2px solid rgba(245,158,11,0.4);padding-left:0.6rem">
+              latest: "SMB-1207 fix par-level rounding"<br/>
+              built from: <span style="color:#f87171">e1b8d70</span> → 3 new commits
+            </div>
+            <div class="db-btn db-btn--run" style="text-align:center;padding:0.5rem;font-size:0.72rem">🛠️ Rebuild Toast Operator (Production)</div>
+            <div style="height:1px;background:var(--border2);margin:0.1rem 0"></div>
+            <div style="font-size:0.6rem;color:var(--cyan);font-weight:700;text-transform:uppercase;letter-spacing:0.06em">Build log · streaming</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;line-height:1.6">
+              <div style="color:var(--muted)">▸ Resolve Package Graph…</div>
+              <div style="color:var(--muted)">▸ Compiling ToastUnifiedInventory…</div>
+              <div style="color:var(--cyan2)">▸ Linking ToastOperator.app…</div>
+              <div style="color:var(--green)">✓ scheme=Production · bundle=com.toasttab.toastoperator</div>
+              <div style="color:var(--green)">✓ SHA a4f9c21 → .build-sha</div>
+            </div>
+            <span class="db-chip db-chip--pass" style="align-self:flex-start">✓ Up to date with main</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
 <!-- FLOWS TABLE -->
 <section id="flows">
   <div class="container">
@@ -1856,6 +1922,7 @@
       <div class="tech-card"><div class="tech-icon">🔐</div><div><div class="tech-name">HMAC-SHA256</div><div class="tech-sub">Webhook verification</div></div></div>
       <div class="tech-card"><div class="tech-icon">🎬</div><div><div class="tech-name">simctl recordVideo</div><div class="tech-sub">Full run MP4</div></div></div>
       <div class="tech-card"><div class="tech-icon">⚙️</div><div><div class="tech-name">GitHub Actions</div><div class="tech-sub">PR-merge CI trigger</div></div></div>
+      <div class="tech-card"><div class="tech-icon">🛠️</div><div><div class="tech-name">xcodebuild + git</div><div class="tech-sub">Live build freshness</div></div></div>
       <div class="tech-card"><div class="tech-icon">📝</div><div><div class="tech-name">TypeScript</div><div class="tech-sub">Server · agent · dashboard</div></div></div>
     </div>
   </div>

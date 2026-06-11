@@ -193,6 +193,15 @@ Aggregate Slack summary: "Bug Bash complete — 12/14 passed ✅, 2 failed ❌"
 - 15-second post-finish poller in the dashboard waits for `simctl` to flush the file before showing the player
 - Video displayed inline in the dashboard with a native HTML5 player
 
+### 🛠️ Live Build Freshness — Never Test Stale Code
+A QA agent is only trustworthy if it runs against the latest code. ToastPilot keeps the simulator build in sync with `main` automatically:
+- **Commits-behind-main badge** — `GET /api/git/status` fetches `origin/main`, compares it to the SHA the installed `.app` was built from (`.build-sha` sidecar + `.build-state.json`), and the dashboard polls it every 5 minutes
+- **One-tap rebuild** — `POST /api/build` spawns `build-operator-app.ts` (`xcodebuild` against the `ToastOperator Production` scheme) **detached**, so the server stays responsive during the 10–20 minute build
+- **Live build log** — the dashboard polls `/api/build/status` every 3 seconds and streams the tail of the build output
+- **Scheme + bundle verification** — the built `.app` is checked against the expected `TOAST_ENVIRONMENT` (`Production`) and `CFBundleIdentifier` (`com.toasttab.toastoperator`) before it's copied into place
+- **SHA stamping** — on success the new `origin/main` short SHA is written to `.build-sha`, flipping the badge to **✓ up to date**
+- **Safety guards** — refuses to build while a test run is in progress or another build is already running; reconciles a stale `inProgress` flag on server startup if the build PID is gone
+
 ### 📊 Live Dashboard
 Open **http://localhost:5177** during any run:
 

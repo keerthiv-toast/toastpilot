@@ -124,6 +124,14 @@ The dashboard shows a live queue. Each ticket starts as a hollow circle `○`, l
 
 The team can watch the entire sprint bug bash happen in real time on the dashboard while drinking coffee — or just come back when Slack pings them.
 
+### Live Build Freshness — Testing the Real, Latest Code
+
+There's a subtle failure mode in any QA automation: it can run beautifully against a build from last week and pass everything, while the bug you needed to catch shipped this morning. A passing test against stale code is worse than no test — it's false confidence.
+
+ToastPilot closes that gap. It watches `origin/main` and always knows how many commits the installed simulator app is behind. The dashboard shows a live freshness badge — "✓ up to date" or "⚠ 3 commits behind main" with the latest commit message right there.
+
+When the app is stale, a Senior QA Engineer would pull `main` and rebuild before testing. ToastPilot does the same with one tap: it runs `xcodebuild` against the `ToastOperator Production` scheme **as a detached process** so the server never blocks, streams the build log live to the dashboard, **verifies the built app's environment and bundle ID match Production** before trusting it, copies the fresh `.app` into place, and stamps the new commit SHA so the badge flips green. It refuses to rebuild mid-test-run, and if the server restarts while a build was running, it reconciles the build state on startup instead of getting stuck. The agent always tests the code that's actually on `main`.
+
 ### The Live Dashboard
 
 The React dashboard at `http://localhost:5177` is the control center for everything:
@@ -228,6 +236,7 @@ This is not a demo project. Every component described here is real, tested again
 | Dashboard | React 18 + Vite + TypeScript |
 | AI | OpenAI GPT-4o-mini (test plans, failure analysis, dynamic flows, code generation) |
 | iOS automation | `mobile: replaceText`, `simctl recordVideo`, `xcrun simctl` |
+| Build pipeline | `xcodebuild` (detached) + git freshness tracking against `origin/main` |
 | CI/CD integration | GitHub Actions with HMAC-SHA256 webhook verification |
 | Jira | Atlassian REST API v3 (fetch tickets, attach evidence, create bugs) |
 | Slack | Incoming Webhooks + Block Kit structured messages |
