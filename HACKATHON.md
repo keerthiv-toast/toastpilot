@@ -12,7 +12,7 @@ We built **ToastPilot** to eliminate that bottleneck entirely.
 
 ToastPilot is a fully autonomous AI QA agent that does the work of a **Senior QA Engineer** — reading changelogs, designing test plans, executing them against the real app, filing bugs with evidence, and reporting results to the team. It does this against the real **Toast Operator Production** iOS app — not a mock, not a simulator of a simulator, not a scripted demo. It drives actual production screens on a live iOS Simulator using the same accessibility identifiers that ship in the product. When a developer merges a PR, ToastPilot detects it, understands what changed, runs the right tests, records a video, and posts the evidence directly to Jira and Slack — all without a single human action.
 
-We wrote **13,690 lines of TypeScript** across **48 files** in the hackathon window. The project spans an Appium XCUITest execution engine, a React dashboard, an Express WebSocket server, a GitHub Actions CI pipeline, OpenAI integrations, a Jira client, a Slack reporter, a dynamic test flow generator, and an automated code generation system that can write its own test code from a developer's Swift source files.
+We wrote **14,320 lines of TypeScript** across **48 files** in the hackathon window. The project spans an Appium XCUITest execution engine, a React dashboard, an Express WebSocket server, a GitHub Actions CI pipeline, OpenAI integrations, a Jira client, a Slack reporter, a dynamic test flow generator, and an automated code generation system that can write its own test code from a developer's Swift source files.
 
 ---
 
@@ -162,7 +162,7 @@ This context is shown in the dashboard as the **Strategic Insight Trace** — a 
 
 | Metric | Value |
 |--------|-------|
-| Lines of TypeScript/TSX written | **13,690** |
+| Lines of TypeScript/TSX written | **14,320** |
 | Source files | **48** |
 | Named test flows | **22** |
 | Total test steps across all flows | **372** |

@@ -513,7 +513,7 @@ When a self-healing event resolves a previously unknown selector, `LocatorCodege
 | Runtime | Node.js, TypeScript (tsx) |
 | HTTP Server | Express.js |
 | WebSocket | ws |
-| iOS Automation | Appium 2.x, WebDriverIO, XCUITest / WebDriverAgent |
+| iOS Automation | Appium 3 (`appium-xcuitest-driver` 10.x), WebDriverIO 9, XCUITest / WebDriverAgent |
 | Simulator Control | xcrun simctl (Apple SDK) |
 | AI / LLM | OpenAI API (gpt-4o-mini default, gpt-4o for FeatureCodegen) |
 | Dashboard | React 18, Vite, TypeScript |
