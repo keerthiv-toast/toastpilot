@@ -6,16 +6,14 @@
 <title>ToastPilot — Autonomous QA Ecosystem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ink: #1a2332;
-    --ink2: #4a5e78;
-    --muted: #6b7e96;
-    --line: #d6e0ec;
+    --ink: #0f1b2d;
+    --muted: #64788f;
     --cyan: #00a3d9;
     --cyan2: #0088b3;
-    --magenta: #d6177f;
+    --magenta: #e0197d;
     --green: #0ea371;
     --amber: #e08a00;
     --purple: #7c5cff;
@@ -27,204 +25,205 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: var(--font);
-    background: #eef3f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
+    background: #e6edf5;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 20px;
   }
 
   /* 16:9 slide stage — screenshot this */
   .stage {
     position: relative;
-    width: 1280px;
-    height: 720px;
+    width: 1280px; height: 720px;
     background:
-      radial-gradient(900px 500px at 50% 8%, rgba(0,163,217,0.06), transparent),
-      radial-gradient(800px 500px at 85% 95%, rgba(214,23,127,0.05), transparent),
-      linear-gradient(180deg, #ffffff, #f4f8fc);
-    border: 1px solid #e2eaf2;
-    border-radius: 20px;
-    box-shadow: 0 30px 70px rgba(20,40,70,0.12);
+      radial-gradient(820px 460px at 50% 6%, rgba(0,163,217,0.10), transparent),
+      radial-gradient(780px 480px at 88% 96%, rgba(224,25,125,0.09), transparent),
+      radial-gradient(700px 460px at 10% 92%, rgba(124,92,255,0.07), transparent),
+      linear-gradient(180deg, #ffffff, #eef4fb);
+    border: 1px solid #dde7f1;
+    border-radius: 22px;
+    box-shadow: 0 40px 90px rgba(15,40,80,0.16);
     overflow: hidden;
+  }
+  /* subtle dot grid */
+  .stage::after {
+    content: ''; position: absolute; inset: 0; z-index: 0; opacity: 0.5;
+    background-image: radial-gradient(rgba(20,60,110,0.05) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(800px 500px at 50% 50%, #000 40%, transparent 80%);
+            mask-image: radial-gradient(800px 500px at 50% 50%, #000 40%, transparent 80%);
   }
 
   /* Title */
-  .title {
-    position: absolute;
-    top: 38px; left: 54px;
-    z-index: 5;
-  }
+  .title { position: absolute; top: 40px; left: 56px; z-index: 6; }
   .title h1 {
-    font-size: 2.5rem;
-    font-weight: 900;
-    letter-spacing: -0.025em;
+    font-size: 2.7rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1;
     color: var(--ink);
-    line-height: 1;
   }
-  .title .bar {
-    width: 130px; height: 5px;
-    background: linear-gradient(90deg, var(--cyan), var(--magenta));
-    border-radius: 3px;
-    margin-top: 12px;
+  .title h1 .spark {
+    background: linear-gradient(120deg, var(--cyan), #6fd2ff 45%, var(--magenta));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-  .title .sub {
-    font-size: 0.95rem;
-    color: var(--magenta);
-    font-weight: 700;
-    margin-top: 10px;
-    letter-spacing: 0.01em;
-  }
+  .title .bar { width: 150px; height: 6px; background: linear-gradient(90deg, var(--cyan), var(--magenta)); border-radius: 4px; margin-top: 14px; }
+  .title .sub { font-size: 1.02rem; color: var(--magenta); font-weight: 800; margin-top: 12px; letter-spacing: 0.01em; }
 
-  .footer {
-    position: absolute;
-    bottom: 20px; right: 28px;
-    font-size: 0.72rem;
-    color: #9fb0c4;
-    z-index: 5;
-  }
-  .legend {
-    position: absolute;
-    bottom: 18px; left: 54px;
-    display: flex; gap: 1rem;
-    font-size: 0.72rem; color: var(--muted);
-    z-index: 5;
-  }
-  .legend .i { display: flex; align-items: center; gap: 0.35rem; }
-  .legend .d { width: 9px; height: 9px; border-radius: 2px; }
+  .footer { position: absolute; bottom: 20px; right: 30px; font-size: 0.74rem; color: #9fb0c4; z-index: 6; font-weight: 500; }
+  .legend { position: absolute; bottom: 18px; left: 56px; display: flex; gap: 1.1rem; font-size: 0.74rem; color: var(--muted); z-index: 6; font-weight: 600; }
+  .legend .i { display: flex; align-items: center; gap: 0.4rem; }
+  .legend .d { width: 11px; height: 11px; border-radius: 3px; }
 
   /* SVG connector layer */
   svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+  @keyframes dash { to { stroke-dashoffset: -22; } }
+  @keyframes pulse { 0%,100% { r: 4; opacity: 1; } 50% { r: 6.5; opacity: 0.55; } }
 
   /* Center core */
   .core {
-    position: absolute;
-    left: 640px; top: 372px;
-    transform: translate(-50%, -50%);
-    width: 250px;
-    z-index: 4;
-    text-align: center;
+    position: absolute; left: 640px; top: 372px;
+    transform: translate(-50%, -50%); width: 268px; z-index: 4; text-align: center;
+  }
+  .core::before {
+    content: ''; position: absolute; inset: -26px; border-radius: 32px; z-index: -1;
+    background: radial-gradient(closest-side, rgba(0,163,217,0.30), rgba(224,25,125,0.12), transparent);
+    filter: blur(8px);
   }
   .core-box {
-    background: linear-gradient(145deg, #0a0f1a, #16243a);
-    border: 2px solid var(--cyan);
-    border-radius: 20px;
-    padding: 22px 18px 20px;
-    box-shadow: 0 0 0 8px rgba(0,163,217,0.10), 0 20px 50px rgba(0,80,120,0.30);
+    background: linear-gradient(150deg, #0a1120, #15263f 60%, #1a2236);
+    border: 2px solid transparent;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border-radius: 22px;
+    padding: 24px 20px 22px;
+    box-shadow: 0 0 0 6px rgba(0,163,217,0.12), 0 26px 60px rgba(0,70,120,0.40);
     position: relative;
+  }
+  .core-box::before {
+    content: ''; position: absolute; inset: 0; border-radius: 22px; padding: 2px;
+    background: linear-gradient(135deg, var(--cyan), #6fd2ff, var(--magenta));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
   }
   .core-logo {
-    font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em;
-    background: linear-gradient(90deg, var(--cyan), #6fd2ff, #ff5fb0);
+    font-size: 1.7rem; font-weight: 900; letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #2bb8e8, #7fd8ff, #ff5fb0);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   }
-  .core-tag {
-    font-size: 0.72rem; color: #9fc4dd; font-weight: 600;
-    margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase;
-  }
-  .core-services {
-    display: flex; gap: 6px; margin-top: 14px;
-  }
+  .core-tag { font-size: 0.72rem; color: #a9d2e8; font-weight: 800; margin-top: 5px; letter-spacing: 0.10em; text-transform: uppercase; }
+  .core-services { display: flex; gap: 7px; margin-top: 16px; }
   .core-chip {
     flex: 1;
-    background: rgba(0,163,217,0.14);
-    border: 1px solid rgba(0,163,217,0.35);
-    border-radius: 9px;
-    padding: 7px 4px;
-    color: #d7f1ff;
-    font-size: 0.66rem; font-weight: 700;
-    line-height: 1.2;
+    background: linear-gradient(160deg, rgba(0,163,217,0.22), rgba(0,163,217,0.08));
+    border: 1px solid rgba(0,163,217,0.45);
+    border-radius: 11px; padding: 9px 5px; color: #e3f5ff;
+    font-size: 0.7rem; font-weight: 800; line-height: 1.2;
   }
-  .core-chip small { display: block; font-weight: 500; color: #8fb8d0; font-size: 0.9em; margin-top: 2px; }
+  .core-chip small { display: block; font-weight: 500; color: #94c0d8; font-size: 0.85em; margin-top: 3px; }
 
   /* Nodes */
-  .node {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    width: 188px;
-    z-index: 3;
-  }
+  .node { position: absolute; transform: translate(-50%, -50%); width: 200px; z-index: 3; }
   .node-card {
     background: #fff;
-    border: 1px solid #e4ebf3;
-    border-radius: 14px;
-    padding: 12px 14px;
-    box-shadow: 0 8px 22px rgba(30,55,90,0.10);
-    position: relative;
-    overflow: hidden;
+    border: 1px solid #e6edf5;
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 14px 32px rgba(25,55,100,0.13), 0 2px 6px rgba(25,55,100,0.06);
+    position: relative; overflow: hidden;
   }
-  .node-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-  }
-  .node-head { display: flex; align-items: center; gap: 9px; }
+  .node-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; }
+  .node-head { display: flex; align-items: center; gap: 10px; }
   .node-ico {
-    width: 34px; height: 34px; border-radius: 9px;
+    width: 40px; height: 40px; border-radius: 11px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem; flex-shrink: 0;
+    font-size: 1.25rem; flex-shrink: 0; color: #fff;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
   }
-  .node-name { font-size: 0.92rem; font-weight: 800; color: var(--ink); line-height: 1.1; }
-  .node-sub { font-size: 0.7rem; color: var(--muted); line-height: 1.4; margin-top: 7px; }
+  .node-name { font-size: 1rem; font-weight: 800; color: var(--ink); line-height: 1.1; }
+  .node-sub { font-size: 0.74rem; color: var(--muted); line-height: 1.45; margin-top: 9px; font-weight: 500; }
 
-  /* color variants */
-  .v-blue   .node-card::before { background: var(--blue); }   .v-blue   .node-ico { background: rgba(37,99,235,0.12); color: var(--blue); }
-  .v-green  .node-card::before { background: var(--green); }  .v-green  .node-ico { background: rgba(14,163,113,0.12); color: var(--green); }
-  .v-magenta .node-card::before { background: var(--magenta); } .v-magenta .node-ico { background: rgba(214,23,127,0.12); color: var(--magenta); }
-  .v-purple .node-card::before { background: var(--purple); } .v-purple .node-ico { background: rgba(124,92,255,0.12); color: var(--purple); }
-  .v-cyan   .node-card::before { background: var(--cyan); }   .v-cyan   .node-ico { background: rgba(0,163,217,0.13); color: var(--cyan2); }
-  .v-amber  .node-card::before { background: var(--amber); }  .v-amber  .node-ico { background: rgba(224,138,0,0.13); color: var(--amber); }
-  .v-orange .node-card::before { background: var(--orange); } .v-orange .node-ico { background: rgba(234,88,12,0.12); color: var(--orange); }
-  .v-slate  .node-card::before { background: #475569; }       .v-slate  .node-ico { background: rgba(71,85,105,0.12); color: #475569; }
+  /* bold gradient icon tiles + top bars */
+  .v-slate   .node-card::before { background: linear-gradient(90deg,#334155,#64748b); } .v-slate   .node-ico { background: linear-gradient(145deg,#475569,#1e293b); }
+  .v-blue    .node-card::before { background: linear-gradient(90deg,#2563eb,#60a5fa); } .v-blue    .node-ico { background: linear-gradient(145deg,#3b82f6,#1d4ed8); }
+  .v-magenta .node-card::before { background: linear-gradient(90deg,#e0197d,#f472b6); } .v-magenta .node-ico { background: linear-gradient(145deg,#ec4899,#be145f); }
+  .v-cyan    .node-card::before { background: linear-gradient(90deg,#00a3d9,#38d0ff); } .v-cyan    .node-ico { background: linear-gradient(145deg,#06b6d4,#0088b3); }
+  .v-green   .node-card::before { background: linear-gradient(90deg,#0ea371,#34d399); } .v-green   .node-ico { background: linear-gradient(145deg,#10b981,#047857); }
+  .v-orange  .node-card::before { background: linear-gradient(90deg,#ea580c,#fb923c); } .v-orange  .node-ico { background: linear-gradient(145deg,#f97316,#c2410c); }
+  .v-purple  .node-card::before { background: linear-gradient(90deg,#7c5cff,#a78bfa); } .v-purple  .node-ico { background: linear-gradient(145deg,#8b5cf6,#6d28d9); }
+  .v-amber   .node-card::before { background: linear-gradient(90deg,#e08a00,#fbbf24); } .v-amber   .node-ico { background: linear-gradient(145deg,#f59e0b,#b45309); }
 
   .badge {
-    display: inline-block;
-    font-size: 0.58rem; font-weight: 800;
-    padding: 1px 6px; border-radius: 999px;
-    margin-left: auto;
+    display: inline-block; font-size: 0.6rem; font-weight: 900;
+    padding: 2px 8px; border-radius: 999px; margin-left: auto; letter-spacing: 0.04em;
+    color: #fff;
   }
-  .badge.trigger { background: rgba(214,23,127,0.12); color: var(--magenta); }
-  .badge.ai { background: rgba(124,92,255,0.12); color: var(--purple); }
-  .badge.real { background: rgba(14,163,113,0.12); color: var(--green); }
+  .badge.trigger { background: linear-gradient(90deg,#e0197d,#f472b6); }
+  .badge.ai { background: linear-gradient(90deg,#7c5cff,#a78bfa); }
+  .badge.real { background: linear-gradient(90deg,#0ea371,#34d399); }
 </style>
 </head>
 <body>
   <div class="stage" id="stage">
 
     <div class="title">
-      <h1>ToastPilot Ecosystem</h1>
+      <h1><span class="spark">⚡</span> ToastPilot Ecosystem</h1>
       <div class="bar"></div>
       <div class="sub">Autonomous QA Agent for Unified Inventory</div>
     </div>
 
-    <!-- WIRES (drawn first, behind nodes) -->
+    <!-- WIRES -->
     <svg class="wires" viewBox="0 0 1280 720" preserveAspectRatio="none">
       <defs>
         <linearGradient id="wire" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#00a3d9" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#d6177f" stop-opacity="0.55"/>
+          <stop offset="0%" stop-color="#00a3d9" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#e0197d" stop-opacity="0.85"/>
         </linearGradient>
+        <filter id="wireglow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
       </defs>
-      <!-- center (640,372) → each node center -->
-      <g stroke="url(#wire)" stroke-width="2.5" fill="none" stroke-linecap="round">
-        <line x1="640" y1="372" x2="640"  y2="150"/>   <!-- top -->
-        <line x1="640" y1="372" x2="1010" y2="205"/>   <!-- top-right -->
-        <line x1="640" y1="372" x2="1095" y2="372"/>   <!-- right -->
-        <line x1="640" y1="372" x2="1010" y2="540"/>   <!-- bottom-right -->
-        <line x1="640" y1="372" x2="640"  y2="600"/>   <!-- bottom -->
-        <line x1="640" y1="372" x2="270"  y2="540"/>   <!-- bottom-left -->
-        <line x1="640" y1="372" x2="185"  y2="372"/>   <!-- left -->
-        <line x1="640" y1="372" x2="270"  y2="205"/>   <!-- top-left -->
+      <!-- glow underlay -->
+      <g stroke="url(#wire)" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.18">
+        <line x1="640" y1="372" x2="640"  y2="150"/>
+        <line x1="640" y1="372" x2="1010" y2="205"/>
+        <line x1="640" y1="372" x2="1095" y2="372"/>
+        <line x1="640" y1="372" x2="1010" y2="540"/>
+        <line x1="640" y1="372" x2="640"  y2="600"/>
+        <line x1="640" y1="372" x2="270"  y2="540"/>
+        <line x1="640" y1="372" x2="185"  y2="372"/>
+        <line x1="640" y1="372" x2="270"  y2="205"/>
+      </g>
+      <!-- solid wires -->
+      <g stroke="url(#wire)" stroke-width="3" fill="none" stroke-linecap="round" filter="url(#wireglow)">
+        <line x1="640" y1="372" x2="640"  y2="150"/>
+        <line x1="640" y1="372" x2="1010" y2="205"/>
+        <line x1="640" y1="372" x2="1095" y2="372"/>
+        <line x1="640" y1="372" x2="1010" y2="540"/>
+        <line x1="640" y1="372" x2="640"  y2="600"/>
+        <line x1="640" y1="372" x2="270"  y2="540"/>
+        <line x1="640" y1="372" x2="185"  y2="372"/>
+        <line x1="640" y1="372" x2="270"  y2="205"/>
+      </g>
+      <!-- animated flow dashes -->
+      <g stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="2 20" opacity="0.9" style="animation: dash 1s linear infinite">
+        <line x1="640" y1="372" x2="640"  y2="150"/>
+        <line x1="640" y1="372" x2="1010" y2="205"/>
+        <line x1="640" y1="372" x2="1095" y2="372"/>
+        <line x1="640" y1="372" x2="1010" y2="540"/>
+        <line x1="640" y1="372" x2="640"  y2="600"/>
+        <line x1="640" y1="372" x2="270"  y2="540"/>
+        <line x1="640" y1="372" x2="185"  y2="372"/>
+        <line x1="640" y1="372" x2="270"  y2="205"/>
       </g>
       <!-- endpoint dots -->
       <g fill="#00a3d9">
-        <circle cx="640" cy="150" r="4"/>
-        <circle cx="1010" cy="205" r="4"/>
-        <circle cx="1095" cy="372" r="4"/>
-        <circle cx="1010" cy="540" r="4"/>
-        <circle cx="640" cy="600" r="4"/>
-        <circle cx="270" cy="540" r="4"/>
-        <circle cx="185" cy="372" r="4"/>
-        <circle cx="270" cy="205" r="4"/>
+        <circle cx="640" cy="150" r="4" style="animation:pulse 2.4s ease infinite"/>
+        <circle cx="1010" cy="205" r="4" style="animation:pulse 2.4s ease infinite .3s"/>
+        <circle cx="1095" cy="372" r="4" style="animation:pulse 2.4s ease infinite .6s"/>
+        <circle cx="1010" cy="540" r="4" style="animation:pulse 2.4s ease infinite .9s"/>
+        <circle cx="640" cy="600" r="4" style="animation:pulse 2.4s ease infinite 1.2s"/>
+        <circle cx="270" cy="540" r="4" style="animation:pulse 2.4s ease infinite 1.5s"/>
+        <circle cx="185" cy="372" r="4" style="animation:pulse 2.4s ease infinite 1.8s"/>
+        <circle cx="270" cy="205" r="4" style="animation:pulse 2.4s ease infinite 2.1s"/>
       </g>
     </svg>
 
@@ -241,102 +240,67 @@
     </div>
 
     <!-- NODES -->
-    <!-- top -->
     <div class="node v-slate" style="left:640px; top:108px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">🔀</div>
-          <div class="node-name">GitHub</div>
-          <span class="badge trigger">TRIGGER</span>
-        </div>
+        <div class="node-head"><div class="node-ico">🔀</div><div class="node-name">GitHub</div><span class="badge trigger">TRIGGER</span></div>
         <div class="node-sub">PR merge fires an HMAC-verified webhook · SMB-* only</div>
       </div>
     </div>
 
-    <!-- top-right -->
     <div class="node v-blue" style="left:1010px; top:160px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">🎫</div>
-          <div class="node-name">Jira</div>
-        </div>
-        <div class="node-sub">Ticket → test plan · evidence, video & bugs written back</div>
+        <div class="node-head"><div class="node-ico">🎫</div><div class="node-name">Jira</div></div>
+        <div class="node-sub">Ticket → test plan · evidence, video &amp; bugs written back</div>
       </div>
     </div>
 
-    <!-- right -->
     <div class="node v-magenta" style="left:1098px; top:372px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">💬</div>
-          <div class="node-name">Slack</div>
-        </div>
+        <div class="node-head"><div class="node-ico">💬</div><div class="node-name">Slack</div></div>
         <div class="node-sub">Rich Block Kit verdict · aggregate Bug Bash summary</div>
       </div>
     </div>
 
-    <!-- bottom-right -->
     <div class="node v-cyan" style="left:1010px; top:560px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">📊</div>
-          <div class="node-name">Dashboard</div>
-        </div>
-        <div class="node-sub">Live steps, screenshots & video over WebSocket · :5177</div>
+        <div class="node-head"><div class="node-ico">📊</div><div class="node-name">Dashboard</div></div>
+        <div class="node-sub">Live steps, screenshots &amp; video over WebSocket · :5177</div>
       </div>
     </div>
 
-    <!-- bottom -->
     <div class="node v-green" style="left:640px; top:632px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">🖥️</div>
-          <div class="node-name">Toast Operator</div>
-          <span class="badge real">REAL APP</span>
-        </div>
+        <div class="node-head"><div class="node-ico">🖥️</div><div class="node-name">Toast Operator</div><span class="badge real">REAL APP</span></div>
         <div class="node-sub">Production iOS Simulator — no mocks · 3 inventory modules</div>
       </div>
     </div>
 
-    <!-- bottom-left -->
     <div class="node v-orange" style="left:270px; top:560px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">📱</div>
-          <div class="node-name">Appium</div>
-        </div>
+        <div class="node-head"><div class="node-ico">📱</div><div class="node-name">Appium</div></div>
         <div class="node-sub">XCUITest driver · 102 action methods · full-run MP4</div>
       </div>
     </div>
 
-    <!-- left -->
     <div class="node v-purple" style="left:185px; top:372px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">🧠</div>
-          <div class="node-name">OpenAI</div>
-          <span class="badge ai">AI</span>
-        </div>
+        <div class="node-head"><div class="node-ico">🧠</div><div class="node-name">OpenAI</div><span class="badge ai">AI</span></div>
         <div class="node-sub">GPT-4o · test plans from PR diffs · plain-English failures</div>
       </div>
     </div>
 
-    <!-- top-left -->
     <div class="node v-amber" style="left:270px; top:205px;">
       <div class="node-card">
-        <div class="node-head">
-          <div class="node-ico">🩹</div>
-          <div class="node-name">Self-Healing</div>
-        </div>
+        <div class="node-head"><div class="node-ico">🩹</div><div class="node-name">Self-Healing</div></div>
         <div class="node-sub">113 touchpoints · adapts to UI drift · zero maintenance</div>
       </div>
     </div>
 
     <div class="legend">
-      <div class="i"><span class="d" style="background:var(--magenta)"></span> Trigger</div>
-      <div class="i"><span class="d" style="background:var(--purple)"></span> AI</div>
-      <div class="i"><span class="d" style="background:var(--green)"></span> Real app</div>
-      <div class="i"><span class="d" style="background:var(--cyan)"></span> Live / evidence</div>
+      <div class="i"><span class="d" style="background:linear-gradient(90deg,#e0197d,#f472b6)"></span> Trigger</div>
+      <div class="i"><span class="d" style="background:linear-gradient(90deg,#7c5cff,#a78bfa)"></span> AI</div>
+      <div class="i"><span class="d" style="background:linear-gradient(90deg,#0ea371,#34d399)"></span> Real app</div>
+      <div class="i"><span class="d" style="background:linear-gradient(90deg,#00a3d9,#38d0ff)"></span> Live / evidence</div>
     </div>
     <div class="footer">© 2026 Toast, Inc. · Retail Unified Inventory Mobile</div>
 
