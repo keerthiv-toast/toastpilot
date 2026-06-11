@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToastPilot — Title</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --orange: #ec6316;
+    --orange2: #ff8a3d;
+    --amber: #ffb454;
+    --font: 'Inter', -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: #05070d;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 20px;
+  }
+
+  /* 16:9 cinematic stage — screenshot this */
+  .stage {
+    position: relative;
+    width: 1280px; height: 720px;
+    background:
+      radial-gradient(700px 560px at 64% 60%, rgba(236,99,22,0.30), transparent 62%),
+      radial-gradient(900px 700px at 50% 120%, rgba(236,99,22,0.18), transparent 60%),
+      radial-gradient(600px 500px at 90% 20%, rgba(255,160,80,0.10), transparent 60%),
+      linear-gradient(160deg, #0a0c12 0%, #100a06 55%, #06070c 100%);
+    border-radius: 22px;
+    box-shadow: 0 40px 90px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  /* bokeh particles */
+  .bokeh { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .bokeh i {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,170,90,0.9), rgba(236,99,22,0.1) 70%, transparent);
+    filter: blur(0.5px);
+  }
+
+  /* orbital glow rings behind the phone */
+  .rings { position: absolute; right: 60px; bottom: -40px; width: 760px; height: 760px; z-index: 1; }
+  .rings .ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid transparent;
+    transform: rotate(-18deg);
+  }
+
+  /* ── LEFT: branding ── */
+  .left {
+    position: absolute; left: 64px; top: 96px; z-index: 5; width: 560px;
+  }
+  .logo { display: flex; align-items: center; gap: 16px; margin-bottom: 34px; }
+  .logo-mark {
+    width: 76px; height: 76px; flex-shrink: 0;
+  }
+  .logo-text { font-size: 3.5rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
+  .logo-text .t1 { color: #fff; }
+  .logo-text .t2 { color: var(--orange); }
+
+  .headline {
+    font-size: 2.05rem; font-weight: 800; line-height: 1.22; letter-spacing: -0.015em;
+    color: #f2f5fa;
+  }
+  .headline .o { color: var(--orange2); }
+
+  .divider {
+    width: 420px; height: 1px; margin: 30px 0;
+    background: linear-gradient(90deg, var(--orange), rgba(236,99,22,0));
+    position: relative;
+  }
+  .divider::before {
+    content: ''; position: absolute; left: 150px; top: -2px; width: 5px; height: 5px;
+    background: var(--amber); border-radius: 50%; box-shadow: 0 0 10px var(--amber);
+  }
+
+  .tagline {
+    font-size: 1.85rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.01em; color: #fff;
+  }
+  .tagline .o { color: var(--orange2); }
+
+  .pills { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
+  .pill {
+    font-size: 0.8rem; font-weight: 700; color: #ffd9bd;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid rgba(236,99,22,0.45);
+    background: rgba(236,99,22,0.12);
+  }
+
+  /* ── RIGHT: phone ── */
+  .phone-wrap { position: absolute; right: 90px; top: 50%; transform: translateY(-50%) rotate(4deg); z-index: 4; }
+  .phone {
+    width: 320px; height: 650px;
+    background: #0a0a0c;
+    border-radius: 46px;
+    padding: 12px;
+    box-shadow:
+      0 0 0 2px #2a2a2e,
+      0 30px 80px rgba(0,0,0,0.6),
+      0 0 90px rgba(236,99,22,0.35);
+    position: relative;
+  }
+  .notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 116px; height: 26px; background: #0a0a0c; border-radius: 0 0 16px 16px; z-index: 3;
+  }
+  .screen {
+    width: 100%; height: 100%; background: #f4f6f9; border-radius: 36px; overflow: hidden;
+    display: flex; flex-direction: column; font-size: 11px; color: #1a2332;
+  }
+  .statusbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 22px 4px; font-weight: 700; font-size: 10px; }
+  .nav { text-align: center; padding: 4px 0 10px; }
+  .nav .t { font-size: 14px; font-weight: 800; }
+  .nav .s { font-size: 9px; color: #8a9bb0; font-style: italic; }
+  .body { flex: 1; padding: 0 14px; overflow: hidden; }
+  .search {
+    display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e3e9f0;
+    border-radius: 10px; padding: 8px 10px; color: #9aa8b8; font-size: 10px; margin-bottom: 10px;
+  }
+  .quick { display: flex; gap: 8px; margin-bottom: 12px; }
+  .quick .q {
+    flex: 1; background: #fff; border: 1px solid #e8edf3; border-radius: 10px;
+    padding: 12px 6px; text-align: center; font-weight: 700; font-size: 9.5px;
+  }
+  .quick .q .ic { font-size: 15px; display: block; margin-bottom: 5px; }
+  .sec-title { font-size: 11px; font-weight: 800; margin: 4px 0 2px; }
+  .sec-sub { font-size: 8.5px; color: #8a9bb0; margin-bottom: 7px; }
+  .field { background: #fff; border: 1px solid #e8edf3; border-radius: 9px; padding: 9px 10px; font-size: 9.5px; color: #4a5e78; margin-bottom: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cta { background: #fff; border: 1.5px solid #c9d4e0; border-radius: 9px; padding: 9px; text-align: center; font-weight: 800; font-size: 10px; margin-bottom: 12px; }
+  .row { display: flex; align-items: center; gap: 9px; padding: 8px 2px; border-top: 1px solid #eef2f6; }
+  .row . av { width: 26px; height: 26px; border-radius: 7px; background: #eef3f8; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .row .info { flex: 1; }
+  .row .nm { font-weight: 700; font-size: 10px; }
+  .row .pr { font-size: 8.5px; color: #8a9bb0; }
+  .row .chev { color: #c2ccd8; font-weight: 700; }
+  .tabbar { display: flex; justify-content: space-around; padding: 10px 0 16px; border-top: 1px solid #e8edf3; background: #fff; }
+  .tab { text-align: center; font-size: 8px; color: #9aa8b8; font-weight: 600; }
+  .tab .ic { font-size: 15px; display: block; }
+  .tab.active { color: var(--orange); }
+
+  .footer { position: absolute; bottom: 18px; left: 64px; font-size: 0.72rem; color: rgba(255,255,255,0.35); z-index: 5; font-weight: 500; }
+
+  /* drop-zone hint for optional mascot */
+  .mascot-zone { position: absolute; right: 430px; bottom: 40px; z-index: 2; }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+
+    <!-- orbital glow rings -->
+    <svg class="rings" viewBox="0 0 760 760" fill="none">
+      <defs>
+        <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffb454" stop-opacity="0.0"/>
+          <stop offset="45%" stop-color="#ec6316" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#ffb454" stop-opacity="0.0"/>
+        </linearGradient>
+      </defs>
+      <g transform="rotate(-16 380 380)">
+        <ellipse cx="380" cy="380" rx="360" ry="210" stroke="url(#rg)" stroke-width="2.5"/>
+        <ellipse cx="380" cy="380" rx="300" ry="170" stroke="url(#rg)" stroke-width="2" opacity="0.7"/>
+        <ellipse cx="380" cy="380" rx="240" ry="132" stroke="url(#rg)" stroke-width="1.5" opacity="0.5"/>
+      </g>
+    </svg>
+
+    <!-- bokeh -->
+    <div class="bokeh" id="bokeh"></div>
+
+    <!-- LEFT branding -->
+    <div class="left">
+      <div class="logo">
+        <svg class="logo-mark" viewBox="0 0 100 100" fill="none">
+          <path d="M50 16c-19 0-31 11-31 26v3c-6 1-10 6-10 12s4 11 10 12v3c0 4 3 7 7 7h48c4 0 7-3 7-7V69c6-1 10-6 10-12s-4-11-10-12v-3c0-15-12-26-31-26z"
+                stroke="#ec6316" stroke-width="6" fill="none" stroke-linejoin="round"/>
+        </svg>
+        <div class="logo-text"><span class="t1">Toast</span><span class="t2">Pilot</span></div>
+      </div>
+
+      <div class="headline">
+        AI-powered Autonomous<br/>
+        QA Agent for<br/>
+        <span class="o">Toast Retail</span> iOS App
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="tagline">
+        Quality You Can <span class="o">Test</span>,<br/>
+        Automation You Can <span class="o">Trust</span>.
+      </div>
+
+      <div class="pills">
+        <span class="pill">⚡ Zero-touch on every PR</span>
+        <span class="pill">🩹 Self-healing</span>
+        <span class="pill">🧠 AI-driven</span>
+      </div>
+    </div>
+
+    <!-- RIGHT phone -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="statusbar"><span>10:48</span><span>📶 &nbsp; 🔋</span></div>
+          <div class="nav"><div class="t">Inventory</div><div class="s">Anna's Retail</div></div>
+          <div class="body">
+            <div class="search">🔍 Search by product</div>
+            <div class="quick">
+              <div class="q"><span class="ic">📷</span>Add invoice</div>
+              <div class="q"><span class="ic">🧾</span>Manage invoices</div>
+            </div>
+            <div class="sec-title">Cycle count</div>
+            <div class="sec-sub">Get started with your count:</div>
+            <div class="field">Shipping weight Weekly Walk-in · Back…</div>
+            <div class="cta">Start counting</div>
+            <div class="sec-title">Product catalog</div>
+            <div class="sec-sub">735 products</div>
+            <div class="row"><div class="av">📦</div><div class="info"><div class="nm">Spigen Phone Case</div><div class="pr">kg · $50.00</div></div><span class="chev">›</span></div>
+            <div class="row"><div class="av">🥛</div><div class="info"><div class="nm">1% Lowfat Milk</div><div class="pr">each · $10.00</div></div><span class="chev">›</span></div>
+            <div class="row"><div class="av">🧥</div><div class="info"><div class="nm">Denim Jacket — Apparel</div><div class="pr">each · $85.00</div></div><span class="chev">›</span></div>
+          </div>
+          <div class="tabbar">
+            <div class="tab"><span class="ic">▦</span>Overview</div>
+            <div class="tab active"><span class="ic">📋</span>Inventory</div>
+            <div class="tab"><span class="ic">💬</span>Support</div>
+            <div class="tab"><span class="ic">👤</span>Account</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Toast Hackathon 2026 · Retail Unified Inventory Mobile</div>
+  </div>
+
+  <script>
+    // scatter warm bokeh dots
+    const b = document.getElementById('bokeh');
+    const seeds = [[80,3,0.4],[140,7,0.3],[60,12,0.5],[200,4,0.25],[110,9,0.45],[170,2,0.3],
+                   [90,6,0.5],[130,11,0.35],[70,5,0.4],[150,8,0.3],[100,3,0.45],[180,10,0.25],
+                   [120,7,0.4],[85,4,0.5],[160,9,0.3],[95,6,0.4],[140,12,0.35],[75,5,0.45]];
+    seeds.forEach((s, n) => {
+      const d = document.createElement('i');
+      const size = 3 + (n % 5) * 2;
+      d.style.width = size + 'px'; d.style.height = size + 'px';
+      d.style.left = (5 + (n * 53) % 92) + '%';
+      d.style.top = (8 + (n * 37) % 84) + '%';
+      d.style.opacity = s[2];
+      b.appendChild(d);
+    });
+  </script>
+</body>
+</html>
