@@ -9,173 +9,127 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --orange: #ec6316;
-    --orange2: #ff8a3d;
-    --amber: #ffb454;
-    --font: 'Inter', -apple-system, sans-serif;
+    --ink:#0f1b2d; --muted:#5a6e88; --cyan:#00a3d9; --cyan2:#38d0ff;
+    --magenta:#e0197d; --pink:#f472b6; --purple:#7c5cff;
+    --font:'Inter',-apple-system,sans-serif;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: var(--font);
-    background: #05070d;
-    display: flex; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 20px;
-  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:var(--font); background:#e6edf5; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+  .stage { position:relative; width:1280px; height:720px;
+    background: radial-gradient(720px 420px at 88% 8%, rgba(0,163,217,0.08), transparent),
+                radial-gradient(720px 460px at 6% 96%, rgba(224,25,125,0.07), transparent),
+                linear-gradient(180deg,#ffffff,#eef4fb);
+    border:1px solid #dde7f1; border-radius:22px; box-shadow:0 40px 90px rgba(15,40,80,0.16);
+    overflow:hidden; padding:54px 70px;
+    display:flex; flex-direction:column; }
+  .footer { position:absolute; bottom:22px; right:32px; font-size:0.74rem; color:#9fb0c4; font-weight:500; }
 
-  /* 16:9 cinematic stage */
-  .stage {
-    position: relative;
-    width: 1280px; height: 720px;
-    background:
-      radial-gradient(760px 520px at 50% 28%, rgba(236,99,22,0.26), transparent 60%),
-      radial-gradient(900px 700px at 50% 122%, rgba(236,99,22,0.16), transparent 60%),
-      radial-gradient(600px 500px at 88% 8%, rgba(255,160,80,0.10), transparent 60%),
-      linear-gradient(160deg, #0a0c12 0%, #100a06 55%, #06070c 100%);
-    border-radius: 22px;
-    box-shadow: 0 40px 90px rgba(0,0,0,0.5);
-    overflow: hidden;
-    padding: 58px 70px;
-    display: flex; flex-direction: column;
-  }
-  /* bokeh */
-  .bokeh { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-  .bokeh i {
-    position: absolute; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,170,90,0.9), rgba(236,99,22,0.1) 70%, transparent);
-    filter: blur(0.5px);
-  }
+  .head { text-align:center; }
+  .head h1 { font-size:2.9rem; font-weight:900; letter-spacing:-0.03em; color:var(--ink); line-height:1; }
+  .head .bar { width:150px; height:6px; border-radius:4px; margin:16px auto 0; background:linear-gradient(90deg,var(--cyan),var(--magenta)); }
+  .head .sub { font-size:1rem; color:var(--muted); font-weight:600; margin-top:13px; }
+  .head .sub .em { font-size:1.15rem; }
 
-  .head { text-align: center; position: relative; z-index: 3; }
-  .head h1 {
-    font-size: 3rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1;
-    color: #fff;
-  }
-  .head h1 .o { color: var(--orange2); }
-  .head .bar {
-    width: 150px; height: 6px; border-radius: 4px; margin: 16px auto 0;
-    background: linear-gradient(90deg, var(--orange), var(--amber));
-    box-shadow: 0 0 18px rgba(236,99,22,0.6);
-  }
-  .head .sub { font-size: 1rem; color: #c9a890; font-weight: 600; margin-top: 14px; letter-spacing: 0.02em; }
+  .team { flex:1; display:flex; align-items:center; justify-content:center; gap:44px; }
 
-  .team { flex: 1; display: flex; align-items: center; justify-content: center; gap: 44px; position: relative; z-index: 2; }
-
-  /* member CARD — dark glass */
+  /* member CARD */
   .member {
-    text-align: center; width: 300px;
-    background: linear-gradient(180deg, rgba(30,22,16,0.85), rgba(16,12,10,0.92));
-    border: 1px solid rgba(236,99,22,0.28);
-    border-radius: 24px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,180,120,0.08);
-    padding: 50px 26px 30px; position: relative; overflow: hidden;
-    backdrop-filter: blur(4px);
+    text-align:center; width:300px;
+    background:linear-gradient(180deg,#ffffff,#f7fafe);
+    border:1px solid #e6edf5; border-radius:24px;
+    box-shadow:0 22px 50px rgba(25,55,100,0.13);
+    padding:50px 26px 28px; position:relative; overflow:hidden;
   }
-  /* gradient top accent */
-  .member::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
-    background: linear-gradient(90deg, var(--orange), var(--amber));
-  }
-  /* warm corner glow */
+  .member::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; }
+  .m1::before { background:linear-gradient(90deg,#00a3d9,#38d0ff); }
+  .m2::before { background:linear-gradient(90deg,#7c5cff,#a78bfa); }
+  .m3::before { background:linear-gradient(90deg,#e0197d,#f472b6); }
   .member::after {
-    content: ''; position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-    width: 220px; height: 160px; border-radius: 50%;
-    background: rgba(236,99,22,0.35); filter: blur(48px); opacity: 0.7; z-index: 0;
+    content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px;
+    border-radius:50%; filter:blur(40px); opacity:0.5; z-index:0;
   }
+  .m1::after { background:rgba(0,163,217,0.28); }
+  .m2::after { background:rgba(124,92,255,0.26); }
+  .m3::after { background:rgba(224,25,125,0.24); }
 
   .photo {
-    width: 184px; height: 184px; margin: 0 auto 22px;
-    border-radius: 50%; padding: 5px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; z-index: 1;
+    width:176px; height:176px; margin:0 auto 20px;
+    border-radius:50%; padding:5px;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:1;
   }
-  /* glowing orange ring */
   .photo::before {
-    content: ''; position: absolute; inset: 0; border-radius: 50%; padding: 4px;
-    background: linear-gradient(135deg, var(--amber), var(--orange));
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
-  }
-  .photo::after {
-    content: ''; position: absolute; inset: -8px; border-radius: 50%;
-    box-shadow: 0 0 40px rgba(236,99,22,0.5); z-index: -1;
+    content:''; position:absolute; inset:0; border-radius:50%; padding:4px;
+    background:linear-gradient(135deg,var(--cyan),var(--magenta));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
   }
   .avatar {
-    width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 3.4rem; font-weight: 900; color: #fff; letter-spacing: -0.02em;
-    background: linear-gradient(150deg, #2a1c12, #18120d);
-    border: 1px solid rgba(255,170,90,0.15);
+    width:100%; height:100%; border-radius:50%; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    font-size:3.2rem; font-weight:900; color:#fff; letter-spacing:-0.02em;
+    position:relative;
   }
-  .avatar .ini {
-    background: linear-gradient(135deg, var(--amber), var(--orange2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  .a1 { background:linear-gradient(145deg,#00a3d9,#0088b3); box-shadow:0 16px 36px rgba(0,163,217,0.40); }
+  .a2 { background:linear-gradient(145deg,#7c5cff,#6d28d9); box-shadow:0 16px 36px rgba(124,92,255,0.40); }
+  .a3 { background:linear-gradient(145deg,#e0197d,#be145f); box-shadow:0 16px 36px rgba(224,25,125,0.40); }
+  .avatar img { width:100%; height:100%; object-fit:cover; }
+  /* little builder emoji badge on each avatar */
+  .badge {
+    position:absolute; bottom:2px; right:8px;
+    width:46px; height:46px; border-radius:50%;
+    background:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem; box-shadow:0 5px 14px rgba(25,55,100,0.25);
+    border:2px solid #fff; z-index:2;
   }
-  .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-  .name { font-size: 1.22rem; font-weight: 800; color: #fff; letter-spacing: -0.01em; position: relative; z-index: 1; }
+  .name { font-size:1.2rem; font-weight:800; color:var(--ink); letter-spacing:-0.01em; position:relative; z-index:1; }
   .role {
-    display: inline-block; margin-top: 11px;
-    font-size: 0.82rem; font-weight: 800; color: #1a1208;
-    padding: 6px 18px; border-radius: 999px; position: relative; z-index: 1;
-    background: linear-gradient(135deg, var(--amber), var(--orange2));
-    box-shadow: 0 6px 16px rgba(236,99,22,0.35);
+    display:inline-block; margin-top:10px;
+    font-size:0.82rem; font-weight:800; color:#fff;
+    padding:6px 18px; border-radius:999px; position:relative; z-index:1;
   }
-
-  .footer { position: absolute; bottom: 20px; right: 32px; font-size: 0.74rem; color: rgba(255,255,255,0.35); font-weight: 500; z-index: 3; }
+  .r1 { background:linear-gradient(135deg,#00a3d9,#38d0ff); box-shadow:0 6px 16px rgba(0,163,217,0.30); }
+  .r2 { background:linear-gradient(135deg,#7c5cff,#a78bfa); box-shadow:0 6px 16px rgba(124,92,255,0.30); }
+  .r3 { background:linear-gradient(135deg,#e0197d,#f472b6); box-shadow:0 6px 16px rgba(224,25,125,0.30); }
 </style>
 </head>
 <body>
   <div class="stage">
-    <div class="bokeh" id="bokeh"></div>
-
     <div class="head">
-      <h1>Toast <span class="o">Hackathon</span> Group</h1>
+      <h1>Toast Hackathon Group</h1>
       <div class="bar"></div>
-      <div class="sub">The team behind ToastPilot</div>
+      <div class="sub"><span class="em">👩‍💻👩‍💻👩‍💻</span> &nbsp;The three engineers who built ToastPilot &nbsp;<span class="em">⚡</span></div>
     </div>
 
     <div class="team">
-      <div class="member">
+      <div class="member m1">
         <div class="photo">
           <!-- To use a real photo: put keerthi.jpg next to this file -->
-          <div class="avatar"><img src="keerthi.jpg" alt="" onerror="this.style.display='none';this.parentNode.innerHTML='<span class=&quot;ini&quot;>KV</span>'"></div>
+          <div class="avatar a1"><img src="keerthi.jpg" alt="" onerror="this.style.display='none';this.parentNode.insertAdjacentText('afterbegin','KV')"><span class="badge">👩‍💻</span></div>
         </div>
         <div class="name">Keerthi Venkataraman</div>
-        <div class="role">iOS Mobile</div>
+        <div class="role r1">iOS Mobile</div>
       </div>
 
-      <div class="member">
+      <div class="member m2">
         <div class="photo">
-          <div class="avatar"><img src="sangeetha.jpg" alt="" onerror="this.style.display='none';this.parentNode.innerHTML='<span class=&quot;ini&quot;>SR</span>'"></div>
+          <div class="avatar a2"><img src="sangeetha.jpg" alt="" onerror="this.style.display='none';this.parentNode.insertAdjacentText('afterbegin','SR')"><span class="badge">👩‍💻</span></div>
         </div>
         <div class="name">Sangeethapriya Rengasamy</div>
-        <div class="role">DPS</div>
+        <div class="role r2">DPS</div>
       </div>
 
-      <div class="member">
+      <div class="member m3">
         <div class="photo">
-          <div class="avatar"><img src="shruti.jpg" alt="" onerror="this.style.display='none';this.parentNode.innerHTML='<span class=&quot;ini&quot;>SJ</span>'"></div>
+          <div class="avatar a3"><img src="shruti.jpg" alt="" onerror="this.style.display='none';this.parentNode.insertAdjacentText('afterbegin','SJ')"><span class="badge">👩‍💻</span></div>
         </div>
         <div class="name">Shruti Joshi</div>
-        <div class="role">iOS Mobile</div>
+        <div class="role r3">iOS Mobile</div>
       </div>
     </div>
 
-    <div class="footer">Toast Hackathon 2026 · Retail Unified Inventory Mobile</div>
+    <div class="footer">© 2026 Toast, Inc. · Retail Unified Inventory Mobile</div>
   </div>
-
-  <script>
-    const b = document.getElementById('bokeh');
-    const op = [0.4,0.3,0.5,0.25,0.45,0.3,0.5,0.35,0.4,0.3,0.45,0.25,0.4,0.5,0.3,0.4];
-    op.forEach((o, n) => {
-      const d = document.createElement('i');
-      const size = 3 + (n % 5) * 2;
-      d.style.width = size + 'px'; d.style.height = size + 'px';
-      d.style.left = (4 + (n * 53) % 92) + '%';
-      d.style.top = (6 + (n * 41) % 88) + '%';
-      d.style.opacity = o;
-      b.appendChild(d);
-    });
-  </script>
 </body>
 </html>
