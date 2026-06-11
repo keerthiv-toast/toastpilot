@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToastPilot — Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0f1a;
+      --bg2: #0d1525;
+      --panel: #111827;
+      --panel2: #162033;
+      --border: rgba(0,163,217,0.18);
+      --border2: rgba(255,255,255,0.06);
+      --cyan: #00a3d9;
+      --cyan2: #00c4ff;
+      --magenta: #e0197d;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --purple: #a78bfa;
+      --text: #f0f6ff;
+      --muted: #7a8fa8;
+      --muted2: #4a5e78;
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(0,163,217,0.10), transparent),
+        radial-gradient(900px 500px at 90% 110%, rgba(224,25,125,0.08), transparent),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2.5rem 2rem 3rem;
+    }
+
+    /* screenshot wrapper — keeps a tidy frame for capture */
+    .canvas {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .brand {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, var(--cyan2), var(--magenta));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      font-weight: 500;
+    }
+
+    .tagline {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.72rem;
+      color: var(--cyan2);
+      border: 1px solid rgba(0,163,217,0.3);
+      background: rgba(0,163,217,0.08);
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* ── Layered diagram ── */
+    .layer {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      padding: 1.1rem 1.25rem 1.25rem;
+      margin-bottom: 0;
+    }
+
+    .layer + .arrow-row { margin: 0; }
+
+    .layer-head {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .layer-badge {
+      font-size: 1.05rem;
+    }
+
+    .layer-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .layer-meta {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      color: var(--muted2);
+    }
+
+    .row {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .row-3 { grid-template-columns: repeat(3, 1fr); }
+    .row-4 { grid-template-columns: repeat(4, 1fr); }
+    .row-1 { grid-template-columns: 1fr; }
+
+    .node {
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      background: var(--panel);
+      padding: 0.7rem 0.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .node::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+    }
+    .node--cyan::before { background: var(--cyan); }
+    .node--magenta::before { background: var(--magenta); }
+    .node--green::before { background: var(--green); }
+    .node--amber::before { background: var(--amber); }
+    .node--purple::before { background: var(--purple); }
+
+    .node-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .node-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.4;
+      font-family: var(--mono);
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 0.58rem;
+      font-weight: 700;
+      padding: 0.05rem 0.4rem;
+      border-radius: 999px;
+      margin-left: 0.3rem;
+      vertical-align: middle;
+    }
+    .pill--cyan { background: rgba(0,163,217,0.15); color: var(--cyan2); }
+    .pill--magenta { background: rgba(224,25,125,0.15); color: #f472b6; }
+    .pill--green { background: rgba(16,185,129,0.15); color: #34d399; }
+
+    /* arrows between layers */
+    .arrow-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0;
+      color: var(--cyan);
+    }
+    .arrow-row .bar {
+      width: 2px;
+      height: 18px;
+      background: linear-gradient(180deg, var(--cyan), var(--magenta));
+      border-radius: 2px;
+    }
+    .arrow-row .lbl {
+      font-size: 0.64rem;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+    .arrow-row .chev {
+      font-size: 0.9rem;
+      color: var(--magenta);
+    }
+
+    /* simulator centerpiece */
+    .sim {
+      border: 1px solid rgba(0,163,217,0.4);
+      border-radius: 14px;
+      background:
+        radial-gradient(400px 120px at 50% 0%, rgba(0,163,217,0.12), transparent),
+        var(--panel2);
+      padding: 0.9rem 1.1rem;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(0,163,217,0.12);
+    }
+    .sim-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .sim-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      margin-top: 0.15rem;
+    }
+
+    /* dashed feedback note */
+    .feedback {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .feedback .fb {
+      font-size: 0.64rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 0.3rem 0.6rem;
+    }
+    .feedback .fb b { color: var(--cyan2); font-weight: 600; }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .legend .item { display: flex; align-items: center; gap: 0.4rem; }
+    .legend .dot { width: 10px; height: 10px; border-radius: 3px; }
+
+    .footnote {
+      text-align: center;
+      margin-top: 1.4rem;
+      font-size: 0.68rem;
+      color: var(--muted2);
+    }
+    .footnote b { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+
+    <div class="header">
+      <div class="brand">⚡ ToastPilot — System Architecture</div>
+      <div class="subtitle">Autonomous AI QA Agent for Unified Inventory · Toast Operator iOS</div>
+      <div class="tagline">From PR Merge to Release Confidence — Autonomously</div>
+    </div>
+
+    <!-- LAYER 1: TRIGGERS -->
+    <div class="layer">
+      <div class="layer-head">
+        <span class="layer-badge">🔔</span>
+        <span class="layer-title">Triggers</span>
+        <span class="layer-meta">how a run starts</span>
+      </div>
+      <div class="row row-3">
+        <div class="node node--magenta">
+          <div class="node-title">GitHub PR Merge</div>
+          <div class="node-sub">HMAC-verified webhook · SMB-* only · zero-touch</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">Dashboard Command</div>
+          <div class="node-sub">voice · text · Jira ticket ID · flow menu</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">Sprint Bug Bash</div>
+          <div class="node-sub">paste 10–15 ticket IDs · one tap</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">
+      <div class="bar"></div><span class="chev">▼</span>
+      <span class="lbl">HTTP / webhook → Express :9477</span>
+      <span class="chev">▼</span><div class="bar"></div>
+    </div>
+
+    <!-- LAYER 2: SERVER -->
+    <div class="layer">
+      <div class="layer-head">
+        <span class="layer-badge">⚙️</span>
+        <span class="layer-title">Server &amp; Orchestration</span>
+        <span class="layer-meta">Express + WebSocket · :9477</span>
+      </div>
+      <div class="row row-4">
+        <div class="node node--magenta">
+          <div class="node-title">HMAC Verifier</div>
+          <div class="node-sub">SHA-256 · timingSafeEqual</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">BugBashQueue</div>
+          <div class="node-sub">sequential · try/finally safe</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">AgentService</div>
+          <div class="node-sub">one run · cancellation-safe</div>
+        </div>
+        <div class="node node--green">
+          <div class="node-title">EventBus</div>
+          <div class="node-sub">500-event ring buffer → WS</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">
+      <div class="bar"></div><span class="chev">▼</span>
+      <span class="lbl">command + JiraContext → AgentOrchestrator</span>
+      <span class="chev">▼</span><div class="bar"></div>
+    </div>
+
+    <!-- LAYER 3: AGENT CORE -->
+    <div class="layer">
+      <div class="layer-head">
+        <span class="layer-badge">🧠</span>
+        <span class="layer-title">Agent Core</span>
+        <span class="layer-meta">plan · analyze · heal · explain</span>
+      </div>
+      <div class="row row-3" style="margin-bottom:0.75rem">
+        <div class="node node--purple">
+          <div class="node-title">JiraPlanSynthesizer</div>
+          <div class="node-sub">ticket → command + AC</div>
+        </div>
+        <div class="node node--purple">
+          <div class="node-title">DynamicFlowGenerator <span class="pill pill--magenta">AI</span></div>
+          <div class="node-sub">reads PR diff → writes test plan</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">TestPlanGenerator</div>
+          <div class="node-sub">22 flows · structured steps</div>
+        </div>
+      </div>
+      <div class="row row-4">
+        <div class="node node--cyan">
+          <div class="node-title">AgentOrchestrator</div>
+          <div class="node-sub">runs the step loop</div>
+        </div>
+        <div class="node node--green">
+          <div class="node-title">CopilotService</div>
+          <div class="node-sub">change · risk · summary</div>
+        </div>
+        <div class="node node--amber">
+          <div class="node-title">SelectorHealer</div>
+          <div class="node-sub">113 healing touchpoints</div>
+        </div>
+        <div class="node node--purple">
+          <div class="node-title">FailureExplainer <span class="pill pill--magenta">AI</span></div>
+          <div class="node-sub">plain-English root cause</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">
+      <div class="bar"></div><span class="chev">▼</span>
+      <span class="lbl">Appium HTTP commands :4723</span>
+      <span class="chev">▼</span><div class="bar"></div>
+    </div>
+
+    <!-- LAYER 4: EXECUTOR -->
+    <div class="layer">
+      <div class="layer-head">
+        <span class="layer-badge">📱</span>
+        <span class="layer-title">Appium Executor</span>
+        <span class="layer-meta">Appium 3 · XCUITest · WebDriverIO 9</span>
+      </div>
+      <div class="row row-4">
+        <div class="node node--cyan">
+          <div class="node-title">AppiumLauncher</div>
+          <div class="node-sub">spawns + reuses server</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">AppiumSession</div>
+          <div class="node-sub">resilient tap/type/scroll</div>
+        </div>
+        <div class="node node--magenta">
+          <div class="node-title">FlowActions</div>
+          <div class="node-sub">102 action methods</div>
+        </div>
+        <div class="node node--green">
+          <div class="node-title">simctl recordVideo</div>
+          <div class="node-sub">full-run MP4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-row">
+      <div class="bar"></div><span class="chev">▼</span>
+      <span class="lbl">XCUITest / WebDriverAgent</span>
+      <span class="chev">▼</span><div class="bar"></div>
+    </div>
+
+    <!-- CENTERPIECE: SIMULATOR -->
+    <div class="sim">
+      <div class="sim-title">🖥️ Toast Operator — Production Simulator</div>
+      <div class="sim-sub">REAL app · no mocks · Unified Inventory: Cycle Count · Product Catalog · Invoice Scanning</div>
+      <div class="feedback">
+        <span class="fb">↩ <b>SelectorHealer</b> rescans page-source on selector drift</span>
+        <span class="fb">↩ <b>EventBus</b> streams steps + screenshots over WebSocket</span>
+      </div>
+    </div>
+
+    <div class="arrow-row">
+      <div class="bar"></div><span class="chev">▼</span>
+      <span class="lbl">screenshots · video · pass/fail · confidence</span>
+      <span class="chev">▼</span><div class="bar"></div>
+    </div>
+
+    <!-- LAYER 5: EVIDENCE + DASHBOARD -->
+    <div class="layer">
+      <div class="layer-head">
+        <span class="layer-badge">📤</span>
+        <span class="layer-title">Evidence, Reporting &amp; Live View</span>
+        <span class="layer-meta">where results land</span>
+      </div>
+      <div class="row row-4">
+        <div class="node node--green">
+          <div class="node-title">Jira <span class="pill pill--green">v3</span></div>
+          <div class="node-sub">screenshots · MP4 · bug · comment</div>
+        </div>
+        <div class="node node--magenta">
+          <div class="node-title">Slack</div>
+          <div class="node-sub">Block Kit report · BugBash summary</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">reports/</div>
+          <div class="node-sub">exec summary JSON + HTML</div>
+        </div>
+        <div class="node node--cyan">
+          <div class="node-title">React Dashboard <span class="pill pill--cyan">:5177</span></div>
+          <div class="node-sub">live steps · screenshots · logs · score</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend">
+      <div class="item"><span class="dot" style="background:var(--cyan)"></span> Core pipeline</div>
+      <div class="item"><span class="dot" style="background:var(--purple)"></span> AI-powered (GPT-4o)</div>
+      <div class="item"><span class="dot" style="background:var(--amber)"></span> Self-healing</div>
+      <div class="item"><span class="dot" style="background:var(--green)"></span> Evidence / reporting</div>
+      <div class="item"><span class="dot" style="background:var(--magenta)"></span> Autonomy &amp; integrations</div>
+    </div>
+
+    <div class="footnote">
+      14,320 lines of TypeScript · 48 files · 102 action methods · 22 flows · 113 self-healing touchpoints · 3 iOS modules
+      <br/><b>ToastPilot</b> · Toast Hackathon 2026 · Retail Unified Inventory Mobile
+    </div>
+
+  </div>
+</body>
+</html>

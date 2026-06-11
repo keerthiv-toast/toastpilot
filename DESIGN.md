@@ -12,6 +12,75 @@ ToastPilot is a fully autonomous AI QA agent purpose-built for the Toast Operato
 
 ## System Architecture
 
+```mermaid
+flowchart TB
+    subgraph triggers["🔔 Triggers"]
+        direction LR
+        T1["GitHub PR merge<br/>(webhook)"]
+        T2["Dashboard<br/>voice / text / Jira ID"]
+        T3["Sprint Bug Bash<br/>(paste ticket IDs)"]
+    end
+
+    subgraph server["⚙️ Server &amp; Orchestration · Express + WebSocket :9477"]
+        direction TB
+        HMAC["HMAC-SHA256<br/>Webhook Verifier"]
+        BBQ["BugBashQueue<br/>(sequential runner)"]
+        AS["AgentService<br/>(one run · cancellation-safe)"]
+        EB["EventBus<br/>500-event ring buffer"]
+        HMAC --> AS
+        BBQ --> AS
+        AS --> EB
+    end
+
+    subgraph core["🧠 Agent Core"]
+        direction TB
+        JPS["JiraPlanSynthesizer"]
+        DFG["DynamicFlowGenerator<br/>(reads PR diff → AI plan)"]
+        TPG["TestPlanGenerator"]
+        ORCH["AgentOrchestrator"]
+        COP["CopilotService<br/>change · risk · summary"]
+        HEAL["SelectorHealer<br/>113 healing touchpoints"]
+        FAIL["FailureExplainer<br/>(GPT-4o-mini)"]
+        JPS --> TPG --> ORCH
+        DFG --> ORCH
+        ORCH --> COP
+        ORCH --> HEAL
+        ORCH --> FAIL
+    end
+
+    subgraph exec["📱 Appium Executor"]
+        direction TB
+        LAUNCH["AppiumLauncher"]
+        SESS["AppiumSession"]
+        FA["FlowActions<br/>(102 action methods)"]
+        VID["simctl recordVideo<br/>(MP4)"]
+        LAUNCH --> SESS --> FA
+        FA --> VID
+    end
+
+    SIM["🖥️ Toast Operator<br/>Production Simulator<br/>(Unified Inventory)"]
+
+    subgraph evidence["📤 Evidence &amp; Notification"]
+        direction LR
+        JIRA["Jira<br/>screenshots · video · bug"]
+        SLACK["Slack<br/>Block Kit report"]
+        REP["reports/<br/>exec summary JSON+HTML"]
+    end
+
+    DASH["📊 React Dashboard :5177<br/>live steps · screenshots · logs"]
+
+    triggers ==> server
+    server ==> core
+    core ==> exec
+    exec ==> SIM
+    SIM -. "screenshots · video · pass/fail" .-> evidence
+    EB -. "WebSocket events" .-> DASH
+    HEAL -. "page-source rescan on selector drift" .-> SIM
+```
+
+<details>
+<summary>Plain-text version of the same diagram</summary>
+
 ```
 External Triggers
 ─────────────────────────────────────────────────────────────────────────────
@@ -89,6 +158,8 @@ External Triggers
 │  reports/ ──► executive-summary.json/.html              │
 └─────────────────────────────────────────────────────────┘
 ```
+
+</details>
 
 ---
 
