@@ -1234,6 +1234,132 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* ── ARCHITECTURE DIAGRAM ── */
+    .arch-stack {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .arch-layer {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      padding: 1rem 1.15rem 1.15rem;
+    }
+    .arch-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    .arch-badge { font-size: 1rem; }
+    .arch-title {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .arch-meta {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      color: var(--muted2);
+    }
+    .arch-row {
+      display: grid;
+      gap: 0.65rem;
+    }
+    .arch-row--3 { grid-template-columns: repeat(3, 1fr); }
+    .arch-row--4 { grid-template-columns: repeat(4, 1fr); }
+    .arch-row + .arch-row { margin-top: 0.65rem; }
+    .arch-node {
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      background: var(--panel);
+      padding: 0.65rem 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .arch-node::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+    }
+    .arch-node--cyan::before { background: var(--cyan); }
+    .arch-node--magenta::before { background: var(--magenta); }
+    .arch-node--green::before { background: var(--green); }
+    .arch-node--amber::before { background: var(--amber); }
+    .arch-node--purple::before { background: #a78bfa; }
+    .arch-node-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.12rem;
+    }
+    .arch-node-sub {
+      font-size: 0.66rem;
+      color: var(--muted);
+      line-height: 1.4;
+      font-family: var(--mono);
+    }
+    .arch-tag {
+      display: inline-block;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 0.05rem 0.38rem;
+      border-radius: 999px;
+      margin-left: 0.3rem;
+      vertical-align: middle;
+      background: rgba(224,25,125,0.15);
+      color: #f472b6;
+    }
+    .arch-arrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0;
+      color: var(--magenta);
+    }
+    .arch-arrow .bar {
+      width: 2px; height: 16px;
+      background: linear-gradient(180deg, var(--cyan), var(--magenta));
+      border-radius: 2px;
+    }
+    .arch-arrow .lbl {
+      font-size: 0.62rem;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+    .arch-sim {
+      border: 1px solid rgba(0,163,217,0.4);
+      border-radius: 14px;
+      background: radial-gradient(400px 120px at 50% 0%, rgba(0,163,217,0.12), transparent), var(--panel2);
+      padding: 0.85rem 1.1rem;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(0,163,217,0.1);
+    }
+    .arch-sim-title { font-size: 0.92rem; font-weight: 800; color: var(--text); }
+    .arch-sim-sub { font-size: 0.68rem; color: var(--muted); font-family: var(--mono); margin-top: 0.15rem; }
+    .arch-fb {
+      display: flex; gap: 0.6rem; margin-top: 0.7rem; flex-wrap: wrap; justify-content: center;
+    }
+    .arch-fb span {
+      font-size: 0.62rem; color: var(--muted); font-family: var(--mono);
+      border: 1px dashed var(--border); border-radius: 8px; padding: 0.28rem 0.55rem;
+    }
+    .arch-fb b { color: var(--cyan2); font-weight: 600; }
+    .arch-legend {
+      display: flex; justify-content: center; gap: 1.1rem; flex-wrap: wrap;
+      margin-top: 1.4rem; font-size: 0.68rem; color: var(--muted);
+    }
+    .arch-legend .item { display: flex; align-items: center; gap: 0.35rem; }
+    .arch-legend .dot { width: 10px; height: 10px; border-radius: 3px; }
+    @media (max-width: 760px) {
+      .arch-row--3, .arch-row--4 { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -1247,6 +1373,7 @@
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#architecture">Architecture</a></li>
     <li><a href="#flows">Flows</a></li>
     <li><a href="#bugbash">Bug Bash</a></li>
     <li><a href="#build">Build</a></li>
@@ -1502,6 +1629,108 @@
         ▼
 <span class="g">Evidence</span>: screenshots + video attached to Jira ticket as a comment
 <span class="p">Slack</span>:    ✅ SMB-1082 PASSED · 10/10 steps · 📸 12 screenshots · 🎥 Video
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div class="section-label">System Architecture</div>
+      <h2 class="section-title">One pipeline, end to end</h2>
+      <p class="section-sub">From trigger to verdict — every layer is real code, wired into a single autonomous flow.</p>
+    </div>
+
+    <div class="arch-stack fade-up">
+      <!-- Triggers -->
+      <div class="arch-layer">
+        <div class="arch-head"><span class="arch-badge">🔔</span><span class="arch-title">Triggers</span><span class="arch-meta">how a run starts</span></div>
+        <div class="arch-row arch-row--3">
+          <div class="arch-node arch-node--magenta"><div class="arch-node-title">GitHub PR Merge</div><div class="arch-node-sub">HMAC webhook · SMB-* · zero-touch</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">Dashboard Command</div><div class="arch-node-sub">voice · text · Jira ID · menu</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">Sprint Bug Bash</div><div class="arch-node-sub">paste 10–15 IDs · one tap</div></div>
+        </div>
+      </div>
+
+      <div class="arch-arrow"><div class="bar"></div>▼<span class="lbl">HTTP / webhook → Express :9477</span>▼<div class="bar"></div></div>
+
+      <!-- Server -->
+      <div class="arch-layer">
+        <div class="arch-head"><span class="arch-badge">⚙️</span><span class="arch-title">Server &amp; Orchestration</span><span class="arch-meta">Express + WebSocket · :9477</span></div>
+        <div class="arch-row arch-row--4">
+          <div class="arch-node arch-node--magenta"><div class="arch-node-title">HMAC Verifier</div><div class="arch-node-sub">SHA-256 · timingSafeEqual</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">BugBashQueue</div><div class="arch-node-sub">sequential · safe</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">AgentService</div><div class="arch-node-sub">one run · cancel-safe</div></div>
+          <div class="arch-node arch-node--green"><div class="arch-node-title">EventBus</div><div class="arch-node-sub">500-event ring → WS</div></div>
+        </div>
+      </div>
+
+      <div class="arch-arrow"><div class="bar"></div>▼<span class="lbl">command + JiraContext → AgentOrchestrator</span>▼<div class="bar"></div></div>
+
+      <!-- Agent core -->
+      <div class="arch-layer">
+        <div class="arch-head"><span class="arch-badge">🧠</span><span class="arch-title">Agent Core</span><span class="arch-meta">plan · analyze · heal · explain</span></div>
+        <div class="arch-row arch-row--3">
+          <div class="arch-node arch-node--purple"><div class="arch-node-title">JiraPlanSynthesizer</div><div class="arch-node-sub">ticket → command + AC</div></div>
+          <div class="arch-node arch-node--purple"><div class="arch-node-title">DynamicFlowGenerator<span class="arch-tag">AI</span></div><div class="arch-node-sub">PR diff → test plan</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">TestPlanGenerator</div><div class="arch-node-sub">22 flows · steps</div></div>
+        </div>
+        <div class="arch-row arch-row--4">
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">AgentOrchestrator</div><div class="arch-node-sub">runs the step loop</div></div>
+          <div class="arch-node arch-node--green"><div class="arch-node-title">CopilotService</div><div class="arch-node-sub">change · risk · summary</div></div>
+          <div class="arch-node arch-node--amber"><div class="arch-node-title">SelectorHealer</div><div class="arch-node-sub">113 touchpoints</div></div>
+          <div class="arch-node arch-node--purple"><div class="arch-node-title">FailureExplainer<span class="arch-tag">AI</span></div><div class="arch-node-sub">plain-English cause</div></div>
+        </div>
+      </div>
+
+      <div class="arch-arrow"><div class="bar"></div>▼<span class="lbl">Appium HTTP commands :4723</span>▼<div class="bar"></div></div>
+
+      <!-- Executor -->
+      <div class="arch-layer">
+        <div class="arch-head"><span class="arch-badge">📱</span><span class="arch-title">Appium Executor</span><span class="arch-meta">Appium 3 · XCUITest · WebDriverIO 9</span></div>
+        <div class="arch-row arch-row--4">
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">AppiumLauncher</div><div class="arch-node-sub">spawns + reuses</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">AppiumSession</div><div class="arch-node-sub">resilient tap/type</div></div>
+          <div class="arch-node arch-node--magenta"><div class="arch-node-title">FlowActions</div><div class="arch-node-sub">102 action methods</div></div>
+          <div class="arch-node arch-node--green"><div class="arch-node-title">simctl recordVideo</div><div class="arch-node-sub">full-run MP4</div></div>
+        </div>
+      </div>
+
+      <div class="arch-arrow"><div class="bar"></div>▼<span class="lbl">XCUITest / WebDriverAgent</span>▼<div class="bar"></div></div>
+
+      <!-- Simulator -->
+      <div class="arch-sim">
+        <div class="arch-sim-title">🖥️ Toast Operator — Production Simulator</div>
+        <div class="arch-sim-sub">REAL app · no mocks · Cycle Count · Product Catalog · Invoice Scanning</div>
+        <div class="arch-fb">
+          <span>↩ <b>SelectorHealer</b> rescans page-source on selector drift</span>
+          <span>↩ <b>EventBus</b> streams steps + screenshots over WebSocket</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow"><div class="bar"></div>▼<span class="lbl">screenshots · video · pass/fail · confidence</span>▼<div class="bar"></div></div>
+
+      <!-- Evidence + dashboard -->
+      <div class="arch-layer">
+        <div class="arch-head"><span class="arch-badge">📤</span><span class="arch-title">Evidence, Reporting &amp; Live View</span><span class="arch-meta">where results land</span></div>
+        <div class="arch-row arch-row--4">
+          <div class="arch-node arch-node--green"><div class="arch-node-title">Jira</div><div class="arch-node-sub">screenshots · MP4 · bug</div></div>
+          <div class="arch-node arch-node--magenta"><div class="arch-node-title">Slack</div><div class="arch-node-sub">Block Kit · BugBash</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">reports/</div><div class="arch-node-sub">exec summary JSON+HTML</div></div>
+          <div class="arch-node arch-node--cyan"><div class="arch-node-title">React Dashboard :5177</div><div class="arch-node-sub">live steps · video · score</div></div>
+        </div>
+      </div>
+
+      <div class="arch-legend">
+        <div class="item"><span class="dot" style="background:var(--cyan)"></span> Core pipeline</div>
+        <div class="item"><span class="dot" style="background:#a78bfa"></span> AI-powered (GPT-4o)</div>
+        <div class="item"><span class="dot" style="background:var(--amber)"></span> Self-healing</div>
+        <div class="item"><span class="dot" style="background:var(--green)"></span> Evidence / reporting</div>
+        <div class="item"><span class="dot" style="background:var(--magenta)"></span> Autonomy &amp; integrations</div>
       </div>
     </div>
   </div>
