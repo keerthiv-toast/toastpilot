@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToastPilot — Hackathon Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink:#0f1b2d; --muted:#5a6e88; --cyan:#00a3d9; --cyan2:#38d0ff;
+    --magenta:#e0197d; --pink:#f472b6; --purple:#7c5cff; --orange:#ec6316;
+    --font:'Inter',-apple-system,sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:var(--font); background:#e6edf5; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+  .stage { position:relative; width:1280px; height:720px;
+    background: radial-gradient(720px 420px at 88% 8%, rgba(0,163,217,0.08), transparent),
+                radial-gradient(720px 460px at 6% 96%, rgba(224,25,125,0.07), transparent),
+                linear-gradient(180deg,#ffffff,#eef4fb);
+    border:1px solid #dde7f1; border-radius:22px; box-shadow:0 40px 90px rgba(15,40,80,0.16);
+    overflow:hidden; padding:56px 70px;
+    display:flex; flex-direction:column; }
+  .footer { position:absolute; bottom:22px; right:32px; font-size:0.74rem; color:#9fb0c4; font-weight:500; }
+
+  .head { text-align:center; }
+  .head h1 { font-size:3rem; font-weight:900; letter-spacing:-0.03em; color:var(--ink); line-height:1; }
+  .head .bar { width:150px; height:6px; border-radius:4px; margin:16px auto 0; background:linear-gradient(90deg,var(--cyan),var(--magenta)); }
+  .head .sub { font-size:1rem; color:var(--muted); font-weight:600; margin-top:14px; }
+
+  .team {
+    flex:1; display:flex; align-items:center; justify-content:center; gap:60px;
+  }
+  .member { text-align:center; width:280px; }
+
+  .photo {
+    width:230px; height:230px; margin:0 auto 22px;
+    border-radius:24px; padding:6px;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  /* dashed gradient frame */
+  .photo::before {
+    content:''; position:absolute; inset:0; border-radius:24px; padding:3px;
+    background:linear-gradient(135deg,var(--cyan),var(--magenta));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+  }
+  .avatar {
+    width:100%; height:100%; border-radius:19px; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    font-size:4rem; font-weight:900; color:#fff; letter-spacing:-0.02em;
+    box-shadow:0 14px 34px rgba(25,55,100,0.18);
+  }
+  .a1 { background:linear-gradient(145deg,#00a3d9,#0088b3); }
+  .a2 { background:linear-gradient(145deg,#7c5cff,#6d28d9); }
+  .a3 { background:linear-gradient(145deg,#e0197d,#be145f); }
+  /* if a real photo is added, it fills the avatar */
+  .avatar img { width:100%; height:100%; object-fit:cover; }
+
+  .name { font-size:1.25rem; font-weight:800; color:var(--ink); letter-spacing:-0.01em; }
+  .role {
+    display:inline-block; margin-top:9px;
+    font-size:0.85rem; font-weight:800;
+    padding:5px 16px; border-radius:999px;
+  }
+  .r1 { color:#007db0; background:rgba(0,163,217,0.12); border:1.5px solid rgba(0,163,217,0.3); }
+  .r2 { color:#5b3fd4; background:rgba(124,92,255,0.12); border:1.5px solid rgba(124,92,255,0.3); }
+  .r3 { color:#b8136a; background:rgba(224,25,125,0.10); border:1.5px solid rgba(224,25,125,0.28); }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="head">
+      <h1>Toast Hackathon Group</h1>
+      <div class="bar"></div>
+      <div class="sub">The team behind ToastPilot</div>
+    </div>
+
+    <div class="team">
+      <div class="member">
+        <div class="photo">
+          <!-- To use a real photo: put keerthi.jpg next to this file -->
+          <div class="avatar a1"><img src="keerthi.jpg" alt="" onerror="this.style.display='none';this.parentNode.textContent='KV'"></div>
+        </div>
+        <div class="name">Keerthi Venkataraman</div>
+        <div class="role r1">iOS Mobile</div>
+      </div>
+
+      <div class="member">
+        <div class="photo">
+          <div class="avatar a2"><img src="sangeetha.jpg" alt="" onerror="this.style.display='none';this.parentNode.textContent='SR'"></div>
+        </div>
+        <div class="name">Sangeethapriya Rengasamy</div>
+        <div class="role r2">DPS</div>
+      </div>
+
+      <div class="member">
+        <div class="photo">
+          <div class="avatar a3"><img src="shruti.jpg" alt="" onerror="this.style.display='none';this.parentNode.textContent='SJ'"></div>
+        </div>
+        <div class="name">Shruti Joshi</div>
+        <div class="role r3">iOS Mobile</div>
+      </div>
+    </div>
+
+    <div class="footer">© 2026 Toast, Inc. · Retail Unified Inventory Mobile</div>
+  </div>
+</body>
+</html>
