@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ToastPilot — Autonomous QA Ecosystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a2332;
+    --ink2: #4a5e78;
+    --muted: #6b7e96;
+    --line: #d6e0ec;
+    --cyan: #00a3d9;
+    --cyan2: #0088b3;
+    --magenta: #d6177f;
+    --green: #0ea371;
+    --amber: #e08a00;
+    --purple: #7c5cff;
+    --blue: #2563eb;
+    --orange: #ea580c;
+    --font: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: #eef3f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* 16:9 slide stage — screenshot this */
+  .stage {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    background:
+      radial-gradient(900px 500px at 50% 8%, rgba(0,163,217,0.06), transparent),
+      radial-gradient(800px 500px at 85% 95%, rgba(214,23,127,0.05), transparent),
+      linear-gradient(180deg, #ffffff, #f4f8fc);
+    border: 1px solid #e2eaf2;
+    border-radius: 20px;
+    box-shadow: 0 30px 70px rgba(20,40,70,0.12);
+    overflow: hidden;
+  }
+
+  /* Title */
+  .title {
+    position: absolute;
+    top: 38px; left: 54px;
+    z-index: 5;
+  }
+  .title h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .title .bar {
+    width: 130px; height: 5px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    border-radius: 3px;
+    margin-top: 12px;
+  }
+  .title .sub {
+    font-size: 0.95rem;
+    color: var(--magenta);
+    font-weight: 700;
+    margin-top: 10px;
+    letter-spacing: 0.01em;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 20px; right: 28px;
+    font-size: 0.72rem;
+    color: #9fb0c4;
+    z-index: 5;
+  }
+  .legend {
+    position: absolute;
+    bottom: 18px; left: 54px;
+    display: flex; gap: 1rem;
+    font-size: 0.72rem; color: var(--muted);
+    z-index: 5;
+  }
+  .legend .i { display: flex; align-items: center; gap: 0.35rem; }
+  .legend .d { width: 9px; height: 9px; border-radius: 2px; }
+
+  /* SVG connector layer */
+  svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+
+  /* Center core */
+  .core {
+    position: absolute;
+    left: 640px; top: 372px;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    z-index: 4;
+    text-align: center;
+  }
+  .core-box {
+    background: linear-gradient(145deg, #0a0f1a, #16243a);
+    border: 2px solid var(--cyan);
+    border-radius: 20px;
+    padding: 22px 18px 20px;
+    box-shadow: 0 0 0 8px rgba(0,163,217,0.10), 0 20px 50px rgba(0,80,120,0.30);
+    position: relative;
+  }
+  .core-logo {
+    font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--cyan), #6fd2ff, #ff5fb0);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .core-tag {
+    font-size: 0.72rem; color: #9fc4dd; font-weight: 600;
+    margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .core-services {
+    display: flex; gap: 6px; margin-top: 14px;
+  }
+  .core-chip {
+    flex: 1;
+    background: rgba(0,163,217,0.14);
+    border: 1px solid rgba(0,163,217,0.35);
+    border-radius: 9px;
+    padding: 7px 4px;
+    color: #d7f1ff;
+    font-size: 0.66rem; font-weight: 700;
+    line-height: 1.2;
+  }
+  .core-chip small { display: block; font-weight: 500; color: #8fb8d0; font-size: 0.9em; margin-top: 2px; }
+
+  /* Nodes */
+  .node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 188px;
+    z-index: 3;
+  }
+  .node-card {
+    background: #fff;
+    border: 1px solid #e4ebf3;
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 8px 22px rgba(30,55,90,0.10);
+    position: relative;
+    overflow: hidden;
+  }
+  .node-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  }
+  .node-head { display: flex; align-items: center; gap: 9px; }
+  .node-ico {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .node-name { font-size: 0.92rem; font-weight: 800; color: var(--ink); line-height: 1.1; }
+  .node-sub { font-size: 0.7rem; color: var(--muted); line-height: 1.4; margin-top: 7px; }
+
+  /* color variants */
+  .v-blue   .node-card::before { background: var(--blue); }   .v-blue   .node-ico { background: rgba(37,99,235,0.12); color: var(--blue); }
+  .v-green  .node-card::before { background: var(--green); }  .v-green  .node-ico { background: rgba(14,163,113,0.12); color: var(--green); }
+  .v-magenta .node-card::before { background: var(--magenta); } .v-magenta .node-ico { background: rgba(214,23,127,0.12); color: var(--magenta); }
+  .v-purple .node-card::before { background: var(--purple); } .v-purple .node-ico { background: rgba(124,92,255,0.12); color: var(--purple); }
+  .v-cyan   .node-card::before { background: var(--cyan); }   .v-cyan   .node-ico { background: rgba(0,163,217,0.13); color: var(--cyan2); }
+  .v-amber  .node-card::before { background: var(--amber); }  .v-amber  .node-ico { background: rgba(224,138,0,0.13); color: var(--amber); }
+  .v-orange .node-card::before { background: var(--orange); } .v-orange .node-ico { background: rgba(234,88,12,0.12); color: var(--orange); }
+  .v-slate  .node-card::before { background: #475569; }       .v-slate  .node-ico { background: rgba(71,85,105,0.12); color: #475569; }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.58rem; font-weight: 800;
+    padding: 1px 6px; border-radius: 999px;
+    margin-left: auto;
+  }
+  .badge.trigger { background: rgba(214,23,127,0.12); color: var(--magenta); }
+  .badge.ai { background: rgba(124,92,255,0.12); color: var(--purple); }
+  .badge.real { background: rgba(14,163,113,0.12); color: var(--green); }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+
+    <div class="title">
+      <h1>ToastPilot Ecosystem</h1>
+      <div class="bar"></div>
+      <div class="sub">Autonomous QA Agent for Unified Inventory</div>
+    </div>
+
+    <!-- WIRES (drawn first, behind nodes) -->
+    <svg class="wires" viewBox="0 0 1280 720" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="wire" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#00a3d9" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#d6177f" stop-opacity="0.55"/>
+        </linearGradient>
+      </defs>
+      <!-- center (640,372) → each node center -->
+      <g stroke="url(#wire)" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="640" y1="372" x2="640"  y2="150"/>   <!-- top -->
+        <line x1="640" y1="372" x2="1010" y2="205"/>   <!-- top-right -->
+        <line x1="640" y1="372" x2="1095" y2="372"/>   <!-- right -->
+        <line x1="640" y1="372" x2="1010" y2="540"/>   <!-- bottom-right -->
+        <line x1="640" y1="372" x2="640"  y2="600"/>   <!-- bottom -->
+        <line x1="640" y1="372" x2="270"  y2="540"/>   <!-- bottom-left -->
+        <line x1="640" y1="372" x2="185"  y2="372"/>   <!-- left -->
+        <line x1="640" y1="372" x2="270"  y2="205"/>   <!-- top-left -->
+      </g>
+      <!-- endpoint dots -->
+      <g fill="#00a3d9">
+        <circle cx="640" cy="150" r="4"/>
+        <circle cx="1010" cy="205" r="4"/>
+        <circle cx="1095" cy="372" r="4"/>
+        <circle cx="1010" cy="540" r="4"/>
+        <circle cx="640" cy="600" r="4"/>
+        <circle cx="270" cy="540" r="4"/>
+        <circle cx="185" cy="372" r="4"/>
+        <circle cx="270" cy="205" r="4"/>
+      </g>
+    </svg>
+
+    <!-- CENTER CORE -->
+    <div class="core">
+      <div class="core-box">
+        <div class="core-logo">⚡ ToastPilot</div>
+        <div class="core-tag">Autonomous QA Core</div>
+        <div class="core-services">
+          <div class="core-chip">Orchestrator<small>plan · run · report</small></div>
+          <div class="core-chip">AI Agent<small>heal · explain</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NODES -->
+    <!-- top -->
+    <div class="node v-slate" style="left:640px; top:108px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">🔀</div>
+          <div class="node-name">GitHub</div>
+          <span class="badge trigger">TRIGGER</span>
+        </div>
+        <div class="node-sub">PR merge fires an HMAC-verified webhook · SMB-* only</div>
+      </div>
+    </div>
+
+    <!-- top-right -->
+    <div class="node v-blue" style="left:1010px; top:160px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">🎫</div>
+          <div class="node-name">Jira</div>
+        </div>
+        <div class="node-sub">Ticket → test plan · evidence, video & bugs written back</div>
+      </div>
+    </div>
+
+    <!-- right -->
+    <div class="node v-magenta" style="left:1098px; top:372px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">💬</div>
+          <div class="node-name">Slack</div>
+        </div>
+        <div class="node-sub">Rich Block Kit verdict · aggregate Bug Bash summary</div>
+      </div>
+    </div>
+
+    <!-- bottom-right -->
+    <div class="node v-cyan" style="left:1010px; top:560px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">📊</div>
+          <div class="node-name">Dashboard</div>
+        </div>
+        <div class="node-sub">Live steps, screenshots & video over WebSocket · :5177</div>
+      </div>
+    </div>
+
+    <!-- bottom -->
+    <div class="node v-green" style="left:640px; top:632px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">🖥️</div>
+          <div class="node-name">Toast Operator</div>
+          <span class="badge real">REAL APP</span>
+        </div>
+        <div class="node-sub">Production iOS Simulator — no mocks · 3 inventory modules</div>
+      </div>
+    </div>
+
+    <!-- bottom-left -->
+    <div class="node v-orange" style="left:270px; top:560px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">📱</div>
+          <div class="node-name">Appium</div>
+        </div>
+        <div class="node-sub">XCUITest driver · 102 action methods · full-run MP4</div>
+      </div>
+    </div>
+
+    <!-- left -->
+    <div class="node v-purple" style="left:185px; top:372px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">🧠</div>
+          <div class="node-name">OpenAI</div>
+          <span class="badge ai">AI</span>
+        </div>
+        <div class="node-sub">GPT-4o · test plans from PR diffs · plain-English failures</div>
+      </div>
+    </div>
+
+    <!-- top-left -->
+    <div class="node v-amber" style="left:270px; top:205px;">
+      <div class="node-card">
+        <div class="node-head">
+          <div class="node-ico">🩹</div>
+          <div class="node-name">Self-Healing</div>
+        </div>
+        <div class="node-sub">113 touchpoints · adapts to UI drift · zero maintenance</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="i"><span class="d" style="background:var(--magenta)"></span> Trigger</div>
+      <div class="i"><span class="d" style="background:var(--purple)"></span> AI</div>
+      <div class="i"><span class="d" style="background:var(--green)"></span> Real app</div>
+      <div class="i"><span class="d" style="background:var(--cyan)"></span> Live / evidence</div>
+    </div>
+    <div class="footer">© 2026 Toast, Inc. · Retail Unified Inventory Mobile</div>
+
+  </div>
+</body>
+</html>
