@@ -30,15 +30,37 @@
   .head .sub { font-size:1rem; color:var(--muted); font-weight:600; margin-top:14px; }
 
   .team {
-    flex:1; display:flex; align-items:center; justify-content:center; gap:60px;
+    flex:1; display:flex; align-items:center; justify-content:center; gap:44px;
   }
-  .member { text-align:center; width:280px; }
+
+  /* member CARD */
+  .member {
+    text-align:center; width:300px;
+    background:linear-gradient(180deg,#ffffff,#f7fafe);
+    border:1px solid #e6edf5; border-radius:24px;
+    box-shadow:0 22px 50px rgba(25,55,100,0.13);
+    padding:54px 26px 30px; position:relative; overflow:hidden;
+  }
+  .member::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:6px;
+  }
+  .m1::before { background:linear-gradient(90deg,#00a3d9,#38d0ff); }
+  .m2::before { background:linear-gradient(90deg,#7c5cff,#a78bfa); }
+  .m3::before { background:linear-gradient(90deg,#e0197d,#f472b6); }
+  /* soft corner glow per card */
+  .member::after {
+    content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px;
+    border-radius:50%; filter:blur(40px); opacity:0.5; z-index:0;
+  }
+  .m1::after { background:rgba(0,163,217,0.28); }
+  .m2::after { background:rgba(124,92,255,0.26); }
+  .m3::after { background:rgba(224,25,125,0.24); }
 
   .photo {
-    width:230px; height:230px; margin:0 auto 22px;
-    border-radius:50%; padding:6px;
+    width:186px; height:186px; margin:0 auto 22px;
+    border-radius:50%; padding:5px;
     display:flex; align-items:center; justify-content:center;
-    position:relative;
+    position:relative; z-index:1;
   }
   /* gradient ring frame */
   .photo::before {
@@ -50,24 +72,23 @@
   .avatar {
     width:100%; height:100%; border-radius:50%; overflow:hidden;
     display:flex; align-items:center; justify-content:center;
-    font-size:4rem; font-weight:900; color:#fff; letter-spacing:-0.02em;
-    box-shadow:0 14px 34px rgba(25,55,100,0.18);
+    font-size:3.4rem; font-weight:900; color:#fff; letter-spacing:-0.02em;
   }
-  .a1 { background:linear-gradient(145deg,#00a3d9,#0088b3); }
-  .a2 { background:linear-gradient(145deg,#7c5cff,#6d28d9); }
-  .a3 { background:linear-gradient(145deg,#e0197d,#be145f); }
+  .a1 { background:linear-gradient(145deg,#00a3d9,#0088b3); box-shadow:0 16px 36px rgba(0,163,217,0.40); }
+  .a2 { background:linear-gradient(145deg,#7c5cff,#6d28d9); box-shadow:0 16px 36px rgba(124,92,255,0.40); }
+  .a3 { background:linear-gradient(145deg,#e0197d,#be145f); box-shadow:0 16px 36px rgba(224,25,125,0.40); }
   /* if a real photo is added, it fills the avatar */
   .avatar img { width:100%; height:100%; object-fit:cover; }
 
-  .name { font-size:1.25rem; font-weight:800; color:var(--ink); letter-spacing:-0.01em; }
+  .name { font-size:1.22rem; font-weight:800; color:var(--ink); letter-spacing:-0.01em; position:relative; z-index:1; }
   .role {
-    display:inline-block; margin-top:9px;
-    font-size:0.85rem; font-weight:800;
-    padding:5px 16px; border-radius:999px;
+    display:inline-block; margin-top:11px;
+    font-size:0.82rem; font-weight:800; color:#fff;
+    padding:6px 18px; border-radius:999px; position:relative; z-index:1;
   }
-  .r1 { color:#007db0; background:rgba(0,163,217,0.12); border:1.5px solid rgba(0,163,217,0.3); }
-  .r2 { color:#5b3fd4; background:rgba(124,92,255,0.12); border:1.5px solid rgba(124,92,255,0.3); }
-  .r3 { color:#b8136a; background:rgba(224,25,125,0.10); border:1.5px solid rgba(224,25,125,0.28); }
+  .r1 { background:linear-gradient(135deg,#00a3d9,#38d0ff); box-shadow:0 6px 16px rgba(0,163,217,0.30); }
+  .r2 { background:linear-gradient(135deg,#7c5cff,#a78bfa); box-shadow:0 6px 16px rgba(124,92,255,0.30); }
+  .r3 { background:linear-gradient(135deg,#e0197d,#f472b6); box-shadow:0 6px 16px rgba(224,25,125,0.30); }
 </style>
 </head>
 <body>
@@ -79,7 +100,7 @@
     </div>
 
     <div class="team">
-      <div class="member">
+      <div class="member m1">
         <div class="photo">
           <!-- To use a real photo: put keerthi.jpg next to this file -->
           <div class="avatar a1"><img src="keerthi.jpg" alt="" onerror="this.style.display='none';this.parentNode.textContent='KV'"></div>
@@ -88,7 +109,7 @@
         <div class="role r1">iOS Mobile</div>
       </div>
 
-      <div class="member">
+      <div class="member m2">
         <div class="photo">
           <div class="avatar a2"><img src="sangeetha.jpg" alt="" onerror="this.style.display='none';this.parentNode.textContent='SR'"></div>
         </div>
@@ -96,7 +117,7 @@
         <div class="role r2">DPS</div>
       </div>
 
-      <div class="member">
+      <div class="member m3">
         <div class="photo">
           <div class="avatar a3"><img src="shruti.jpg" alt="" onerror="this.style.display='none';this.parentNode.textContent='SJ'"></div>
         </div>
