@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint Bug Bash – ToastPilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',-apple-system,sans-serif; background:#e6edf5; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+  .stage { position:relative; width:1280px; height:720px;
+    background: radial-gradient(720px 420px at 88% 8%, rgba(0,163,217,0.08), transparent),
+                radial-gradient(720px 460px at 6% 96%, rgba(224,25,125,0.07), transparent),
+                linear-gradient(180deg,#ffffff,#eef4fb);
+    border:1px solid #dde7f1; border-radius:22px; box-shadow:0 40px 90px rgba(15,40,80,0.16);
+    overflow:hidden; padding:60px 70px; }
+  .head h1 { font-size:3rem; font-weight:900; letter-spacing:-0.03em; color:#0f1b2d; line-height:1; }
+  .head .bar { width:150px; height:6px; border-radius:4px; margin-top:16px; background:linear-gradient(90deg,#00a3d9,#e0197d); }
+  .footer { position:absolute; bottom:22px; right:32px; font-size:0.74rem; color:#9fb0c4; font-weight:500; }
+
+  :root {
+    --ink:#0f1b2d; --muted:#5a6e88; --cyan:#00a3d9; --cyan2:#38d0ff;
+    --magenta:#e0197d; --pink:#f472b6; --green:#0ea371; --amber:#e08a00;
+    --purple:#7c5cff; --blue:#2563eb; --orange:#ea580c;
+  }
+
+  .columns {
+    display: flex;
+    gap: 44px;
+    margin-top: 38px;
+    align-items: flex-start;
+    height: 560px;
+  }
+
+  /* LEFT COLUMN */
+  .left-col {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .icon-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .icon-tile {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #00a3d9, #7c5cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 6px 18px rgba(0,163,217,0.28);
+    flex-shrink: 0;
+  }
+
+  .desc-card {
+    background: #fff;
+    border: 1px solid #e6edf5;
+    border-radius: 18px;
+    box-shadow: 0 14px 32px rgba(25,55,100,0.12);
+    padding: 28px 28px 24px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .desc-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #00a3d9, #7c5cff);
+    border-radius: 18px 18px 0 0;
+  }
+
+  .desc-card p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: #3a4e66;
+    font-weight: 500;
+  }
+
+  .pills-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    width: fit-content;
+    letter-spacing: -0.01em;
+  }
+
+  .pill-cyan {
+    background: linear-gradient(135deg, rgba(0,163,217,0.12), rgba(56,208,255,0.12));
+    color: #007db0;
+    border: 1.5px solid rgba(0,163,217,0.3);
+  }
+  .pill-purple {
+    background: linear-gradient(135deg, rgba(124,92,255,0.12), rgba(37,99,235,0.12));
+    color: #5b3fd4;
+    border: 1.5px solid rgba(124,92,255,0.3);
+  }
+  .pill-magenta {
+    background: linear-gradient(135deg, rgba(224,25,125,0.10), rgba(244,114,182,0.10));
+    color: #b8136a;
+    border: 1.5px solid rgba(224,25,125,0.28);
+  }
+
+  .pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-cyan { background: #00a3d9; }
+  .dot-purple { background: #7c5cff; }
+  .dot-magenta { background: #e0197d; }
+
+  .gradient-line {
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    background: linear-gradient(90deg, #00a3d9, #e0197d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.3;
+  }
+
+  /* RIGHT COLUMN */
+  .right-col {
+    flex: 0 0 480px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .queue-card {
+    background: #fff;
+    border: 1px solid #e6edf5;
+    border-radius: 18px;
+    box-shadow: 0 14px 32px rgba(25,55,100,0.12);
+    overflow: hidden;
+    position: relative;
+  }
+  .queue-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #0ea371, #00a3d9);
+    border-radius: 18px 18px 0 0;
+  }
+
+  .queue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px 16px 24px;
+    border-bottom: 1px solid #eef2f8;
+  }
+
+  .queue-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .queue-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: linear-gradient(145deg, #0ea371, #00a3d9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(14,163,113,0.3);
+  }
+
+  .queue-label {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f1b2d;
+    letter-spacing: -0.02em;
+  }
+  .queue-sublabel {
+    font-size: 0.72rem;
+    color: #5a6e88;
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  .progress-chip {
+    background: linear-gradient(135deg, #0ea371, #00a3d9);
+    color: #fff;
+    font-size: 0.88rem;
+    font-weight: 800;
+    padding: 6px 16px;
+    border-radius: 50px;
+    letter-spacing: -0.01em;
+    box-shadow: 0 3px 10px rgba(14,163,113,0.3);
+  }
+
+  .queue-rows {
+    padding: 10px 0 14px 0;
+  }
+
+  .ticket-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 24px;
+    border-bottom: 1px solid #f3f6fb;
+    transition: background 0.15s;
+  }
+  .ticket-row:last-child { border-bottom: none; }
+  .ticket-row.running {
+    background: linear-gradient(90deg, rgba(0,163,217,0.04), transparent);
+  }
+
+  .ticket-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .status-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .status-pass {
+    background: rgba(14,163,113,0.12);
+    color: #0ea371;
+    font-size: 1rem;
+  }
+  .status-running {
+    background: rgba(0,163,217,0.12);
+    color: #00a3d9;
+    font-size: 0.95rem;
+    border: 2px solid rgba(0,163,217,0.35);
+  }
+  .status-pending {
+    background: rgba(90,110,136,0.08);
+    color: #9fb0c4;
+    border: 1.5px solid #dde7f1;
+    font-size: 0.85rem;
+  }
+
+  .ticket-key {
+    font-family: 'SF Mono', 'Fira Mono', 'Consolas', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f1b2d;
+    letter-spacing: 0.01em;
+  }
+
+  .ticket-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pass-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 11px;
+    border-radius: 50px;
+  }
+  .pass-green {
+    background: rgba(14,163,113,0.1);
+    color: #0a7d56;
+    border: 1px solid rgba(14,163,113,0.25);
+  }
+  .running-badge {
+    background: rgba(0,163,217,0.1);
+    color: #007db0;
+    border: 1px solid rgba(0,163,217,0.25);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 11px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pending-badge {
+    background: rgba(90,110,136,0.07);
+    color: #9fb0c4;
+    border: 1px solid #e0e8f2;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 11px;
+    border-radius: 50px;
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    background: #00a3d9;
+    border-radius: 50%;
+    animation: pulse 1.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.75); }
+  }
+
+  .queue-footer {
+    padding: 14px 24px 18px 24px;
+    background: linear-gradient(180deg, #f8fbff, #eef4fb);
+    border-top: 1px solid #eef2f8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .queue-footer-label {
+    font-size: 0.78rem;
+    color: #5a6e88;
+    font-weight: 600;
+  }
+
+  .slack-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #dde7f1;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #5a6e88;
+    box-shadow: 0 2px 6px rgba(25,55,100,0.07);
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="head">
+    <h1>Sprint Bug Bash</h1>
+    <div class="bar"></div>
+  </div>
+
+  <div class="columns">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+
+      <div class="desc-card">
+        <div class="icon-row" style="margin-bottom:14px;">
+          <div class="icon-tile">🚀</div>
+          <div>
+            <div style="font-size:0.8rem;font-weight:700;color:#5a6e88;text-transform:uppercase;letter-spacing:0.06em;">What it replaces</div>
+            <div style="font-size:1rem;font-weight:700;color:#0f1b2d;margin-top:2px;">Manual sprint-end testing sessions</div>
+          </div>
+        </div>
+        <p>Every sprint, the team manually tests 10–15 completed tickets one by one. ToastPilot replaces the entire session — executing each ticket sequentially, collecting evidence, and posting a full Slack summary when complete.</p>
+      </div>
+
+      <div class="pills-row">
+        <div class="pill pill-cyan">
+          <span class="pill-dot dot-cyan"></span>
+          Sequential execution
+        </div>
+        <div class="pill pill-purple">
+          <span class="pill-dot dot-purple"></span>
+          Evidence per ticket
+        </div>
+        <div class="pill pill-magenta">
+          <span class="pill-dot dot-magenta"></span>
+          Aggregate Slack summary
+        </div>
+      </div>
+
+      <div style="padding:20px 24px; background:#fff; border:1px solid #e6edf5; border-radius:16px; box-shadow:0 14px 32px rgba(25,55,100,0.10); position:relative; overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#e0197d,#7c5cff);border-radius:16px 16px 0 0;"></div>
+        <div style="font-size:0.72rem;font-weight:700;color:#b8136a;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">The payoff</div>
+        <div class="gradient-line">An entire sprint, tested in one tap.</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+      <div class="queue-card">
+
+        <div class="queue-header">
+          <div class="queue-title">
+            <div class="queue-icon">⚡</div>
+            <div>
+              <div class="queue-label">Live Execution Queue</div>
+              <div class="queue-sublabel">Sprint 24 · Bug Bash · 5 tickets</div>
+            </div>
+          </div>
+          <div class="progress-chip">3 / 5</div>
+        </div>
+
+        <div class="queue-rows">
+
+          <!-- Ticket 1: passed -->
+          <div class="ticket-row">
+            <div class="ticket-left">
+              <div class="status-icon status-pass">✅</div>
+              <div>
+                <div class="ticket-key">SMB-1082</div>
+                <div style="font-size:0.72rem;color:#5a6e88;font-weight:500;margin-top:2px;">Inventory count sync</div>
+              </div>
+            </div>
+            <div class="ticket-right">
+              <span class="pass-badge pass-green">10 passed</span>
+            </div>
+          </div>
+
+          <!-- Ticket 2: passed -->
+          <div class="ticket-row">
+            <div class="ticket-left">
+              <div class="status-icon status-pass">✅</div>
+              <div>
+                <div class="ticket-key">SMB-1168</div>
+                <div style="font-size:0.72rem;color:#5a6e88;font-weight:500;margin-top:2px;">Product catalog search</div>
+              </div>
+            </div>
+            <div class="ticket-right">
+              <span class="pass-badge pass-green">8 passed</span>
+            </div>
+          </div>
+
+          <!-- Ticket 3: running -->
+          <div class="ticket-row running">
+            <div class="ticket-left">
+              <div class="status-icon status-running">◎</div>
+              <div>
+                <div class="ticket-key">SMB-1096</div>
+                <div style="font-size:0.72rem;color:#007db0;font-weight:600;margin-top:2px;">Invoice scanning flow</div>
+              </div>
+            </div>
+            <div class="ticket-right">
+              <span class="running-badge">
+                <span class="pulse-dot"></span>
+                Running…
+              </span>
+            </div>
+          </div>
+
+          <!-- Ticket 4: pending -->
+          <div class="ticket-row">
+            <div class="ticket-left">
+              <div class="status-icon status-pending">○</div>
+              <div>
+                <div class="ticket-key" style="color:#7a90a8;">SMB-1201</div>
+                <div style="font-size:0.72rem;color:#aabbd0;font-weight:500;margin-top:2px;">Cycle count adjustment</div>
+              </div>
+            </div>
+            <div class="ticket-right">
+              <span class="pending-badge">Pending</span>
+            </div>
+          </div>
+
+          <!-- Ticket 5: pending -->
+          <div class="ticket-row">
+            <div class="ticket-left">
+              <div class="status-icon status-pending">○</div>
+              <div>
+                <div class="ticket-key" style="color:#7a90a8;">SMB-1215</div>
+                <div style="font-size:0.72rem;color:#aabbd0;font-weight:500;margin-top:2px;">Low stock alert trigger</div>
+              </div>
+            </div>
+            <div class="ticket-right">
+              <span class="pending-badge">Pending</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="queue-footer">
+          <div class="queue-footer-label">Summary posts on completion →</div>
+          <div class="slack-chip">
+            <span style="font-size:1rem;">💬</span>
+            Slack Block Kit
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">© 2026 Toast, Inc. · Retail Unified Inventory Mobile</div>
+</div>
+</body>
+</html>

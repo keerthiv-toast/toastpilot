@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why ToastPilot Wins</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',-apple-system,sans-serif; background:#e6edf5; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+  .stage { position:relative; width:1280px; height:720px;
+    background: radial-gradient(720px 420px at 88% 8%, rgba(0,163,217,0.08), transparent),
+                radial-gradient(720px 460px at 6% 96%, rgba(224,25,125,0.07), transparent),
+                linear-gradient(180deg,#ffffff,#eef4fb);
+    border:1px solid #dde7f1; border-radius:22px; box-shadow:0 40px 90px rgba(15,40,80,0.16);
+    overflow:hidden; padding:60px 70px; }
+  .head h1 { font-size:3rem; font-weight:900; letter-spacing:-0.03em; color:#0f1b2d; line-height:1; }
+  .head .bar { width:150px; height:6px; border-radius:4px; margin-top:16px; background:linear-gradient(90deg,#00a3d9,#e0197d); }
+  .footer { position:absolute; bottom:22px; right:32px; font-size:0.74rem; color:#9fb0c4; font-weight:500; }
+
+  :root {
+    --ink:#0f1b2d; --muted:#5a6e88; --cyan:#00a3d9; --cyan2:#38d0ff;
+    --magenta:#e0197d; --pink:#f472b6; --green:#0ea371; --amber:#e08a00;
+    --purple:#7c5cff; --blue:#2563eb; --orange:#ea580c;
+  }
+
+  /* STAT ROW */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 30px;
+  }
+
+  .stat-card {
+    position: relative;
+    background: #fff;
+    border: 1px solid #e6edf5;
+    border-radius: 18px;
+    box-shadow: 0 14px 32px rgba(25,55,100,0.12);
+    padding: 22px 18px 18px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .stat-card.c-cyan::before { background: linear-gradient(90deg, #00a3d9, #38d0ff); }
+  .stat-card.c-magenta::before { background: linear-gradient(90deg, #e0197d, #f472b6); }
+  .stat-card.c-amber::before { background: linear-gradient(90deg, #e08a00, #fbbf24); }
+  .stat-card.c-purple::before { background: linear-gradient(90deg, #7c5cff, #a78bfa); }
+
+  .stat-num {
+    font-size: 2.3rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    background: linear-gradient(135deg, #00a3d9, #e0197d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-card.c-cyan .stat-num { background: linear-gradient(135deg, #00a3d9, #38d0ff); -webkit-background-clip: text; background-clip: text; }
+  .stat-card.c-magenta .stat-num { background: linear-gradient(135deg, #e0197d, #f472b6); -webkit-background-clip: text; background-clip: text; }
+  .stat-card.c-amber .stat-num { background: linear-gradient(135deg, #e08a00, #fbbf24); -webkit-background-clip: text; background-clip: text; }
+  .stat-card.c-purple .stat-num { background: linear-gradient(135deg, #7c5cff, #a78bfa); -webkit-background-clip: text; background-clip: text; }
+
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #5a6e88;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 6px;
+    line-height: 1.3;
+  }
+
+  /* DIFFERENTIATOR ROWS */
+  .diff-section {
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .diff-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff;
+    border: 1px solid #e6edf5;
+    border-radius: 16px;
+    box-shadow: 0 14px 32px rgba(25,55,100,0.12);
+    padding: 14px 20px;
+    overflow: hidden;
+  }
+
+  .diff-row::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .diff-row.d-cyan::before { background: linear-gradient(90deg, #00a3d9, #38d0ff); }
+  .diff-row.d-amber::before { background: linear-gradient(90deg, #e08a00, #fbbf24); }
+  .diff-row.d-pink::before { background: linear-gradient(90deg, #e0197d, #f472b6); }
+  .diff-row.d-green::before { background: linear-gradient(90deg, #0ea371, #34d399); }
+
+  .diff-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+
+  .d-cyan .diff-icon { background: linear-gradient(145deg, #00a3d9, #38d0ff); }
+  .d-amber .diff-icon { background: linear-gradient(145deg, #e08a00, #fbbf24); }
+  .d-pink .diff-icon { background: linear-gradient(145deg, #e0197d, #f472b6); }
+  .d-green .diff-icon { background: linear-gradient(145deg, #0ea371, #34d399); }
+
+  .diff-content { flex: 1; }
+
+  .diff-keyword {
+    font-size: 1.0rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 2px;
+  }
+
+  .d-cyan .diff-keyword { color: #00a3d9; }
+  .d-amber .diff-keyword { color: #e08a00; }
+  .d-pink .diff-keyword { color: #e0197d; }
+  .d-green .diff-keyword { color: #0ea371; }
+
+  .diff-desc {
+    font-size: 0.85rem;
+    color: #5a6e88;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* CLOSING LINE */
+  .closing {
+    margin-top: 20px;
+    text-align: center;
+    padding: 14px 28px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, rgba(0,163,217,0.07), rgba(224,25,125,0.07));
+    border: 1px solid rgba(0,163,217,0.15);
+  }
+
+  .closing p {
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #00a3d9, #e0197d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>Why ToastPilot Wins</h1>
+    <div class="bar"></div>
+  </div>
+
+  <!-- STAT ROW -->
+  <div class="stat-row">
+    <div class="stat-card c-cyan">
+      <div class="stat-num">14,320</div>
+      <div class="stat-label">Lines of TypeScript</div>
+    </div>
+    <div class="stat-card c-magenta">
+      <div class="stat-num">102</div>
+      <div class="stat-label">Action Methods</div>
+    </div>
+    <div class="stat-card c-amber">
+      <div class="stat-num">113</div>
+      <div class="stat-label">Self-Heal Touchpoints</div>
+    </div>
+    <div class="stat-card c-purple">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Humans in the Loop</div>
+    </div>
+  </div>
+
+  <!-- DIFFERENTIATOR ROWS -->
+  <div class="diff-section">
+    <div class="diff-row d-cyan">
+      <div class="diff-icon">⚡</div>
+      <div class="diff-content">
+        <div class="diff-keyword">Fully Autonomous</div>
+        <div class="diff-desc">On a PR merge, the entire test lifecycle — trigger, execute, report — runs without a single human action.</div>
+      </div>
+    </div>
+    <div class="diff-row d-amber">
+      <div class="diff-icon">🔧</div>
+      <div class="diff-content">
+        <div class="diff-keyword">Self-Healing</div>
+        <div class="diff-desc">113 recovery touchpoints detect UI drift and adapt element selectors in real time — zero test maintenance sprints.</div>
+      </div>
+    </div>
+    <div class="diff-row d-pink">
+      <div class="diff-icon">✨</div>
+      <div class="diff-content">
+        <div class="diff-keyword">Self-Extending</div>
+        <div class="diff-desc">GPT-4o reads the diff and writes new test flows for features it has never seen before, expanding coverage automatically.</div>
+      </div>
+    </div>
+    <div class="diff-row d-green">
+      <div class="diff-icon">💬</div>
+      <div class="diff-content">
+        <div class="diff-keyword">It Explains</div>
+        <div class="diff-desc">Every failure delivers a plain-language root cause and a release-confidence verdict — no log archaeology required.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSING LINE -->
+  <div class="closing">
+    <p>"Quality stops being a meeting and becomes infrastructure."</p>
+  </div>
+
+  <div class="footer">© 2026 Toast, Inc. · Retail Unified Inventory Mobile</div>
+</div>
+</body>
+</html>
