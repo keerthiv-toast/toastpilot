@@ -233,7 +233,7 @@ Before every run, the Copilot performs a preflight analysis:
 
 ## Architecture
 
-> 📐 **Full architecture flow diagram:** see the rendered Mermaid diagram in [DESIGN.md](DESIGN.md#system-architecture), or open [`architecture.html`](architecture.html) in a browser for the branded, presentation-ready version.
+> 📐 **Full architecture flow diagram:** see the rendered Mermaid diagram in [DESIGN.md](DESIGN.md#system-architecture).
 >
 > 🔧 **Engineer's reference** (every endpoint, env var, event type, and flow): [TECHNICAL.md](TECHNICAL.md).
 
