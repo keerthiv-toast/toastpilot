@@ -1087,14 +1087,22 @@
     /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border2);
-      padding: 3rem 2rem;
-      text-align: center;
+      background: linear-gradient(180deg, rgba(0,163,217,0.03), transparent);
       color: var(--muted);
       font-size: 0.85rem;
     }
 
-    footer .footer-logo {
-      font-size: 1.25rem;
+    .footer-top {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 2.25rem;
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .footer-brand .footer-logo {
+      font-size: 1.4rem;
       font-weight: 800;
       background: linear-gradient(90deg, var(--cyan2), var(--magenta));
       -webkit-background-clip: text;
@@ -1102,19 +1110,56 @@
       background-clip: text;
       margin-bottom: 0.75rem;
     }
-
-    footer a { color: var(--cyan); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-
-    .footer-note {
-      max-width: 640px;
-      margin: 0 auto;
-      font-size: 0.82rem;
-      color: var(--muted2);
+    .footer-brand p {
+      color: var(--muted);
       line-height: 1.7;
-      font-style: italic;
+      max-width: 38ch;
+      font-size: 0.84rem;
     }
-    .footer-note a { font-style: normal; }
+    .footer-brand .built {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted2);
+    }
+    .footer-brand .built strong { color: var(--text); font-weight: 600; }
+
+    .footer-col h4 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 1rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+    .footer-col a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .footer-col a:hover { color: var(--cyan2); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border2);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1100px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .footer-bottom .copy { font-size: 0.78rem; color: var(--muted2); }
+    .footer-bottom .disclaimer { font-size: 0.74rem; color: var(--muted2); font-style: italic; }
+
+    @media (max-width: 760px) {
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
 
     /* ── DIVIDER ── */
     .section-divider {
@@ -2195,19 +2240,36 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">⚡ ToastPilot</div>
-  <p style="margin-bottom:1rem">Built by <strong>Keerthi V</strong> · Retail Unified Inventory Mobile</p>
-  <p class="footer-note">
-    Technical reference in <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/TECHNICAL.md" target="_blank">TECHNICAL.md</a>
-    · full design in <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/DESIGN.md" target="_blank">DESIGN.md</a>
-    · overview in the <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/README.md" target="_blank">README</a>.
-    This bot's answers are a starting point for discussion, not a verdict.
-  </p>
-  <p style="margin-top:1rem">
-    <a href="https://github.com/keerthiv-toast/toastpilot" target="_blank">Repo ↗</a>
-    &nbsp;·&nbsp;
-    <a href="https://github.toasttab.com/toasttab/operator-app-ios/pull/4838" target="_blank">View PR on GitHub Enterprise →</a>
-  </p>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">⚡ ToastPilot</div>
+      <p>Autonomous AI QA agent for the Toast Operator Unified Inventory iOS app — testing every PR, self-healing, and reporting release confidence to Jira and Slack, automatically.</p>
+      <p class="built">Built by <strong>Keerthi V</strong> · Retail Unified Inventory Mobile · Toast Hackathon 2026</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Documentation</h4>
+      <ul>
+        <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/README.md" target="_blank">Overview · README</a></li>
+        <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/DESIGN.md" target="_blank">Architecture · DESIGN.md</a></li>
+        <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/TECHNICAL.md" target="_blank">Reference · TECHNICAL.md</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Project</h4>
+      <ul>
+        <li><a href="https://github.com/keerthiv-toast/toastpilot" target="_blank">Source Repository ↗</a></li>
+        <li><a href="https://github.toasttab.com/toasttab/operator-app-ios/pull/4838" target="_blank">Pull Request ↗</a></li>
+        <li><a href="#architecture">Architecture Diagram</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span class="copy">© 2026 Toast, Inc. · All rights reserved.</span>
+    <span class="disclaimer">An autonomous QA assistant — its findings are a starting point for discussion, not a verdict.</span>
+  </div>
 </footer>
 
 <script>
