@@ -1424,6 +1424,7 @@
     <li><a href="#bugbash">Bug Bash</a></li>
     <li><a href="#build">Build</a></li>
     <li><a href="#stack">Stack</a></li>
+    <li><a href="#setup">Setup</a></li>
     <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/TECHNICAL.md" target="_blank">Docs</a></li>
   </ul>
   <a class="nav-cta" href="https://github.com/keerthiv-toast/toastpilot" target="_blank">
@@ -2239,6 +2240,159 @@
   </div>
 </section>
 
+<!-- SETUP / ONBOARDING -->
+<div class="section-divider"></div>
+
+<section id="setup">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="section-label">Get Started</div>
+      <h2 class="section-title">Up and running in three commands.</h2>
+      <p class="section-sub">Any iOS team member with the Toast Operator app installed can clone the repo and have the agent running in under five minutes. No manual configuration required.</p>
+    </div>
+
+    <!-- Step cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-bottom:3rem">
+      <div class="feature-card feature-card--cyan fade-up" style="padding:1.5rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.875rem">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(0,163,217,0.15);border:1px solid rgba(0,163,217,0.35);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;color:var(--cyan2);flex-shrink:0">1</div>
+          <div class="feature-title" style="margin:0">Clone &amp; install</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.875rem;font-family:var(--mono);font-size:0.72rem;line-height:1.8;color:var(--muted)">
+          <span style="color:#7dd3fc">git</span> clone &lt;repo&gt;<br/>
+          <span style="color:#7dd3fc">cd</span> toastpilot-qa-agent<br/>
+          <span style="color:#7dd3fc">npm</span> install
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:0.75rem;line-height:1.6">
+          <code>npm install</code> auto-detects your monorepo path, finds <code>ToastOperator.app</code>, writes <code>.env</code> with shared team credentials, installs Appium, and adds the <code>run agent</code> shell function to your <code>~/.zshrc</code>.
+        </p>
+      </div>
+
+      <div class="feature-card feature-card--magenta fade-up" style="padding:1.5rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.875rem">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(224,25,125,0.12);border:1px solid rgba(224,25,125,0.3);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;color:var(--magenta);flex-shrink:0">2</div>
+          <div class="feature-title" style="margin:0">Reload shell</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.875rem;font-family:var(--mono);font-size:0.72rem;line-height:1.8;color:var(--muted)">
+          <span style="color:#7dd3fc">source</span> ~/.zshrc
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:0.75rem;line-height:1.6">
+          One-time only. Required so the <code>run agent</code> alias is available in your current shell session. Shell built-ins can't be automated — this is the only manual step.
+        </p>
+      </div>
+
+      <div class="feature-card feature-card--green fade-up" style="padding:1.5rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.875rem">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800;color:var(--green);flex-shrink:0">3</div>
+          <div class="feature-title" style="margin:0">Run the agent</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.875rem;font-family:var(--mono);font-size:0.72rem;line-height:1.8;color:var(--muted)">
+          <span style="color:#7dd3fc">run</span> agent
+        </div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:0.75rem;line-height:1.6">
+          Boots the iOS Simulator, starts Appium, launches the server and dashboard, and opens <strong style="color:var(--text)">http://localhost:5177</strong>. Type, speak, or paste a Jira ticket ID.
+        </p>
+      </div>
+    </div>
+
+    <!-- Prerequisites -->
+    <div class="fade-up" style="background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2.5rem;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--magenta))"></div>
+      <div class="section-label" style="margin-bottom:1rem">Prerequisites (already true for the iOS team)</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.85rem">
+          <span style="color:var(--green);font-size:1rem;flex-shrink:0;margin-top:0.05rem">✓</span>
+          <div><strong style="color:var(--text)">Xcode</strong><br/><span style="color:var(--muted);font-size:0.78rem">with iOS 18 Simulator</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.85rem">
+          <span style="color:var(--green);font-size:1rem;flex-shrink:0;margin-top:0.05rem">✓</span>
+          <div><strong style="color:var(--text)">operator-app-ios cloned</strong><br/><span style="color:var(--muted);font-size:0.78rem">auto-detected in ~/Documents/GitHub</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.85rem">
+          <span style="color:var(--green);font-size:1rem;flex-shrink:0;margin-top:0.05rem">✓</span>
+          <div><strong style="color:var(--text)">Node.js 20+</strong><br/><span style="color:var(--muted);font-size:0.78rem"><code>brew install node</code> if needed</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.85rem">
+          <span style="color:var(--green);font-size:1rem;flex-shrink:0;margin-top:0.05rem">✓</span>
+          <div><strong style="color:var(--text)">iPhone 17 Pro simulator</strong><br/><span style="color:var(--muted);font-size:0.78rem">run agent auto-boots it</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;font-size:0.85rem">
+          <span style="color:var(--amber);font-size:1rem;flex-shrink:0;margin-top:0.05rem">!</span>
+          <div><strong style="color:var(--text)">ToastOperator.app built</strong><br/><span style="color:var(--muted);font-size:0.78rem"><code>npm run app:build</code> if not found</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What postinstall does automatically -->
+    <div class="fade-up" style="background:var(--panel);border:1px solid var(--border2);border-radius:var(--radius);padding:2rem;margin-bottom:2.5rem">
+      <div class="section-label" style="margin-bottom:1.25rem">What npm install does automatically</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div style="display:flex;gap:1rem;align-items:flex-start">
+          <div style="min-width:28px;height:28px;border-radius:6px;background:rgba(0,163,217,0.12);border:1px solid rgba(0,163,217,0.25);display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--cyan2);flex-shrink:0;margin-top:2px">1</div>
+          <div><span style="font-weight:600;color:var(--text)">setup-env.ts</span> <span style="font-size:0.8rem;color:var(--muted)">— scans <code>~/Documents/GitHub</code> for <code>operator-app-ios</code>, finds <code>ToastOperator.app</code>, writes <code>.env</code> with shared team credentials + your machine's absolute paths</span></div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start">
+          <div style="min-width:28px;height:28px;border-radius:6px;background:rgba(0,163,217,0.12);border:1px solid rgba(0,163,217,0.25);display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--cyan2);flex-shrink:0;margin-top:2px">2</div>
+          <div><span style="font-weight:600;color:var(--text)">setup-appium.ts</span> <span style="font-size:0.8rem;color:var(--muted)">— installs the XCUITest driver (<code>appium-xcuitest-driver</code>) into the local <code>node_modules</code></span></div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start">
+          <div style="min-width:28px;height:28px;border-radius:6px;background:rgba(0,163,217,0.12);border:1px solid rgba(0,163,217,0.25);display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--cyan2);flex-shrink:0;margin-top:2px">3</div>
+          <div><span style="font-weight:600;color:var(--text)">install-alias.sh</span> <span style="font-size:0.8rem;color:var(--muted)">— appends the <code>run agent</code> shell function to <code>~/.zshrc</code> and <code>~/.bashrc</code>, idempotent (safe to run multiple times)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Useful commands -->
+    <div class="fade-up" style="background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:2.5rem;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--magenta),var(--cyan))"></div>
+      <div class="section-label" style="margin-bottom:1.25rem">Useful commands after setup</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.75rem 1rem">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--cyan2);margin-bottom:0.3rem">run agent</div>
+          <div style="font-size:0.75rem;color:var(--muted)">Boot everything → open dashboard</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.75rem 1rem">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--cyan2);margin-bottom:0.3rem">npm run app:build</div>
+          <div style="font-size:0.75rem;color:var(--muted)">Rebuild ToastOperator Production</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.75rem 1rem">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--cyan2);margin-bottom:0.3rem">npm run locators:generate</div>
+          <div style="font-size:0.75rem;color:var(--muted)">Scan Swift → new selectors</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.75rem 1rem">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--cyan2);margin-bottom:0.3rem">npm run feature:generate -- --ticket=SMB-1234</div>
+          <div style="font-size:0.75rem;color:var(--muted)">AI generates test code for a new feature</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.75rem 1rem">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--cyan2);margin-bottom:0.3rem">npx tsx agent/cli.ts "full regression"</div>
+          <div style="font-size:0.75rem;color:var(--muted)">CLI — no dashboard needed</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:0.75rem 1rem">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--cyan2);margin-bottom:0.3rem">npx tsx scripts/setup-env.ts</div>
+          <div style="font-size:0.75rem;color:var(--muted)">Re-detect paths if .env gets stale</div>
+        </div>
+      </div>
+      <div style="margin-top:1rem;font-size:0.78rem;color:var(--muted)">
+        Full reference: <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/ONBOARDING.md" target="_blank" style="color:var(--cyan2);text-decoration:none;font-weight:600">ONBOARDING.md ↗</a>
+      </div>
+    </div>
+
+    <!-- Extending to other teams -->
+    <div class="fade-up" style="background:linear-gradient(135deg,rgba(0,163,217,0.06),rgba(224,25,125,0.04));border:1px solid var(--border);border-radius:var(--radius);padding:2rem">
+      <div class="section-label" style="margin-bottom:0.75rem">Extending to your team</div>
+      <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:0.75rem">Works for any iOS module or web app.</h3>
+      <p style="font-size:0.875rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;max-width:680px">
+        ToastPilot's execution engine is the only iOS-specific layer. The server, EventBus, Copilot, dashboard, Jira integration, Slack reporting, GitHub webhook, and Bug Bash are all module-agnostic. Adapting to another iOS module takes <strong style="color:var(--text)">1–2 days</strong> — add accessibility IDs in Swift, run locator codegen, add action methods, add flow entries. Web teams replace Appium with Playwright; everything else is identical.
+      </p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/ONBOARDING.md#11-extending-to-a-new-ios-module-or-app" target="_blank" class="btn-secondary" style="padding:0.6rem 1.25rem;font-size:0.85rem">iOS module guide ↗</a>
+        <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/ONBOARDING.md#12-extending-to-a-webnon-ios-team" target="_blank" class="btn-secondary" style="padding:0.6rem 1.25rem;font-size:0.85rem">Web team guide ↗</a>
+        <a href="https://github.com/keerthiv-toast/toastpilot/blob/main/ONBOARDING.md" target="_blank" class="btn-primary" style="padding:0.6rem 1.25rem;font-size:0.85rem">Full ONBOARDING.md ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-top">
@@ -2250,6 +2404,7 @@
     <div class="footer-col">
       <h4>Documentation</h4>
       <ul>
+        <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/ONBOARDING.md" target="_blank">Setup · ONBOARDING.md</a></li>
         <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/README.md" target="_blank">Overview · README</a></li>
         <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/DESIGN.md" target="_blank">Architecture · DESIGN.md</a></li>
         <li><a href="https://github.com/keerthiv-toast/toastpilot/blob/main/TECHNICAL.md" target="_blank">Reference · TECHNICAL.md</a></li>
